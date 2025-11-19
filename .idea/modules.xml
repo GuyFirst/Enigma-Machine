@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/EnigmaMachine.iml" filepath="$PROJECT_DIR$/EnigmaMachine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Machine/Machine.iml" filepath="$PROJECT_DIR$/Machine/Machine.iml" />
     </modules>
   </component>
 </project>
