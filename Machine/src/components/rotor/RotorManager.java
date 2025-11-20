@@ -35,10 +35,6 @@ public class RotorManager {
     }
 
     public int encryptLetterThroughRotorsRTL(int input) {
-//        currentRotors = currentRotors.reversed();
-//        int signal = encryptLetterThroughRotorsLTR(input);
-//        currentRotors = currentRotors.reversed();
-//        return signal;
         int signal = input;
         System.out.println(signal);
         for (int i = currentRotors.size() - 1; i >= 0; i--) {
@@ -53,7 +49,7 @@ public class RotorManager {
         for (int i = currentRotors.size() - 1; i >= 0; i--) {
             Rotor rotor = currentRotors.get(i);
             rotor.rotate();
-            if (rotor.getNotchDistanceFromTop() != 0) {
+            if (rotor.getNotchPosition() != 0) {
                 break;
             }
         }
