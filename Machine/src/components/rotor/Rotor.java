@@ -27,14 +27,14 @@ public class Rotor {
 
     public int encodeForward(int letterRepresentation) {
         int convertedLetterRepresentation = makePositionInBounds(letterRepresentation + offsetForInputCalculation);
-        System.out.println("convertedLetterRepresentation: " + forwardWiring.get(convertedLetterRepresentation));
-        return forwardWiring.get(convertedLetterRepresentation);
+        System.out.println("convertedLetterRepresentation: " + convertedLetterRepresentation);
+        return convertedLetterRepresentation;
     }
 
     public int encodeBackward(int letterRepresentation) {
         int convertedLetterRepresentation = makePositionInBounds(letterRepresentation + offsetForInputCalculation);
-        System.out.println("convertedLetterRepresentation: " + backwardWiring.get(convertedLetterRepresentation));
-        return backwardWiring.get(convertedLetterRepresentation);
+        System.out.println("convertedLetterRepresentation: " + convertedLetterRepresentation);
+        return convertedLetterRepresentation;
     }
 
     void rotate() {
