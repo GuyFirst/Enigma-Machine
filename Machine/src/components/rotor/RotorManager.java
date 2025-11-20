@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class RotorManager {
     private final Map<Integer, Rotor> rotors;
-    private List<Rotor> currentRotors = new ArrayList<>();
+    private final List<Rotor> currentRotors = new ArrayList<>();
     private final Map<Character, Integer> charToIndex; //TODO - a static member that appears somewhere in the system
 
     public RotorManager(Map<Integer, Rotor> rotors, int alphabetLength, Map<Character, Integer> charToIndex) {
@@ -19,26 +19,33 @@ public class RotorManager {
             currentRotors.add(rotors.get(id));
         }
     }
-
 //    public void setRotorsPositions(List<Character> positions) {
 //        for (int i = 0; i < currentRotors.size(); i++ ) {
 //            currentRotors.get(i).setCurrentWindowLetter(charToIndex.get(positions.get(i)));
 //            currentRotors.get(i).initialRotate(charToIndex.get(positions.get(i)));
 //        }
 //    }
-
     public int encryptLetterThroughRotorsLTR(int input) {
         int signal = input;
         for (Rotor rotor : currentRotors) {
-            signal = rotor.encode(signal);
+            signal = rotor.encodeBackward(signal);
+
         }
         return signal;
     }
 
     public int encryptLetterThroughRotorsRTL(int input) {
-        currentRotors = currentRotors.reversed();
-        int signal = encryptLetterThroughRotorsLTR(input);
-        currentRotors = currentRotors.reversed();
+//        currentRotors = currentRotors.reversed();
+//        int signal = encryptLetterThroughRotorsLTR(input);
+//        currentRotors = currentRotors.reversed();
+//        return signal;
+        int signal = input;
+        System.out.println(signal);
+        for (int i = currentRotors.size() - 1; i >= 0; i--) {
+            Rotor rotor = currentRotors.get(i);
+            signal = rotor.encodeForward(signal);
+            System.out.println(signal);
+        }
         return signal;
     }
 

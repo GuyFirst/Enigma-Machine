@@ -35,29 +35,35 @@ public class EnigmaConsoleTest {
         wiring2.put(3, 2); wiring2.put(4, 0); wiring2.put(5, 3);
 
         Rotor r1 = new Rotor(1, wiring1, 4, alphabetLength); // Notch=4
-
+        System.out.println("rotor1 created" + "\n");
         // --- 3. יצירת רוטור 2 (פנימית - מיפוי בין אינדקסים) ---
        // נניח ש-Rotor 2 ממפה 0->3, 1->4, 2->5, 3->0, 4->1, 5->2 (מתוך sanity-small)
         Rotor r2 = new Rotor(2, wiring2, 2, alphabetLength); // Notch=2
+        System.out.println("rotor1 created" + "\n");
 
         Map<Integer, Rotor> allRotors = new HashMap<>();
         allRotors.put(1, r1);
         allRotors.put(2, r2);
+        System.out.println("allRotors map<int, rotor> created" + "\n");
 
         // --- 4. יצירת RotorManager ---
         RotorManager manager = new RotorManager(allRotors, alphabetLength, charToIndex);
+        System.out.println("rotor manager created" + "\n");
 
         // --- 5. קביעת סדר הרוטורים (2 משמאל, 1 מימין) --
         List<Integer> rotorOrder = new ArrayList<>();
         rotorOrder.add(2); // Left
         rotorOrder.add(1); // Right
         manager.setRotorsOrder(rotorOrder);
+        System.out.println("rotor order " + "\n");
 
+        System.out.println("setting rotors position " + "\n");
         // --- 6. קביעת מיקומים התחלתיים (CC) ---
         List<Character> positions = new ArrayList<>();
         positions.add('C'); // Rotor 2 (Left) position
         positions.add('C'); // Rotor 1 (Right) position
         manager.setRotorsPositions(positions); // מצב 2 בתרשים
+
 
         // --- 7. מעבר למצב 3 (פסיעה לפני הקלדת C) ---
         // כאן מגיע שלב הפסיעה שנדרש לפני קידוד
