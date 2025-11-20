@@ -34,7 +34,7 @@ public class EnigmaConsoleTest {
         wiring2.put(0, 5); wiring2.put(1, 1); wiring2.put(2, 4);
         wiring2.put(3, 2); wiring2.put(4, 0); wiring2.put(5, 3);
 
-        Rotor r1 = new Rotor(1, wiring1, 4, alphabetLength); // Notch=4
+        Rotor r1 = new Rotor(1, wiring1, 3, alphabetLength); // Notch=4
         System.out.println("rotor1 created" + "\n");
         // --- 3. יצירת רוטור 2 (פנימית - מיפוי בין אינדקסים) ---
        // נניח ש-Rotor 2 ממפה 0->3, 1->4, 2->5, 3->0, 4->1, 5->2 (מתוך sanity-small)
@@ -91,12 +91,14 @@ public class EnigmaConsoleTest {
         System.out.println("Output Index: " + signal);
         System.out.println("Encoded Character before reflector: " + outputChar);
 
+        System.out.println("Reflector" + "\n");
+        System.out.println("now sending: C from reflector");
         signal = 2;
         signal = manager.encryptLetterThroughRotorsLTR(signal);
 
         char outputChar2 = getChar(signal, charToIndex);
         System.out.println("Output Index: " + signal);
-        System.out.println("Final Encoded Character: " + outputChar);
+        System.out.println("Final Encoded Character: " + outputChar2);
 
     }
 
