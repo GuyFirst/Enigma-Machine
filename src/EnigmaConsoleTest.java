@@ -17,47 +17,66 @@ public class EnigmaConsoleTest {
         charToIndex.put('A', 0); charToIndex.put('B', 1); charToIndex.put('C', 2);
         charToIndex.put('D', 3); charToIndex.put('E', 4); charToIndex.put('F', 5);
         int alphabetLength = 6;
+//        // --- 2. יצירת רוטור 1 (פנימית - מיפוי בין אינדקסים) ---
+//        // בדוגמה: Right(A->F) Left(C->D) -> כל רוטור ממפה אינדקס לאינדקס
+//        // אם נניח שהחיווט הפנימי הוא קבוע בין האינדקסים:
+//        // (A(0) -> D(3)) ; (B(1) -> E(4)) ; (C(2) -> F(5)) וכו'
+//        // ***יש צורך ליצור את המפה מתוך הגדרת ה-XML המלאה של הרוטורים***
+//        // לצורך בדיקה ראשונית, נשתמש במפה פנימית כלשהי:
+//        // חיווט רוטור 1: 0->5, 1->4, 2->3, 3->2, 4->1, 5->0
+//        Map<Integer, Integer> wiring1 = new HashMap<>();
+//        wiring1.put(0, 5); wiring1.put(1, 4); wiring1.put(2, 3);
+//        wiring1.put(3, 2); wiring1.put(4, 1); wiring1.put(5, 0);
+//
+//        // חיווט רוטור 2: 0->5, 1->1, 2->4, 3->2, 4->0, 5->3
+//        Map<Integer, Integer> wiring2 = new HashMap<>();
+//        wiring2.put(0, 5); wiring2.put(1, 1); wiring2.put(2, 4);
+//        wiring2.put(3, 2); wiring2.put(4, 0); wiring2.put(5, 3);
 
-        // --- 2. יצירת רוטור 1 (פנימית - מיפוי בין אינדקסים) ---
-        // בדוגמה: Right(A->F) Left(C->D) -> כל רוטור ממפה אינדקס לאינדקס
-        // אם נניח שהחיווט הפנימי הוא קבוע בין האינדקסים:
-        // (A(0) -> D(3)) ; (B(1) -> E(4)) ; (C(2) -> F(5)) וכו'
-        // ***יש צורך ליצור את המפה מתוך הגדרת ה-XML המלאה של הרוטורים***
-        // לצורך בדיקה ראשונית, נשתמש במפה פנימית כלשהי:
-        // חיווט רוטור 1: 0->5, 1->4, 2->3, 3->2, 4->1, 5->0
-        Map<Integer, Integer> wiring1 = new HashMap<>();
-        wiring1.put(0, 5); wiring1.put(1, 4); wiring1.put(2, 3);
-        wiring1.put(3, 2); wiring1.put(4, 1); wiring1.put(5, 0);
+        List<Integer> rightColOfRotor1 = new ArrayList<>();
+        List<Integer> leftColOfRotor1 = new ArrayList<>();
+        rightColOfRotor1.add(0); rightColOfRotor1.add(1); rightColOfRotor1.add(2);
+        rightColOfRotor1.add(3); rightColOfRotor1.add(4); rightColOfRotor1.add(5);
+        leftColOfRotor1.add(5); leftColOfRotor1.add(4); leftColOfRotor1.add(3);
+        leftColOfRotor1.add(2); leftColOfRotor1.add(1); leftColOfRotor1.add(0);
 
-        // חיווט רוטור 2: 0->5, 1->1, 2->4, 3->2, 4->0, 5->3
-        Map<Integer, Integer> wiring2 = new HashMap<>();
-        wiring2.put(0, 5); wiring2.put(1, 1); wiring2.put(2, 4);
-        wiring2.put(3, 2); wiring2.put(4, 0); wiring2.put(5, 3);
+        List<Integer> rightColOfRotor2 = new ArrayList<>();
+        List<Integer> leftColOfRotor2 = new ArrayList<>();
+        rightColOfRotor2.add(0); rightColOfRotor2.add(1); rightColOfRotor2.add(2);
+        rightColOfRotor2.add(3); rightColOfRotor2.add(4); rightColOfRotor2.add(5);
+        leftColOfRotor2.add(4); leftColOfRotor2.add(1); leftColOfRotor2.add(3);
+        leftColOfRotor2.add(5); leftColOfRotor2.add(2); leftColOfRotor2.add(0);
 
-        Rotor r1 = new Rotor(1, wiring1, 4, alphabetLength); // Notch=4
-
+        Rotor r1 = new Rotor(1, rightColOfRotor1, leftColOfRotor1, 4); // Notch=4
+        System.out.println("rotor1 created" + "\n");
         // --- 3. יצירת רוטור 2 (פנימית - מיפוי בין אינדקסים) ---
        // נניח ש-Rotor 2 ממפה 0->3, 1->4, 2->5, 3->0, 4->1, 5->2 (מתוך sanity-small)
-        Rotor r2 = new Rotor(2, wiring2, 2, alphabetLength); // Notch=2
+        Rotor r2 = new Rotor(1, rightColOfRotor2, leftColOfRotor2, 1); // Notch=2
+        System.out.println("rotor2 created" + "\n");
 
         Map<Integer, Rotor> allRotors = new HashMap<>();
         allRotors.put(1, r1);
         allRotors.put(2, r2);
+        System.out.println("allRotors map<int, rotor> created" + "\n");
 
         // --- 4. יצירת RotorManager ---
         RotorManager manager = new RotorManager(allRotors, alphabetLength, charToIndex);
+        System.out.println("rotor manager created" + "\n");
 
         // --- 5. קביעת סדר הרוטורים (2 משמאל, 1 מימין) --
         List<Integer> rotorOrder = new ArrayList<>();
         rotorOrder.add(2); // Left
         rotorOrder.add(1); // Right
         manager.setRotorsOrder(rotorOrder);
+        System.out.println("rotor order " + "\n");
 
+        System.out.println("setting rotors position " + "\n");
         // --- 6. קביעת מיקומים התחלתיים (CC) ---
         List<Character> positions = new ArrayList<>();
         positions.add('C'); // Rotor 2 (Left) position
         positions.add('C'); // Rotor 1 (Right) position
         manager.setRotorsPositions(positions); // מצב 2 בתרשים
+
 
         // --- 7. מעבר למצב 3 (פסיעה לפני הקלדת C) ---
         // כאן מגיע שלב הפסיעה שנדרש לפני קידוד
@@ -85,12 +104,14 @@ public class EnigmaConsoleTest {
         System.out.println("Output Index: " + signal);
         System.out.println("Encoded Character before reflector: " + outputChar);
 
-        signal = 2;
+        System.out.println("Reflector" + "\n");
+        System.out.println("now sending: C from reflector");
+        signal = 1;
         signal = manager.encryptLetterThroughRotorsLTR(signal);
 
         char outputChar2 = getChar(signal, charToIndex);
         System.out.println("Output Index: " + signal);
-        System.out.println("Final Encoded Character: " + outputChar);
+        System.out.println("Final Encoded Character: " + outputChar2);
 
     }
 
