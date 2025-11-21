@@ -19,12 +19,7 @@ public class RotorManager {
             currentRotors.add(rotors.get(id));
         }
     }
-//    public void setRotorsPositions(List<Character> positions) {
-//        for (int i = 0; i < currentRotors.size(); i++ ) {
-//            currentRotors.get(i).setCurrentWindowLetter(charToIndex.get(positions.get(i)));
-//            currentRotors.get(i).initialRotate(charToIndex.get(positions.get(i)));
-//        }
-//    }
+
     public int encryptLetterThroughRotorsLTR(int input) {
         int signal = input;
         for (Rotor rotor : currentRotors) {
