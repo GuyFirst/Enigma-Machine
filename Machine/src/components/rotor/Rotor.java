@@ -114,13 +114,13 @@ public class Rotor {
         }
     }
 
-    public int encodeForward(int letterRepresentation) {
-        int resultedLetter = rightColumn.get(letterRepresentation);
+    public int encodeForward(int entryLocation) {
+        int resultedLetter = rightColumn.get(entryLocation);
         return leftColumn.indexOf(resultedLetter);
     }
 
-    public int encodeBackward(int letterRepresentation) {
-        int resultedLetter = leftColumn.get(letterRepresentation);
+    public int encodeBackward(int entryLocation) {
+        int resultedLetter = leftColumn.get(entryLocation);
         return rightColumn.indexOf(resultedLetter);
     }
 
