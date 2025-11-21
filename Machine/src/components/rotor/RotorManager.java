@@ -1,19 +1,16 @@
 package components.rotor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class RotorManager {
     private final Map<Integer, Rotor> rotors;
-    private List<Rotor> currentRotors;
-    private final int ALPHABET_LENGTH;
-
+    private final List<Rotor> currentRotors = new ArrayList<>();
     private final Map<Character, Integer> charToIndex; //TODO - a static member that appears somewhere in the system
 
     public RotorManager(Map<Integer, Rotor> rotors, int alphabetLength, Map<Character, Integer> charToIndex) {
         this.rotors = rotors;
-        ALPHABET_LENGTH = alphabetLength;
         this.charToIndex = charToIndex;
     }
 
@@ -23,20 +20,39 @@ public class RotorManager {
         }
     }
 
-    public void setRotorsPositions(List<Character> positions) {
-        for (int i = 0; i < currentRotors.size(); i++ ) {
-            currentRotors.get(i).initialRotate(charToIndex.get(positions.get(i)));
-        }
-    }
-
-    public int encode(int input) {
+    public int encryptLetterThroughRotorsLTR(int input) {
         int signal = input;
         for (Rotor rotor : currentRotors) {
-            signal = rotor.encode(signal);
+            signal = rotor.encodeBackward(signal);
+
         }
         return signal;
     }
 
+    public int encryptLetterThroughRotorsRTL(int input) {
+        int signal = input;
+        System.out.println(signal);
+        for (int i = currentRotors.size() - 1; i >= 0; i--) {
+            Rotor rotor = currentRotors.get(i);
+            signal = rotor.encodeForward(signal);
+            System.out.println(signal);
+        }
+        return signal;
+    }
 
+    public void moveRotorsBeforeEncodingLetter() {
+        for (int i = currentRotors.size() - 1; i >= 0; i--) {
+            Rotor rotor = currentRotors.get(i);
+            rotor.rotate();
+            if (rotor.getNotchPosition() != 0) {
+                break;
+            }
+        }
+    }
 
+    public void setRotorsPositions(List<Character> positions) {
+        for (Rotor rotor : currentRotors) {
+            rotor.setPosition(charToIndex.get(positions.get(currentRotors.indexOf(rotor))));
+        }
+    }
 }
