@@ -9,21 +9,11 @@ public class Rotor {
     private int notchPosition;
     private final int ALPHABET_LENGTH = 6;
 
-    public Rotor(int id, List<Integer> rightColumn, List<Integer> leftColumn,  int notchPosition) {
+    public Rotor(int id, List<Integer> rightColumn, List<Integer> leftColumn, int notchPosition) {
         this.id = id;
         this.rightColumn = rightColumn;
         this.leftColumn = leftColumn;
         this.notchPosition = makePositionInBounds(notchPosition - 1);
-    }
-
-    void rotate() {
-        int topLetterFroRightColumn = rightColumn.removeFirst();
-        int topLetterFromLeftColumn = leftColumn.removeFirst();
-
-        rightColumn.add(topLetterFroRightColumn);
-        leftColumn.add(topLetterFromLeftColumn);
-
-        notchPosition = makePositionInBounds(notchPosition - 1);
     }
 
     void setPosition(int position) {
@@ -48,5 +38,15 @@ public class Rotor {
 
     public int getNotchPosition() {
         return notchPosition;
+    }
+
+    public void rotate() {
+        int topLetterFroRightColumn = rightColumn.removeFirst();
+        int topLetterFromLeftColumn = leftColumn.removeFirst();
+
+        rightColumn.add(topLetterFroRightColumn);
+        leftColumn.add(topLetterFromLeftColumn);
+
+        notchPosition = makePositionInBounds(notchPosition - 1);
     }
 }
