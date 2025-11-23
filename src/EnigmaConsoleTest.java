@@ -1,7 +1,11 @@
-
-
+import components.keyboard.AlphabetComponent;
+import components.reflector.Reflectable;
+import components.reflector.Reflector;
+import components.reflector.ReflectorManager;
+import components.reflector.ReflectorPair;
 import components.rotor.Rotor;
 import components.rotor.RotorManager;
+import enigmaMachine.EnigmaMachine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,96 +15,124 @@ import java.util.Map;
 public class EnigmaConsoleTest {
 
     public static void main(String[] args) {
-        // --- 1. הגדרת האלפבית (ABCDEF) ומיפוי תו לאינדקס (0-5) ---
-        // האלפבית: A, B, C, D, E, F (אורך 6)
+
+        // --- 1. Define Alphabet (A-F, Length 6) ---
         Map<Character, Integer> charToIndex = new HashMap<>();
-        charToIndex.put('A', 0); charToIndex.put('B', 1); charToIndex.put('C', 2);
-        charToIndex.put('D', 3); charToIndex.put('E', 4); charToIndex.put('F', 5);
+        charToIndex.put('A', 0);
+        charToIndex.put('B', 1);
+        charToIndex.put('C', 2);
+        charToIndex.put('D', 3);
+        charToIndex.put('E', 4);
+        charToIndex.put('F', 5);
         int alphabetLength = 6;
 
-        // --- 2. יצירת רוטור 1 (פנימית - מיפוי בין אינדקסים) ---
-        // בדוגמה: Right(A->F) Left(C->D) -> כל רוטור ממפה אינדקס לאינדקס
-        // אם נניח שהחיווט הפנימי הוא קבוע בין האינדקסים:
-        // (A(0) -> D(3)) ; (B(1) -> E(4)) ; (C(2) -> F(5)) וכו'
-        // ***יש צורך ליצור את המפה מתוך הגדרת ה-XML המלאה של הרוטורים***
-        // לצורך בדיקה ראשונית, נשתמש במפה פנימית כלשהי:
-        // חיווט רוטור 1: 0->5, 1->4, 2->3, 3->2, 4->1, 5->0
-        Map<Integer, Integer> wiring1 = new HashMap<>();
-        wiring1.put(0, 5); wiring1.put(1, 4); wiring1.put(2, 3);
-        wiring1.put(3, 2); wiring1.put(4, 1); wiring1.put(5, 0);
+        // --- Rotor 1 Wiring Definition ---
+        List<Integer> rightColOfRotor1 = new ArrayList<>();
+        List<Integer> leftColOfRotor1 = new ArrayList<>();
+        // Right Column (Input points)
+        rightColOfRotor1.add(0);
+        rightColOfRotor1.add(1);
+        rightColOfRotor1.add(2);
+        rightColOfRotor1.add(3);
+        rightColOfRotor1.add(4);
+        rightColOfRotor1.add(5);
+        // Left Column (Output points: 0->5, 1->4, 2->3, 3->2, 4->1, 5->0)
+        leftColOfRotor1.add(5);
+        leftColOfRotor1.add(4);
+        leftColOfRotor1.add(3);
+        leftColOfRotor1.add(2);
+        leftColOfRotor1.add(1);
+        leftColOfRotor1.add(0);
 
-        // חיווט רוטור 2: 0->5, 1->1, 2->4, 3->2, 4->0, 5->3
-        Map<Integer, Integer> wiring2 = new HashMap<>();
-        wiring2.put(0, 5); wiring2.put(1, 1); wiring2.put(2, 4);
-        wiring2.put(3, 2); wiring2.put(4, 0); wiring2.put(5, 3);
+        // --- Rotor 2 Wiring Definition ---
+        List<Integer> rightColOfRotor2 = new ArrayList<>();
+        List<Integer> leftColOfRotor2 = new ArrayList<>();
+        // Right Column (Input points)
+        rightColOfRotor2.add(0);
+        rightColOfRotor2.add(1);
+        rightColOfRotor2.add(2);
+        rightColOfRotor2.add(3);
+        rightColOfRotor2.add(4);
+        rightColOfRotor2.add(5);
+        // Left Column (Output points: 0->4, 1->1, 2->3, 3->5, 4->2, 5->0)
+        leftColOfRotor2.add(4);
+        leftColOfRotor2.add(1);
+        leftColOfRotor2.add(3);
+        leftColOfRotor2.add(5);
+        leftColOfRotor2.add(2);
+        leftColOfRotor2.add(0);
 
-        Rotor r1 = new Rotor(1, wiring1, 4, alphabetLength); // Notch=4
+        // --- 2. Rotor Instantiation ---
+        Rotor r1 = new Rotor(1, rightColOfRotor1, leftColOfRotor1, 4);
+        System.out.println("Rotor 1 created");
 
-        // --- 3. יצירת רוטור 2 (פנימית - מיפוי בין אינדקסים) ---
-       // נניח ש-Rotor 2 ממפה 0->3, 1->4, 2->5, 3->0, 4->1, 5->2 (מתוך sanity-small)
-        Rotor r2 = new Rotor(2, wiring2, 2, alphabetLength); // Notch=2
+        Rotor r2 = new Rotor(1, rightColOfRotor2, leftColOfRotor2, 1);
+        System.out.println("Rotor 2 created");
 
         Map<Integer, Rotor> allRotors = new HashMap<>();
         allRotors.put(1, r1);
         allRotors.put(2, r2);
+        System.out.println("Rotor map initialized");
 
-        // --- 4. יצירת RotorManager ---
+        // --- 3. Create RotorManager ---
         RotorManager manager = new RotorManager(allRotors, alphabetLength, charToIndex);
+        System.out.println("Rotor Manager created");
 
-        // --- 5. קביעת סדר הרוטורים (2 משמאל, 1 מימין) --
+        // --- 4. Set Rotor Order (R2 Left, R1 Right) ---
         List<Integer> rotorOrder = new ArrayList<>();
         rotorOrder.add(2); // Left
         rotorOrder.add(1); // Right
         manager.setRotorsOrder(rotorOrder);
+        System.out.println("Rotor order set");
 
-        // --- 6. קביעת מיקומים התחלתיים (CC) ---
+        System.out.println("Setting rotors position");
+        // --- 5. Set Initial Positions (CC) ---
         List<Character> positions = new ArrayList<>();
         positions.add('C'); // Rotor 2 (Left) position
         positions.add('C'); // Rotor 1 (Right) position
-        manager.setRotorsPositions(positions); // מצב 2 בתרשים
+        manager.setRotorsPositions(positions);
 
-        // --- 7. מעבר למצב 3 (פסיעה לפני הקלדת C) ---
-        // כאן מגיע שלב הפסיעה שנדרש לפני קידוד
-        // הרוטורים צריכים להיות במצב 3 מהתרשים שלכם
-        manager.moveRotorsBeforeEncodingLetter();
+        List<ReflectorPair> rawPairsI = new ArrayList<>();
+        rawPairsI.add(new ReflectorPair(0, 3));
+        rawPairsI.add(new ReflectorPair(1, 4));
+        rawPairsI.add(new ReflectorPair(2, 5));
 
-        // --- 8. קידוד האות C (מצב 4) ---
-        // נבדוק רק את המסלול מהרוטור הימני (1) אל הרוטור השמאלי (2) - החלק ה-"Forward"
-        int inputIndex = charToIndex.get('B'); // B הוא הקלט האפקטיבי אחרי לוח תקעים (B|C)
+        Map<String, Reflectable> allReflectors = new HashMap<>();
+// Use the new Reflector constructor: new Reflector(id, rawPairsList)
+        allReflectors.put("I", new Reflector("I", rawPairsI));
 
-        System.out.println("--- Encoding B -> A ---");
-        System.out.println("Input Index (B): " + inputIndex);
+        Reflectable currentReflector = allReflectors.get("I");
 
-        // שימו לב: קידוד זה (RTL) צריך להשתמש ב-mapForward
-        // נשתמש בגרסה מתוקנת של הלולאה ההפוכה
-        // int outputIndex = manager.encryptLetterThroughRotorsRTL(inputIndex);
 
-        // כרגע נשתמש בלולאה ידנית:
-        int signal = inputIndex;
-        // מעבר RTL
-        signal = manager.encryptLetterThroughRotorsRTL(signal);
+        ArrayList<Character> characterArrayList = new ArrayList<>();
+        ArrayList<Character> outputCharacterArrayList = new ArrayList<>();
+        ArrayList<Character> outputCharacterArrayList2 = new ArrayList<>();
+        characterArrayList.add('A');
+        characterArrayList.add('B');
+        characterArrayList.add('B');
+        characterArrayList.add('A');
 
-        // --- 9. הדפסת תוצאה ---
-        char outputChar = getChar(signal, charToIndex);
-        System.out.println("Output Index: " + signal);
-        System.out.println("Encoded Character before reflector: " + outputChar);
+        ReflectorManager reflectorManager = new ReflectorManager(allReflectors, currentReflector);
+        AlphabetComponent keyboard = new components.keyboard.Keyboard("ABCDEF", charToIndex);
+        EnigmaMachine testMachine = new EnigmaMachine(reflectorManager, manager, keyboard);
 
-        signal = 2;
-        signal = manager.encryptLetterThroughRotorsLTR(signal);
+        System.out.println("Text to encrypt: " + characterArrayList);
 
-        char outputChar2 = getChar(signal, charToIndex);
-        System.out.println("Output Index: " + signal);
-        System.out.println("Final Encoded Character: " + outputChar);
-
-    }
-
-    // פונקציית עזר פשוטה להמרת אינדקס לתו
-    private static char getChar(int index, Map<Character, Integer> charToIndex) {
-        for (Map.Entry<Character, Integer> entry : charToIndex.entrySet()) {
-            if (entry.getValue().equals(index)) {
-                return entry.getKey();
-            }
+        for (int i = 0; i < characterArrayList.toArray().length; i++) {
+            outputCharacterArrayList.add(testMachine.encryptChar(characterArrayList.get(i)));
         }
-        return '?';
+
+        System.out.println("text encrypted to: " + outputCharacterArrayList);
+
+        positions.add('C'); // Rotor 2 (Left) position
+        positions.add('C'); // Rotor 1 (Right) position
+        manager.setRotorsPositions(positions);
+
+        for (int i = 0; i < characterArrayList.toArray().length; i++) {
+            outputCharacterArrayList2.add(testMachine.encryptChar(outputCharacterArrayList.get(i)));
+        }
+
+        System.out.println("text decrypred back to: " + outputCharacterArrayList2);
+
     }
 }
