@@ -28,7 +28,6 @@ public class Reflector implements Reflectable {
         this.wiring = Collections.unmodifiableMap(finalWiring);
     }
 
-    @Override
     public String getId() {
         return id;
     }
