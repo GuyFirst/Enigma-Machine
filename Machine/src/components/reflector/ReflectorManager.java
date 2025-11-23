@@ -6,7 +6,7 @@ public class ReflectorManager {
     private final Map<String, Reflectable> reflectors;
     private Reflectable currentReflector;
 
-    public ReflectorManager(Map<String, Reflectable> reflectors,  Reflector currentReflector) {
+    public ReflectorManager(Map<String, Reflectable> reflectors,  Reflectable currentReflector) {
         this.reflectors = reflectors;
         this.currentReflector = currentReflector;
     }
