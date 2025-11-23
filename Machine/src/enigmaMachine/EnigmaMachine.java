@@ -1,5 +1,6 @@
 package enigmaMachine;
 
+import components.keyboard.AlphabetComponent;
 import components.keyboard.Keyboard;
 import components.reflector.Reflectable;
 import components.reflector.Reflector;
@@ -9,9 +10,9 @@ import components.rotor.RotorManager;
 public class EnigmaMachine {
     private final ReflectorManager reflectorManager;
     private final RotorManager rotorManager;
-    private final Keyboard keyboard;
+    private final AlphabetComponent keyboard;
 
-    public EnigmaMachine(ReflectorManager reflectorManager, RotorManager rotorManager, Keyboard keyboard) {
+    public EnigmaMachine(ReflectorManager reflectorManager, RotorManager rotorManager, AlphabetComponent keyboard) {
         this.reflectorManager = reflectorManager;
         this.rotorManager = rotorManager;
         this.keyboard = keyboard;

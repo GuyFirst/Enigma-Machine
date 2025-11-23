@@ -2,7 +2,7 @@ package components.keyboard;
 
 import java.util.Map;
 
-public class Keyboard {
+public class Keyboard implements AlphabetComponent{
     private final String alphabetString;
     private final Map<Character, Integer> mapFromCharToInt;
     private final Map<Integer, Character> mapFromIntToChar;
@@ -12,9 +12,13 @@ public class Keyboard {
         this.mapFromCharToInt = mapFromCharToInt;
         this.mapFromIntToChar = mapFromIntToChar;
     }
+
+    @Override
     public int charToIndex(char c) {
         return mapFromCharToInt.get(c);
     }
+
+    @Override
     public char indexToChar(int index) {
         return mapFromIntToChar.get(index);
     }
