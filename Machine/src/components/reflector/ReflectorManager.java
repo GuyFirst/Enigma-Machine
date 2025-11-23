@@ -16,6 +16,6 @@ public class ReflectorManager {
     }
 
     public int reflect(int inputPosition) {
-        return currentReflector.reflect(inputPosition);
+        return currentReflector.reflect(inputPosition );
     }
 }

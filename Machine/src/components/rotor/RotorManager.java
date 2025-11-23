@@ -31,11 +31,9 @@ public class RotorManager {
 
     public int encryptLetterThroughRotorsRTL(int input) {
         int signal = input;
-        System.out.println(signal);
         for (int i = currentRotors.size() - 1; i >= 0; i--) {
             Rotor rotor = currentRotors.get(i);
             signal = rotor.encodeForward(signal);
-            System.out.println(signal);
         }
         return signal;
     }
