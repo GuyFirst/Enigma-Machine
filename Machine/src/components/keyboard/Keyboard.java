@@ -1,5 +1,6 @@
 package components.keyboard;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Keyboard implements AlphabetComponent{
@@ -7,10 +8,18 @@ public class Keyboard implements AlphabetComponent{
     private final Map<Character, Integer> mapFromCharToInt;
     private final Map<Integer, Character> mapFromIntToChar;
 
-    public Keyboard(int alphabetLength, String alphabetString, int length, Map<Character, Integer> mapFromCharToInt, Map<Integer, Character> mapFromIntToChar) {
+    public Keyboard(String alphabetString, Map<Character, Integer> mapFromCharToInt) {
         this.alphabetString = alphabetString;
         this.mapFromCharToInt = mapFromCharToInt;
-        this.mapFromIntToChar = mapFromIntToChar;
+        this.mapFromIntToChar = createIntToCharMap();
+    }
+
+    private Map<Integer, Character> createIntToCharMap() {
+        Map<Integer, Character> intToCharMap = new HashMap<>();
+        for (Map.Entry<Character, Integer> entry : mapFromCharToInt.entrySet()) {
+            intToCharMap.put(entry.getValue(), entry.getKey());
+        }
+        return intToCharMap;
     }
 
     @Override
