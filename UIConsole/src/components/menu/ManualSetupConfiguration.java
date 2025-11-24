@@ -1,0 +1,19 @@
+package components.menu;
+
+public class ManualSetupConfiguration implements MenuCommandExecutable, SetupStrategy {
+
+    @Override
+    public void execute(java.util.Scanner scanner) throws Exception {
+        setup();
+    }
+
+    @Override
+    public void setup() throws Exception {
+        // TODO implement manual setup logic
+    }
+
+    @Override
+    public String toString() {
+        return "Manual Setup Configuration";
+    }
+}

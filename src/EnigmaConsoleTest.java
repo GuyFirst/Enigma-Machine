@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class EnigmaConsoleTest {
 
-    public static void main(String[] args) {
+    public static void unitTestForEnigmaMachine(String[] args) {
 
         // --- 1. Define Alphabet (A-F, Length 6) ---
         Map<Character, Integer> charToIndex = new HashMap<>();

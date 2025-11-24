@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/EnigmaMachine.iml" filepath="$PROJECT_DIR$/EnigmaMachine.iml" />
       <module fileurl="file://$PROJECT_DIR$/Machine/Machine.iml" filepath="$PROJECT_DIR$/Machine/Machine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/UIConsole/UIConsole.iml" filepath="$PROJECT_DIR$/UIConsole/UIConsole.iml" />
     </modules>
   </component>
 </project>
