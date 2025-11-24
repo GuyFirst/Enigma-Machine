@@ -1,6 +1,6 @@
 package components.menu;
 
-public class AutomaticSetupConfiguration implements MenuCommandExecutable, SetupStrategy {
+public class AutomaticSetupConfigurationCommand implements MenuCommandExecutable, SetupStrategy {
 
     @Override
     public void execute(java.util.Scanner scanner) throws Exception {

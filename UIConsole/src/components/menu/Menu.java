@@ -16,4 +16,8 @@ public class Menu {
         }
         System.out.println("================");
     }
+
+    public List<MenuCommandExecutable> getMenuCommands() {
+        return MenuCommands;
+    }
 }
