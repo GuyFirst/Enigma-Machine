@@ -22,12 +22,12 @@ public class Rotor {
         }
     }
 
-    public int encodeForward(int entryLocation) {
+    int encodeForward(int entryLocation) {
         int resultedLetter = rightColumn.get(entryLocation);
         return leftColumn.indexOf(resultedLetter);
     }
 
-    public int encodeBackward(int entryLocation) {
+    int encodeBackward(int entryLocation) {
         int resultedLetter = leftColumn.get(entryLocation);
         return rightColumn.indexOf(resultedLetter);
     }
@@ -36,11 +36,11 @@ public class Rotor {
         return (position % ALPHABET_LENGTH + ALPHABET_LENGTH) % ALPHABET_LENGTH;
     }
 
-    public int getNotchPosition() {
+    int getNotchPosition() {
         return notchPosition;
     }
 
-    public void rotate() {
+    void rotate() {
         int topLetterFroRightColumn = rightColumn.removeFirst();
         int topLetterFromLeftColumn = leftColumn.removeFirst();
 

@@ -1,8 +1,11 @@
+import components.keyboard.AlphabetComponent;
 import components.reflector.Reflectable;
 import components.reflector.Reflector;
+import components.reflector.ReflectorManager;
 import components.reflector.ReflectorPair;
 import components.rotor.Rotor;
 import components.rotor.RotorManager;
+import enigmaMachine.EnigmaMachine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +15,7 @@ import java.util.Map;
 public class EnigmaConsoleTest {
 
     public static void main(String[] args) {
+
         // --- 1. Define Alphabet (A-F, Length 6) ---
         Map<Character, Integer> charToIndex = new HashMap<>();
         charToIndex.put('A', 0);
@@ -88,81 +92,47 @@ public class EnigmaConsoleTest {
         positions.add('C'); // Rotor 1 (Right) position
         manager.setRotorsPositions(positions);
 
+        List<ReflectorPair> rawPairsI = new ArrayList<>();
+        rawPairsI.add(new ReflectorPair(0, 3));
+        rawPairsI.add(new ReflectorPair(1, 4));
+        rawPairsI.add(new ReflectorPair(2, 5));
+
+        Map<String, Reflectable> allReflectors = new HashMap<>();
+// Use the new Reflector constructor: new Reflector(id, rawPairsList)
+        allReflectors.put("I", new Reflector("I", rawPairsI));
+
+        Reflectable currentReflector = allReflectors.get("I");
+
 
         ArrayList<Character> characterArrayList = new ArrayList<>();
+        ArrayList<Character> outputCharacterArrayList = new ArrayList<>();
+        ArrayList<Character> outputCharacterArrayList2 = new ArrayList<>();
+        characterArrayList.add('A');
         characterArrayList.add('B');
-        characterArrayList.add('D');
+        characterArrayList.add('B');
+        characterArrayList.add('A');
 
-        for (int i = 0; i < 2; i++) {
+        ReflectorManager reflectorManager = new ReflectorManager(allReflectors, currentReflector);
+        AlphabetComponent keyboard = new components.keyboard.Keyboard("ABCDEF", charToIndex);
+        EnigmaMachine testMachine = new EnigmaMachine(reflectorManager, manager, keyboard);
 
+        System.out.println("Text to encrypt: " + characterArrayList);
 
-            // --- 6. Rotation Cycle (Pre-encoding step) ---
-            manager.moveRotorsBeforeEncodingLetter();
-
-            // --- 7. Forward Pass (RTL) ---
-            int inputIndex = charToIndex.get(characterArrayList.get(i)); // B is the effective input (e.g., after Plugboard B|C)
-
-            System.out.println("--- Encoding Letter");
-            System.out.println("Input Index: " + characterArrayList.get(i) + " " + inputIndex);
-
-            int signal = inputIndex;
-            signal = manager.encryptLetterThroughRotorsRTL(signal);
-
-            // --- 8. Output and LTR Pass ---
-            char outputChar = getChar(signal, charToIndex);
-            System.out.println("Output Index after RTL: " + signal);
-            System.out.println("Encoded Character before reflector: " + outputChar);
-
-
-            //HERE WE ARE ADDING A REFLECTOR
-            List<ReflectorPair> rawPairsI = new ArrayList<>();
-            rawPairsI.add(new ReflectorPair(1, 4));
-            rawPairsI.add(new ReflectorPair(2, 5));
-            rawPairsI.add(new ReflectorPair(3, 6));
-
-// Reflector 'II' Pairs (1->5, 2->6, 3->4).
-            List<ReflectorPair> rawPairsII = new ArrayList<>();
-            rawPairsII.add(new ReflectorPair(1, 5));
-            rawPairsII.add(new ReflectorPair(2, 6));
-            rawPairsII.add(new ReflectorPair(3, 4));
-
-
-// --- 2. Instantiate Reflector Objects ---
-            Map<String, Reflectable> allReflectors = new HashMap<>();
-// Use the new Reflector constructor: new Reflector(id, rawPairsList)
-            allReflectors.put("I", new Reflector("I", rawPairsI));
-            allReflectors.put("II", new Reflector("II", rawPairsII));
-
-
-// --- 3. Reflector Manager Initialization and Usage ---
-// Assuming you have a ReflectorManager that holds all available reflectors.
-// You must choose which one to use for the current machine configuration (e.g., Reflector "I").
-
-// Choose Reflector "I" for the simulation
-            Reflectable currentReflector = allReflectors.get("I");
-
-// --- 4. Simulation of Reflector Pass ---
-            System.out.println("// --- Reflector Pass ---");
-// signal will be the output from the RTL pass (e.g., Index 1)
-            signal = currentReflector.reflect(signal);
-            System.out.println("Signal after reflector: Index " + signal);
-
-            // --- 9. Backward Pass (LTR) ---
-            signal = manager.encryptLetterThroughRotorsLTR(signal);
-
-            char outputChar2 = getChar(signal, charToIndex);
-            System.out.println("Output Index after LTR: " + signal);
-            System.out.println("Final Encoded Character: " + outputChar2);
+        for (int i = 0; i < characterArrayList.toArray().length; i++) {
+            outputCharacterArrayList.add(testMachine.encryptChar(characterArrayList.get(i)));
         }
 
-    }
+        System.out.println("text encrypted to: " + outputCharacterArrayList);
 
-    private static char getChar(int index, Map<Character, Integer> charToIndex) {
-        for (Map.Entry<Character, Integer> entry : charToIndex.entrySet()) {
-            if (entry.getValue().equals(index)) {
-                return entry.getKey();
-            }
+        positions.add('C'); // Rotor 2 (Left) position
+        positions.add('C'); // Rotor 1 (Right) position
+        manager.setRotorsPositions(positions);
+
+        for (int i = 0; i < characterArrayList.toArray().length; i++) {
+            outputCharacterArrayList2.add(testMachine.encryptChar(outputCharacterArrayList.get(i)));
         }
-        return '?';
+
+        System.out.println("text decrypred back to: " + outputCharacterArrayList2);
+
     }
 }
