@@ -1,4 +1,4 @@
-# 🧩 Enigma Machine Simulator (Project: Audio-DNA Exchange Core Concept)
+# 🧩 Enigma Machine Simulator (current state on prod branch)
 
 This project implements a functional software simulation of the historical Enigma encryption machine, built upon modern Java architecture principles. This forms the foundational core competency exercise for the development of complex, modular systems, leveraging concepts required for the "Audio-DNA Exchange" platform (specifically, complex data modeling and efficient processing).
 
@@ -25,7 +25,11 @@ The system is separated into passive Logic Modules (Engine) and an active UI Mod
 | :--- | :--- | :--- |
 | **UIConsole** (Active) | Handles all I/O (`Scanner`, `System.out.println`), displays the menu, and dispatches commands. Contains the `Main` class and the `UIController`. | Command Pattern, Menu Display. |
 | **Machine** (Passive) | The core business logic layer. Contains the `EnigmaEngine` implementation and all component managers. | Rotor Offset Logic, Enigma History. |
+
 | **component** (Library) | Holds all component definitions (`Rotor`, `Reflector`, `Keyboard`) and DTOs. | Relative Mapping Formula. |
+=======
+
+
 
 ### 🧭 Key Design Patterns Used
 
