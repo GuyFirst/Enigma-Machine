@@ -1,4 +1,4 @@
-package components.rotor;
+package component.rotor;
 
 import java.util.ArrayList;
 import java.util.List;

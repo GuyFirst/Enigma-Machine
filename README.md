@@ -25,7 +25,11 @@ The system is separated into passive Logic Modules (Engine) and an active UI Mod
 | :--- | :--- | :--- |
 | **UIConsole** (Active) | Handles all I/O (`Scanner`, `System.out.println`), displays the menu, and dispatches commands. Contains the `Main` class and the `UIController`. | Command Pattern, Menu Display. |
 | **Machine** (Passive) | The core business logic layer. Contains the `EnigmaEngine` implementation and all component managers. | Rotor Offset Logic, Enigma History. |
-| **components** (Library) | Holds all component definitions (`Rotor`, `Reflector`, `Keyboard`) and DTOs. | Relative Mapping Formula. |
+
+| **component** (Library) | Holds all component definitions (`Rotor`, `Reflector`, `Keyboard`) and DTOs. | Relative Mapping Formula. |
+=======
+
+
 
 ### 🧭 Key Design Patterns Used
 
