@@ -1,4 +1,6 @@
-package components.menu;
+package component.menu;
+
+import component.menu.command.MenuCommandExecutable;
 
 import java.util.List;
 

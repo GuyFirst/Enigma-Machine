@@ -1,4 +1,4 @@
-package components.reflector;
+package component.reflector;
 
 import java.util.Map;
 

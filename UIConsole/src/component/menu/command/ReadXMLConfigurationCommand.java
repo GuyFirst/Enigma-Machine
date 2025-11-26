@@ -1,4 +1,4 @@
-package components.menu;
+package component.menu.command;
 
 import java.util.Scanner;
 

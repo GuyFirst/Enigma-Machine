@@ -1,6 +1,6 @@
-package components.menu;
+package component.menu.command;
 
-public class ResetCodeCommand implements MenuCommandExecutable{
+public class ResetCodeCommand implements MenuCommandExecutable {
 
     @Override
     public void execute(java.util.Scanner scanner) throws Exception {

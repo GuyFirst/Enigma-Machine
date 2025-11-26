@@ -1,11 +1,8 @@
 package enigmaMachine;
 
-import components.keyboard.AlphabetComponent;
-import components.keyboard.Keyboard;
-import components.reflector.Reflectable;
-import components.reflector.Reflector;
-import components.reflector.ReflectorManager;
-import components.rotor.RotorManager;
+import component.keyboard.AlphabetComponent;
+import component.reflector.ReflectorManager;
+import component.rotor.RotorManager;
 
 public class EnigmaMachine {
     private final ReflectorManager reflectorManager;

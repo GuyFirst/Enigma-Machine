@@ -1,6 +1,7 @@
 package UIController;
 
-import components.menu.*;
+import component.menu.*;
+import component.menu.command.*;
 
 import java.util.ArrayList;
 import java.util.List;

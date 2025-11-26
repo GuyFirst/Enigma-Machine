@@ -1,4 +1,4 @@
-package components.reflector;
+package component.reflector;
 
 // This class represents a single one-way mapping from the XML (e.g., 1 -> 4)
 // It can be implemented as a simple DTO/Record.

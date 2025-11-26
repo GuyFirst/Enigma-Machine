@@ -1,4 +1,4 @@
-package components.keyboard;
+package component.keyboard;
 
 import java.util.HashMap;
 import java.util.Map;

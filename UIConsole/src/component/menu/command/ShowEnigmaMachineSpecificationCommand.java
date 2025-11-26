@@ -1,4 +1,4 @@
-package components.menu;
+package component.menu.command;
 
 public class ShowEnigmaMachineSpecificationCommand implements MenuCommandExecutable {
     @Override

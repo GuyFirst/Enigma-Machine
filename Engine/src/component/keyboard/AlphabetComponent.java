@@ -1,4 +1,4 @@
-package components.keyboard;
+package component.keyboard;
 
 public interface AlphabetComponent {
     int charToIndex(char c);

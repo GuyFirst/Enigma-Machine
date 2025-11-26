@@ -1,10 +1,10 @@
-import components.keyboard.AlphabetComponent;
-import components.reflector.Reflectable;
-import components.reflector.Reflector;
-import components.reflector.ReflectorManager;
-import components.reflector.ReflectorPair;
-import components.rotor.Rotor;
-import components.rotor.RotorManager;
+import component.keyboard.AlphabetComponent;
+import component.reflector.Reflectable;
+import component.reflector.Reflector;
+import component.reflector.ReflectorManager;
+import component.reflector.ReflectorPair;
+import component.rotor.Rotor;
+import component.rotor.RotorManager;
 import enigmaMachine.EnigmaMachine;
 
 import java.util.ArrayList;
@@ -113,7 +113,7 @@ public class EnigmaConsoleTest {
         characterArrayList.add('A');
 
         ReflectorManager reflectorManager = new ReflectorManager(allReflectors, currentReflector);
-        AlphabetComponent keyboard = new components.keyboard.Keyboard("ABCDEF", charToIndex);
+        AlphabetComponent keyboard = new component.keyboard.Keyboard("ABCDEF", charToIndex);
         EnigmaMachine testMachine = new EnigmaMachine(reflectorManager, manager, keyboard);
 
         System.out.println("Text to encrypt: " + characterArrayList);

@@ -1,4 +1,4 @@
-package components.menu;
+package component.menu.command;
 
 public class ProcessInputCommand implements MenuCommandExecutable {
 
