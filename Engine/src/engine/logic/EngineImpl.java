@@ -3,11 +3,16 @@ package engine.logic;
 import DTO.HistoryDTO;
 import DTO.MachineSpecificationDTO;
 import DTO.MessageDTO;
+import enigmaMachine.EnigmaMachine;
 
 import java.util.List;
 
 public class EngineImpl implements Engine {
+    private final EnigmaMachine enigmaMachine;
 
+    public EngineImpl(EnigmaMachine enigmaMachine) {
+        this.enigmaMachine = enigmaMachine;
+    }
 
     @Override
     public void loadMachineFromXml(String xmlFilePath) {
