@@ -1,9 +1,11 @@
 package component.menu.command;
 
+import engine.logic.Engine;
+
 public class ManualSetupConfigurationCommand implements MenuCommandExecutable, SetupStrategy {
 
     @Override
-    public void execute(java.util.Scanner scanner) throws Exception {
+    public void execute(java.util.Scanner scanner, Engine engine) throws Exception {
         setup();
     }
 
