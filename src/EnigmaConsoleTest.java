@@ -1,6 +1,6 @@
 import component.keyboard.AlphabetComponent;
-import component.reflector.Reflectable;
 import component.reflector.Reflector;
+import component.reflector.ReflectorImpl;
 import component.reflector.ReflectorManager;
 import component.reflector.ReflectorPair;
 import component.rotor.Rotor;
@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class EnigmaConsoleTest {
 
-    public static void unitTestForEnigmaMachine(String[] args) {
+    public static void main(String[] args) {
 
         // --- 1. Define Alphabet (A-F, Length 6) ---
         Map<Character, Integer> charToIndex = new HashMap<>();
@@ -97,11 +97,11 @@ public class EnigmaConsoleTest {
         rawPairsI.add(new ReflectorPair(1, 4));
         rawPairsI.add(new ReflectorPair(2, 5));
 
-        Map<String, Reflectable> allReflectors = new HashMap<>();
+        Map<String, Reflector> allReflectors = new HashMap<>();
 // Use the new Reflector constructor: new Reflector(id, rawPairsList)
-        allReflectors.put("I", new Reflector("I", rawPairsI));
+        allReflectors.put("I", new ReflectorImpl("I", rawPairsI));
 
-        Reflectable currentReflector = allReflectors.get("I");
+        Reflector currentReflector = allReflectors.get("I");
 
 
         ArrayList<Character> characterArrayList = new ArrayList<>();

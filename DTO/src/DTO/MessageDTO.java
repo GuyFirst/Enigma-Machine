@@ -1,3 +1,5 @@
+package DTO;
+
 import java.util.List;
 
 public class MessageDTO {
