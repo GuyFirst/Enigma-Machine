@@ -1,3 +1,5 @@
+package DTO;
+
 public class MachineSpecificationDTO {
     private final int numOfRotorsInSystem;
     private final int numOfReflectorsInSystem;

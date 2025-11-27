@@ -2,6 +2,7 @@ package UIController;
 
 import component.menu.*;
 import component.menu.command.*;
+import engine.logic.Engine;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,18 +10,19 @@ import java.util.Scanner;
 
 public class UIController {
     private final Menu menu;
+    private final Engine engine;
     //TODO add engine reference
 
-    public UIController(/*TODO add engine parameter */) {
+    public UIController(Engine engine) {
         menu = createMenu();
-        //TODO initialize engine reference
+        this.engine = engine;
     }
 
     private Menu createMenu() {
         List<MenuCommandExecutable> commands = new ArrayList<>();
 
         // 1. Load Machine from XML
-        commands.add(new ReadXMLConfigurationCommand());
+        commands.add(new LoadXMLConfigurationCommand());
 
         // 2. Display Machine Status / Specification
         commands.add(new ShowEnigmaMachineSpecificationCommand());
@@ -54,7 +56,7 @@ public class UIController {
             menu.displayMenu();
             int choice = scanner.nextInt();
             try {
-                menu.getMenuCommands().get(choice - 1).execute(scanner);
+                menu.getMenuCommands().get(choice - 1).execute(scanner, engine);
 
             } catch (Exception e) {
                System.out.println("An error occurred: " + e.getMessage());
