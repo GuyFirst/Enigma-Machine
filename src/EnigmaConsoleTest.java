@@ -1,11 +1,12 @@
-import component.keyboard.AlphabetComponent;
-import component.reflector.Reflector;
-import component.reflector.ReflectorImpl;
-import component.reflector.ReflectorManager;
-import component.reflector.ReflectorPair;
-import component.rotor.Rotor;
-import component.rotor.RotorManager;
-import enigmaMachine.EnigmaMachine;
+import enigma.component.keyboard.Keyboard;
+import enigma.component.keyboard.KeyboardImpl;
+import enigma.component.reflector.Reflector;
+import enigma.component.reflector.ReflectorImpl;
+import enigma.component.reflector.ReflectorManager;
+import enigma.component.reflector.ReflectorPair;
+import enigma.component.rotor.RotorImpl;
+import enigma.component.rotor.RotorManager;
+import enigma.machine.EnigmaMachine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,13 +64,13 @@ public class EnigmaConsoleTest {
         leftColOfRotor2.add(0);
 
         // --- 2. Rotor Instantiation ---
-        Rotor r1 = new Rotor(1, rightColOfRotor1, leftColOfRotor1, 4);
+        RotorImpl r1 = new RotorImpl(1, rightColOfRotor1, leftColOfRotor1, 4);
         System.out.println("Rotor 1 created");
 
-        Rotor r2 = new Rotor(1, rightColOfRotor2, leftColOfRotor2, 1);
+        RotorImpl r2 = new RotorImpl(1, rightColOfRotor2, leftColOfRotor2, 1);
         System.out.println("Rotor 2 created");
 
-        Map<Integer, Rotor> allRotors = new HashMap<>();
+        Map<Integer, RotorImpl> allRotors = new HashMap<>();
         allRotors.put(1, r1);
         allRotors.put(2, r2);
         System.out.println("Rotor map initialized");
@@ -113,7 +114,7 @@ public class EnigmaConsoleTest {
         characterArrayList.add('A');
 
         ReflectorManager reflectorManager = new ReflectorManager(allReflectors, currentReflector);
-        AlphabetComponent keyboard = new component.keyboard.Keyboard("ABCDEF", charToIndex);
+        Keyboard keyboard = new KeyboardImpl("ABCDEF", charToIndex);
         EnigmaMachine testMachine = new EnigmaMachine(reflectorManager, manager, keyboard);
 
         System.out.println("Text to encrypt: " + characterArrayList);
