@@ -4,6 +4,7 @@ import enigma.component.reflector.Reflector;
 import enigma.component.reflector.ReflectorImpl;
 import enigma.component.reflector.ReflectorManager;
 import enigma.component.reflector.ReflectorPair;
+import enigma.component.rotor.Rotor;
 import enigma.component.rotor.RotorImpl;
 import enigma.component.rotor.RotorManager;
 import enigma.machine.EnigmaMachine;
@@ -64,13 +65,13 @@ public class EnigmaConsoleTest {
         leftColOfRotor2.add(0);
 
         // --- 2. Rotor Instantiation ---
-        RotorImpl r1 = new RotorImpl(1, rightColOfRotor1, leftColOfRotor1, 4);
+        Rotor r1 = new RotorImpl(1, rightColOfRotor1, leftColOfRotor1, 4);
         System.out.println("Rotor 1 created");
 
-        RotorImpl r2 = new RotorImpl(1, rightColOfRotor2, leftColOfRotor2, 1);
+        Rotor r2 = new RotorImpl(1, rightColOfRotor2, leftColOfRotor2, 1);
         System.out.println("Rotor 2 created");
 
-        Map<Integer, RotorImpl> allRotors = new HashMap<>();
+        Map<Integer, Rotor> allRotors = new HashMap<>();
         allRotors.put(1, r1);
         allRotors.put(2, r2);
         System.out.println("Rotor map initialized");
