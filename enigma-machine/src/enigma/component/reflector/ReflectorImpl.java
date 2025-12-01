@@ -10,11 +10,11 @@ public class ReflectorImpl implements Reflector {
     private final String id;
     private final Map<Integer, Integer> wiring;
 
-    public ReflectorImpl(String id, List<ReflectorPair> rawPairs) {
+    public ReflectorImpl(String id, List<ReflectedPositionsPair> rawPairs) {
         this.id = id;
         Map<Integer, Integer> finalWiring = new HashMap<>();
 
-        for (ReflectorPair pair : rawPairs) {
+        for (ReflectedPositionsPair pair : rawPairs) {
             int input = pair.getInput();
             int output = pair.getOutput();
 

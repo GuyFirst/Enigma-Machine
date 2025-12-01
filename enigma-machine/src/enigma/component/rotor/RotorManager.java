@@ -1,8 +1,6 @@
 package enigma.component.rotor;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class RotorManager {
     private final List<Rotor> currentRotors;
@@ -11,12 +9,6 @@ public class RotorManager {
         this.currentRotors = currentRotors;
         setRotorsPositions(positionIndices);
     }
-
-//    public void setRotorsOrder(List<Integer> rotorIds) {
-//        for (Integer id : rotorIds) {
-//            currentRotors.add(rotors.get(id));
-//        }
-//    }
 
     public int encryptLetterThroughRotorsLTR(int input) {
         int signal = input;

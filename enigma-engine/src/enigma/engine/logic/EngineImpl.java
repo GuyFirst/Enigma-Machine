@@ -1,17 +1,14 @@
 package enigma.engine.logic;
 
 import enigma.component.reflector.Reflector;
-import enigma.component.reflector.ReflectorManager;
 import enigma.component.rotor.Rotor;
 import enigma.component.rotor.RotorManager;
-import enigma.engine.generated.BTE.classes.BTEEnigma;
-import enigma.engine.logic.load.manager.LoadManager;
+import enigma.engine.logic.loadManager.LoadManager;
 import enigma.engine.logic.repository.Repository;
-import enigma.machine.EnigmaMachine;
+import enigma.machine.MachineImpl;
 import enigma.machine.Machine;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,41 +18,6 @@ public class EngineImpl implements Engine {
     public Repository repository;
     // private HistoryManager historyManager;
 
-    public static void main(String[] args) {
-        EngineImpl engine = new EngineImpl();
-        engine.loadMachineFromXml("enigma-engine/src/enigma/resource/ex1-sanity-small.xml");
-        Repository repo = engine.repository;
-        Map<Integer, Rotor> rotors = repo.getAllRotors();
-        Map<String, Reflector> reflectors = repo.getAllReflectors();
-
-        for (Map.Entry<Integer, Rotor> entry : rotors.entrySet()) {
-           System.out.println("Rotor ID: " + entry.getKey());
-           System.out.println("Rotor Details: " + entry.getValue());
-        }
-
-        for (Map.Entry<String, Reflector> entry : reflectors.entrySet()) {
-            System.out.println("Reflector ID: " + entry.getKey());
-            System.out.println("Reflector Details: " + entry.getValue());
-        }
-
-
-        String input = "AABBCCDDEEFF";
-        List<Integer> rotorIds = new ArrayList<>();
-        rotorIds.add(3);
-        rotorIds.add(2);
-        rotorIds.add(1);
-
-        List<Character> positions = new ArrayList<>();
-        positions.add('C');
-        positions.add('C');
-        positions.add('C');
-        String reflectorId = "I";
-        engine.setMachineCode(rotorIds, positions, reflectorId);
-
-        System.out.println("Machine is set. \n Input String: " + input + "\n");
-        engine.processInput(input);
-
-    }
     public EngineImpl() {
         this.loadManager = new LoadManager();
     }
@@ -77,8 +39,8 @@ public class EngineImpl implements Engine {
     @Override
     public void setMachineCode(List<Integer> rotorIds, List<Character> positions, String reflectorId) {
 
-        ReflectorManager reflectorManager = new ReflectorManager(repository.getAllReflectors().get(reflectorId));
-
+        //ReflectorManager reflectorManager = new ReflectorManager(repository.getAllReflectors().get(reflectorId));
+        Reflector reflector = repository.getAllReflectors().get(reflectorId);
         List<Rotor> currentRotors = new ArrayList<>();
         for (Integer rotorId : rotorIds) {
             Rotor rotor = repository.getAllRotors().get(rotorId);
@@ -92,23 +54,28 @@ public class EngineImpl implements Engine {
         }
 
         RotorManager rotorManager = new RotorManager(currentRotors, positionIndices);
-        this.machine = new EnigmaMachine(reflectorManager, rotorManager, repository.getKeyboard());
+        this.machine = new MachineImpl(reflector, rotorManager, repository.getKeyboard());
 
     }
 
     @Override
     public void setAutomaticCode() {
+        // random parameters
+        List<Integer> randomRotorIds = repository.getRandomRotorIds();
+        List<Character> randomRotorStartPositions = repository.getRandomPositionsForRotors(randomRotorIds.size());
+        String randomReflectorId = repository.getRandomReflectorId();
 
+        setMachineCode(randomRotorIds, randomRotorStartPositions, randomReflectorId);
     }
 
     @Override
-    public void processInput(String inputString) {
+    public String processInput(String inputString) {
         StringBuilder outputString = new StringBuilder();
         for (char inputChar : inputString.toCharArray()) {
             char outputChar = machine.encryptChar(inputChar);
             outputString.append(outputChar);
         }
-        System.out.println("Output String: " + outputString.toString());
+        return outputString.toString();
     }
 
     @Override
@@ -123,6 +90,12 @@ public class EngineImpl implements Engine {
 
     @Override
     public boolean isMachineLoaded() {
-        return false;
+        return this.machine != null;
+    }
+
+    @Override
+    public void exit() {
+        System.out.println("Machine has been exited. please get a life");
+        System.exit(404);
     }
 }
