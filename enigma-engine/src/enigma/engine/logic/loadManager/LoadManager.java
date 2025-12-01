@@ -69,8 +69,8 @@ public class LoadManager {
                     rightColumn.add(keyboard.charToIndex(btePositioning.getRight().charAt(0)));
                 }
             }
-
-            Rotor rotor = new RotorImpl(id, rightColumn, leftColumn, notch);
+            int alphabet_length = keyboard.getAlphabetLength();
+            Rotor rotor = new RotorImpl(id, rightColumn, leftColumn, notch, alphabet_length);
             rotorMap.put(id, rotor);
         }
 

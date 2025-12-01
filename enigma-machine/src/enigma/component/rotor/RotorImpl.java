@@ -3,14 +3,13 @@ package enigma.component.rotor;
 import java.util.List;
 
 public class RotorImpl implements Rotor{
-    private final int id;
     private final List<Integer> rightColumn;
     private final List<Integer> leftColumn;
     private int notchPosition;
-    private final int ALPHABET_LENGTH = 6;
+    private int alphabetLength;
 
-    public RotorImpl(int id, List<Integer> rightColumn, List<Integer> leftColumn, int notchPosition) {
-        this.id = id;
+    public RotorImpl(int id, List<Integer> rightColumn, List<Integer> leftColumn, int notchPosition, int alphabetLength) {
+        this.alphabetLength = alphabetLength;
         this.rightColumn = rightColumn;
         this.leftColumn = leftColumn;
         this.notchPosition = makePositionInBounds(notchPosition - 1);
@@ -34,7 +33,7 @@ public class RotorImpl implements Rotor{
     }
 
     private int makePositionInBounds(int position) {
-        return (position % ALPHABET_LENGTH + ALPHABET_LENGTH) % ALPHABET_LENGTH;
+        return (position % alphabetLength + alphabetLength) % alphabetLength;
     }
     @Override
     public int getNotchPosition() {
