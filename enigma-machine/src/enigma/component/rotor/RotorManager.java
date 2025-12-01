@@ -12,12 +12,6 @@ public class RotorManager {
         setRotorsPositions(positionIndices);
     }
 
-//    public void setRotorsOrder(List<Integer> rotorIds) {
-//        for (Integer id : rotorIds) {
-//            currentRotors.add(rotors.get(id));
-//        }
-//    }
-
     public int encryptLetterThroughRotorsLTR(int input) {
         int signal = input;
         for (Rotor rotor : currentRotors) {

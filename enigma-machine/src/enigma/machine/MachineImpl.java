@@ -1,18 +1,16 @@
 package enigma.machine;
 
 import enigma.component.keyboard.Keyboard;
-import enigma.component.reflector.ReflectorManager;
+import enigma.component.reflector.Reflector;
 import enigma.component.rotor.RotorManager;
 
-import java.util.Map;
-
-public class EnigmaMachine implements Machine {
-    private final ReflectorManager reflectorManager;
+public class MachineImpl implements Machine {
+    private final Reflector reflector;
     private final RotorManager rotorManager;
     private final Keyboard keyboard;
 
-    public EnigmaMachine(ReflectorManager reflectorManager, RotorManager rotorManager, Keyboard keyboard) {
-        this.reflectorManager = reflectorManager;
+    public MachineImpl(Reflector reflector, RotorManager rotorManager, Keyboard keyboard) {
+        this.reflector = reflector;
         this.rotorManager = rotorManager;
         this.keyboard = keyboard;
     }
@@ -27,7 +25,7 @@ public class EnigmaMachine implements Machine {
 
         // Pass through rotors and reflector
         int inputToReflector = rotorManager.encryptLetterThroughRotorsRTL(charIndex);
-        int outputFromReflector = reflectorManager.reflect(inputToReflector);
+        int outputFromReflector = reflector.reflect(inputToReflector);
         int finalOutputIndex = rotorManager.encryptLetterThroughRotorsLTR(outputFromReflector);
 
         // Convert index back to character

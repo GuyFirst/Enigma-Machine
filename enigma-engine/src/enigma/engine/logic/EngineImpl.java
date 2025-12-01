@@ -1,11 +1,11 @@
 package enigma.engine.logic;
 
-import enigma.component.reflector.ReflectorManager;
+import enigma.component.reflector.Reflector;
 import enigma.component.rotor.Rotor;
 import enigma.component.rotor.RotorManager;
 import enigma.engine.logic.loadManager.LoadManager;
 import enigma.engine.logic.repository.Repository;
-import enigma.machine.EnigmaMachine;
+import enigma.machine.MachineImpl;
 import enigma.machine.Machine;
 
 import java.util.ArrayList;
@@ -38,8 +38,8 @@ public class EngineImpl implements Engine {
     @Override
     public void setMachineCode(List<Integer> rotorIds, List<Character> positions, String reflectorId) {
 
-        ReflectorManager reflectorManager = new ReflectorManager(repository.getAllReflectors().get(reflectorId));
-
+        //ReflectorManager reflectorManager = new ReflectorManager(repository.getAllReflectors().get(reflectorId));
+        Reflector reflector = repository.getAllReflectors().get(reflectorId);
         List<Rotor> currentRotors = new ArrayList<>();
         for (Integer rotorId : rotorIds) {
             Rotor rotor = repository.getAllRotors().get(rotorId);
@@ -53,7 +53,7 @@ public class EngineImpl implements Engine {
         }
 
         RotorManager rotorManager = new RotorManager(currentRotors, positionIndices);
-        this.machine = new EnigmaMachine(reflectorManager, rotorManager, repository.getKeyboard());
+        this.machine = new MachineImpl(reflector, rotorManager, repository.getKeyboard());
 
     }
 

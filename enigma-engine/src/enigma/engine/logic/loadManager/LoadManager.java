@@ -4,7 +4,7 @@ import enigma.component.keyboard.Keyboard;
 import enigma.component.keyboard.KeyboardImpl;
 import enigma.component.reflector.Reflector;
 import enigma.component.reflector.ReflectorImpl;
-import enigma.component.reflector.ReflectorPair;
+import enigma.component.reflector.ReflectedPositionsPair;
 import enigma.component.rotor.Rotor;
 import enigma.component.rotor.RotorImpl;
 import enigma.engine.generated.BTE.classes.*;
@@ -83,16 +83,16 @@ public class LoadManager {
         List<BTEReflector> listOfBTEReflectors = bteReflectors.getBTEReflector();
 
         for (BTEReflector bteReflector : listOfBTEReflectors) {
-            List<ReflectorPair> listOfReflectorPairs = new ArrayList<>();
+            List<ReflectedPositionsPair> listOfReflectedPositionsPairs = new ArrayList<>();
             String id = bteReflector.getId();
             List<BTEReflect> bteReflects = bteReflector.getBTEReflect();
 
             for (BTEReflect bteReflect : bteReflects) {
                 int input = bteReflect.getInput();
                 int output = bteReflect.getOutput();
-                listOfReflectorPairs.add(new ReflectorPair(--input, --output));
+                listOfReflectedPositionsPairs.add(new ReflectedPositionsPair(--input, --output));
             }
-            Reflector reflector = new ReflectorImpl(id, listOfReflectorPairs);
+            Reflector reflector = new ReflectorImpl(id, listOfReflectedPositionsPairs);
             reflectorMap.put(id, reflector);
         }
 
