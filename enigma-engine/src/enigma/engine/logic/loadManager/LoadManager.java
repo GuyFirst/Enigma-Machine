@@ -1,4 +1,4 @@
-package enigma.engine.logic.load.manager;
+package enigma.engine.logic.loadManager;
 
 import enigma.component.keyboard.Keyboard;
 import enigma.component.keyboard.KeyboardImpl;
