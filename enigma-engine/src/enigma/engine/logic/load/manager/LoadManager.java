@@ -25,6 +25,11 @@ import java.util.Map;
 public class LoadManager {
     private final static String JAXB_XML_GAME_PACKAGE_NAME = "enigma.engine.generated.BTE.classes";
 
+    private static BTEEnigma deserializeFrom(InputStream in) throws JAXBException {
+        JAXBContext jc = JAXBContext.newInstance(JAXB_XML_GAME_PACKAGE_NAME);
+        Unmarshaller u = jc.createUnmarshaller();
+        return (BTEEnigma) u.unmarshal(in);
+    }
 
     public Repository loadMachineSettingsFromXML(String filePath) throws JAXBException, FileNotFoundException {
         InputStream inputStream = new FileInputStream(new File(filePath));
@@ -36,7 +41,7 @@ public class LoadManager {
 
         BTEReflectors bteReflectors = bteEnigma.getBTEReflectors();
         Map<String, Reflector> allReflectors = createReflectorsMap(bteReflectors);
-        
+
         BTERotors bteRotors = bteEnigma.getBTERotors();
         Map<Integer, Rotor> allRotors = createRotorsMap(bteRotors, keyboard);
 
@@ -94,18 +99,13 @@ public class LoadManager {
         return reflectorMap;
     }
 
-    private static BTEEnigma deserializeFrom(InputStream in) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(JAXB_XML_GAME_PACKAGE_NAME);
-        Unmarshaller u = jc.createUnmarshaller();
-        return (BTEEnigma) u.unmarshal(in);
-    }
-
     private Keyboard createKeyboard(String abcForKeyboard) {
         Map<Character, Integer> mapFromCharToInt = createMapFromCharToInt(abcForKeyboard);
         return new KeyboardImpl(abcForKeyboard, mapFromCharToInt);
     }
 
     private Map<Character, Integer> createMapFromCharToInt(String abcForKeyboard) {
+        abcForKeyboard = abcForKeyboard.trim();
         return java.util.stream.IntStream.range(0, abcForKeyboard.length())
             .boxed()
             .collect(java.util.stream.Collectors.toMap(
@@ -115,6 +115,5 @@ public class LoadManager {
                 java.util.LinkedHashMap::new              // preserve insertion order
             ));
     }
-
 
 }

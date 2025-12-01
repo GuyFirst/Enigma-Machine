@@ -1,8 +1,8 @@
 package enigma.engine.logic;
 
-import DTO.HistoryDTO;
-import DTO.MachineSpecificationDTO;
-import DTO.MessageDTO;
+//import DTO.HistoryDTO;
+//import DTO.MachineSpecificationDTO;
+//import DTO.MessageDTO;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public interface Engine {
      * Retrieves the current specification and configuration status of the machine.
      * @return MachineSpecificationDTO containing all necessary status data.
      */
-    MachineSpecificationDTO getMachineStatus();
+    void getMachineStatus();
 
     // --- 3 & 4. Setup Code ---
     /**
@@ -51,7 +51,7 @@ public interface Engine {
      * @param inputString The string provided by the user.
      * @return The resulting encrypted/decrypted string.
      */
-    MessageDTO processInput(String inputString);
+    void processInput(String inputString);
 
     // --- 6. Reset Code ---
     /**
@@ -64,7 +64,7 @@ public interface Engine {
      * Retrieves all history of processed messages grouped by original code configurations.
      * @return HistoryDTO object containing all historical records.
      */
-    HistoryDTO getHistoryAndStatistics();
+    void getHistoryAndStatistics();
 
     // --- Helper for UI Validation (Optional but useful) ---
     /**

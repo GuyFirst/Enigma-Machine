@@ -1,5 +1,6 @@
 package enigma.engine.logic;
 
+import enigma.component.reflector.Reflector;
 import enigma.component.rotor.Rotor;
 import enigma.engine.generated.BTE.classes.BTEEnigma;
 import enigma.engine.logic.load.manager.LoadManager;
@@ -12,9 +13,26 @@ import java.util.Map;
 public class EngineImpl implements Engine {
     private Machine machine;
     private LoadManager loadManager;
-    private Repository repository;
+    public Repository repository;
     // private HistoryManager historyManager;
 
+    public static void main(String[] args) {
+        EngineImpl engine = new EngineImpl();
+        engine.loadMachineFromXml("enigma-engine/src/enigma/resource/ex1-sanity-small.xml");
+        Repository repo = engine.repository;
+        Map<Integer, Rotor> rotors = repo.getAllRotors();
+        Map<String, Reflector> reflectors = repo.getAllReflectors();
+
+        for (Map.Entry<Integer, Rotor> entry : rotors.entrySet()) {
+           System.out.println("Rotor ID: " + entry.getKey());
+           System.out.println("Rotor Details: " + entry.getValue());
+        }
+
+        for (Map.Entry<String, Reflector> entry : reflectors.entrySet()) {
+            System.out.println("Reflector ID: " + entry.getKey());
+            System.out.println("Reflector Details: " + entry.getValue());
+        }
+    }
     public EngineImpl() {
         this.loadManager = new LoadManager();
     }
@@ -28,8 +46,8 @@ public class EngineImpl implements Engine {
     }
 
     @Override
-    public MachineSpecificationDTO getMachineStatus() {
-        return null;
+    public void getMachineStatus() {
+        //return null;
     }
 
     @Override
@@ -43,8 +61,8 @@ public class EngineImpl implements Engine {
     }
 
     @Override
-    public MessageDTO processInput(String inputString) {
-        return null;
+    public void processInput(String inputString) {
+        //return null;
     }
 
     @Override
@@ -53,8 +71,8 @@ public class EngineImpl implements Engine {
     }
 
     @Override
-    public HistoryDTO getHistoryAndStatistics() {
-        return null;
+    public void getHistoryAndStatistics() {
+        //return null;
     }
 
     @Override

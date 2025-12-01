@@ -13,8 +13,8 @@ public class ShowEnigmaMachineSpecificationCommand implements MenuCommandExecuta
     @Override
     public void execute(java.util.Scanner scanner, Engine engine) throws Exception {
         // TODO implement Enigma machine specification display logic
-        MachineSpecificationDTO spec = engine.getMachineStatus();
-        printMachineSpecification(spec);
+        //MachineSpecificationDTO spec = engine.getMachineStatus();
+        // printMachineSpecification(spec);
     }
 
     private void printMachineSpecification(MachineSpecificationDTO spec) {

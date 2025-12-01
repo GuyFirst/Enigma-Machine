@@ -8,7 +8,8 @@ import java.util.Scanner;
 public class LoadXMLConfigurationCommand implements MenuCommandExecutable {
     @Override
     public void execute(Scanner scanner, Engine engine) throws Exception {
-        engine.loadMachineFromXml(/* TODO: path */);
+
+        engine.loadMachineFromXml("Hi");
     }
     @Override
     public String toString() {
