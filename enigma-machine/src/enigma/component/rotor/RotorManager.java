@@ -5,20 +5,18 @@ import java.util.List;
 import java.util.Map;
 
 public class RotorManager {
-    private final Map<Integer, Rotor> rotors;
-    private final List<Rotor> currentRotors = new ArrayList<>();
-    private final Map<Character, Integer> charToIndex; //TODO - a static member that appears somewhere in the system
+    private final List<Rotor> currentRotors;
 
-    public RotorManager(Map<Integer, Rotor> rotors, int alphabetLength, Map<Character, Integer> charToIndex) {
-        this.rotors = rotors;
-        this.charToIndex = charToIndex;
+    public RotorManager(List<Rotor> currentRotors, List<Integer> positionIndices) {
+        this.currentRotors = currentRotors;
+        setRotorsPositions(positionIndices);
     }
 
-    public void setRotorsOrder(List<Integer> rotorIds) {
-        for (Integer id : rotorIds) {
-            currentRotors.add(rotors.get(id));
-        }
-    }
+//    public void setRotorsOrder(List<Integer> rotorIds) {
+//        for (Integer id : rotorIds) {
+//            currentRotors.add(rotors.get(id));
+//        }
+//    }
 
     public int encryptLetterThroughRotorsLTR(int input) {
         int signal = input;
@@ -48,9 +46,10 @@ public class RotorManager {
         }
     }
 
-    public void setRotorsPositions(List<Character> positions) {
-        for (Rotor rotor : currentRotors) {
-            rotor.setPosition(charToIndex.get(positions.get(currentRotors.indexOf(rotor))));
+    public void setRotorsPositions(List<Integer> positions) {
+        for (int i = 0; i < currentRotors.size(); i++) {
+            Rotor rotor = currentRotors.get(i);
+            rotor.setPosition(positions.get(i));
         }
     }
 }

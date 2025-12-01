@@ -70,7 +70,7 @@ public class LoadManager {
                 }
             }
 
-            Rotor rotor = new RotorImpl(id, leftColumn, rightColumn, notch);
+            Rotor rotor = new RotorImpl(id, rightColumn, leftColumn, notch);
             rotorMap.put(id, rotor);
         }
 
@@ -90,7 +90,7 @@ public class LoadManager {
             for (BTEReflect bteReflect : bteReflects) {
                 int input = bteReflect.getInput();
                 int output = bteReflect.getOutput();
-                listOfReflectorPairs.add(new ReflectorPair(input, output));
+                listOfReflectorPairs.add(new ReflectorPair(--input, --output));
             }
             Reflector reflector = new ReflectorImpl(id, listOfReflectorPairs);
             reflectorMap.put(id, reflector);
