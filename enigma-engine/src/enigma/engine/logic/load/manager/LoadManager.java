@@ -6,6 +6,7 @@ import enigma.component.reflector.Reflector;
 import enigma.component.reflector.ReflectorImpl;
 import enigma.component.reflector.ReflectorPair;
 import enigma.component.rotor.Rotor;
+import enigma.component.rotor.RotorImpl;
 import enigma.engine.generated.BTE.classes.*;
 import enigma.engine.logic.repository.Repository;
 import jakarta.xml.bind.JAXBContext;
@@ -37,12 +38,38 @@ public class LoadManager {
         Map<String, Reflector> allReflectors = createReflectorsMap(bteReflectors);
         
         BTERotors bteRotors = bteEnigma.getBTERotors();
-        Map<Integer, Rotor> allRotors = createRotorsMap(bteRotors);
+        Map<Integer, Rotor> allRotors = createRotorsMap(bteRotors, keyboard);
+
         return new Repository(allRotors, allReflectors, keyboard);
 
     }
 
-    private Map<Integer, Rotor> createRotorsMap(BTERotors bteRotors) {
+    private Map<Integer, Rotor> createRotorsMap(BTERotors bteRotors, Keyboard keyboard) {
+        Map<Integer, Rotor> rotorMap = new HashMap<>();
+        List<BTERotor> listOfBTERotors = bteRotors.getBTERotor();
+
+        for (BTERotor bteRotor : listOfBTERotors) {
+            // get id and notch
+            int id = bteRotor.getId();
+            int notch = bteRotor.getNotch();
+
+            // create columns
+            List<BTEPositioning> btePositionings = bteRotor.getBTEPositioning();
+            List<Integer> rightColumn = new ArrayList<>();
+            List<Integer> leftColumn = new ArrayList<>();
+
+            for (BTEPositioning btePositioning : btePositionings) {
+                if (btePositioning.getLeft().length() == 1 && btePositioning.getRight().length() == 1) {
+                    leftColumn.add(keyboard.charToIndex(btePositioning.getLeft().charAt(0)));
+                    rightColumn.add(keyboard.charToIndex(btePositioning.getRight().charAt(0)));
+                }
+            }
+
+            Rotor rotor = new RotorImpl(id, leftColumn, rightColumn, notch);
+            rotorMap.put(id, rotor);
+        }
+
+        return rotorMap;
     }
 
     private Map<String, Reflector> createReflectorsMap(BTEReflectors bteReflectors) {

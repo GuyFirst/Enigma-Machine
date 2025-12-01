@@ -12,13 +12,11 @@ import java.util.Map;
 public class EngineImpl implements Engine {
     private Machine machine;
     private LoadManager loadManager;
-    // private HistoryManager historyManager;
     private Repository repository;
+    // private HistoryManager historyManager;
 
     public EngineImpl() {
         this.loadManager = new LoadManager();
-        // this.historyManager = new HistoryManager();
-        // this.repository = new Repository();
     }
     @Override
     public void loadMachineFromXml(String xmlFilePath) {
@@ -27,7 +25,6 @@ public class EngineImpl implements Engine {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
