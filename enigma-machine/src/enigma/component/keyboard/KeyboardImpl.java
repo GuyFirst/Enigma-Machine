@@ -9,7 +9,7 @@ public class KeyboardImpl implements Keyboard {
     private final Map<Integer, Character> mapFromIntToChar;
 
     public KeyboardImpl(String alphabetString, Map<Character, Integer> mapFromCharToInt) {
-        this.alphabetString = alphabetString;
+        this.alphabetString = alphabetString.trim();
         this.mapFromCharToInt = mapFromCharToInt;
         this.mapFromIntToChar = createIntToCharMap();
     }
@@ -30,6 +30,11 @@ public class KeyboardImpl implements Keyboard {
     @Override
     public char indexToChar(int index) {
         return mapFromIntToChar.get(index);
+    }
+
+    @Override
+    public int getAlphabetLength() {
+        return alphabetString.length();
     }
 
     private boolean isValidChar(char c) {

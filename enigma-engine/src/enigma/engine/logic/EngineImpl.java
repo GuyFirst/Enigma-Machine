@@ -10,12 +10,33 @@ import enigma.machine.Machine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 public class EngineImpl implements Engine {
     private Machine machine;
     private LoadManager loadManager;
     public Repository repository;
     // private HistoryManager historyManager;
+
+    public static void main(String[] args) {
+        EngineImpl engine = new EngineImpl();
+        engine.loadMachineFromXml("enigma-engine/src/enigma/resource/ex1-sanity-small.xml");
+        Repository repo = engine.repository;
+        Map<Integer, Rotor> rotors = repo.getAllRotors();
+        Map<String, Reflector> reflectors = repo.getAllReflectors();
+
+
+        String input = "AABBCCDDEEFF";
+
+        engine.setAutomaticCode();
+
+        System.out.println("Machine is set. \n Input String: " + input + "\n");
+        String output = engine.processInput(input);
+
+        System.out.println("Output String: " + output + "\n");
+
+    }
 
     public EngineImpl() {
         this.loadManager = new LoadManager();
@@ -59,17 +80,22 @@ public class EngineImpl implements Engine {
 
     @Override
     public void setAutomaticCode() {
+        // random parameters
+        List<Integer> randomRotorIds = repository.getRandomRotorIds();
+        List<Character> randomRotorStartPositions = repository.getRandomPositionsForRotors(randomRotorIds.size());
+        String randomReflectorId = repository.getRandomReflectorId();
 
+        setMachineCode(randomRotorIds, randomRotorStartPositions, randomReflectorId);
     }
 
     @Override
-    public void processInput(String inputString) {
+    public String processInput(String inputString) {
         StringBuilder outputString = new StringBuilder();
         for (char inputChar : inputString.toCharArray()) {
             char outputChar = machine.encryptChar(inputChar);
             outputString.append(outputChar);
         }
-        System.out.println("Output String: " + outputString.toString());
+        return outputString.toString();
     }
 
     @Override
@@ -84,6 +110,12 @@ public class EngineImpl implements Engine {
 
     @Override
     public boolean isMachineLoaded() {
-        return false;
+        return this.machine != null;
+    }
+
+    @Override
+    public void exit() {
+        System.out.println("Machine has been exited. please get a life");
+        System.exit(404);
     }
 }
