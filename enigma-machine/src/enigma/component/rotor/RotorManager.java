@@ -1,8 +1,6 @@
 package enigma.component.rotor;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class RotorManager {
     private final List<Rotor> currentRotors;

@@ -11,32 +11,12 @@ import enigma.machine.Machine;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 public class EngineImpl implements Engine {
     private Machine machine;
     private LoadManager loadManager;
     public Repository repository;
     // private HistoryManager historyManager;
-
-    public static void main(String[] args) {
-        EngineImpl engine = new EngineImpl();
-        engine.loadMachineFromXml("enigma-engine/src/enigma/resource/ex1-sanity-small.xml");
-        Repository repo = engine.repository;
-        Map<Integer, Rotor> rotors = repo.getAllRotors();
-        Map<String, Reflector> reflectors = repo.getAllReflectors();
-
-
-        String input = "AABBCCDDEEFF";
-
-        engine.setAutomaticCode();
-
-        System.out.println("Machine is set. \n Input String: " + input + "\n");
-        String output = engine.processInput(input);
-
-        System.out.println("Output String: " + output + "\n");
-
-    }
 
     public EngineImpl() {
         this.loadManager = new LoadManager();

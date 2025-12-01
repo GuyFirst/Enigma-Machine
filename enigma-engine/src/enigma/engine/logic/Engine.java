@@ -51,7 +51,7 @@ public interface Engine {
      * @param inputString The string provided by the user.
      * @return The resulting encrypted/decrypted string.
      */
-    void processInput(String inputString);
+    String processInput(String inputString);
 
     // --- 6. Reset Code ---
     /**
@@ -71,4 +71,6 @@ public interface Engine {
      * Checks if the machine has a valid loaded configuration ready for coding.
      */
     boolean isMachineLoaded();
+
+    void exit();
 }

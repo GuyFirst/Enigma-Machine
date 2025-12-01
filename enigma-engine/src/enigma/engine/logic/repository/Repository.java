@@ -3,7 +3,6 @@ package enigma.engine.logic.repository;
 import enigma.component.keyboard.Keyboard;
 import enigma.component.reflector.Reflector;
 import enigma.component.rotor.Rotor;
-import enigma.engine.generated.BTE.classes.BTEEnigma;
 
 import java.util.*;
 

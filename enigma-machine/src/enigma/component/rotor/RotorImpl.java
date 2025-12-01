@@ -20,8 +20,8 @@ public class RotorImpl implements Rotor{
         while (rightColumn.getFirst() != position) {
             rotate();
         }
-        System.out.println("the letter at the top is:" + rightColumn.getFirst() + "\n");
     }
+
     @Override
     public int encodeForward(int entryLocation) {
         int resultedLetter = rightColumn.get(entryLocation);
