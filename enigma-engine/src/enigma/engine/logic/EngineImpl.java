@@ -1,18 +1,33 @@
 package enigma.engine.logic;
 
+import enigma.component.rotor.Rotor;
+import enigma.engine.generated.BTE.classes.BTEEnigma;
+import enigma.engine.logic.load.manager.LoadManager;
+import enigma.engine.logic.repository.Repository;
 import enigma.machine.Machine;
 
 import java.util.List;
+import java.util.Map;
 
 public class EngineImpl implements Engine {
     private Machine machine;
-    // private LoadManager loadManager;
+    private LoadManager loadManager;
     // private HistoryManager historyManager;
-    // private Repository repository;
+    private Repository repository;
 
+    public EngineImpl() {
+        this.loadManager = new LoadManager();
+        // this.historyManager = new HistoryManager();
+        // this.repository = new Repository();
+    }
     @Override
     public void loadMachineFromXml(String xmlFilePath) {
-        // when repo is ready this.machine = createMachine(...);
+        try {
+            this.repository = loadManager.loadMachineSettingsFromXML(xmlFilePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
