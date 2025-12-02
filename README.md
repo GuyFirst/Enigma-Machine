@@ -1,6 +1,6 @@
 # 🧩 Enigma Machine Simulator (current state on prod branch)
 
-This project implements a functional software simulation of the historical Enigma encryption machine, built upon modern Java architecture principles. This forms the foundational core competency exercise for the development of complex, modular systems, leveraging concepts required for the "Audio-DNA Exchange" platform (specifically, complex data modeling and efficient processing).
+This project implements a functional software simulation of the historical Enigma encryption machine, built upon modern Java architecture principles.
 
 ---
 
