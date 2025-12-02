@@ -49,4 +49,10 @@ public class RotorImpl implements Rotor{
 
         notchPosition = makePositionInBounds(notchPosition - 1);
     }
+
+    @Override
+    public int getTopLetter() {
+        return rightColumn.getFirst();
+
+    }
 }
