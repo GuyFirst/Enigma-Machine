@@ -13,7 +13,6 @@ import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -32,7 +31,7 @@ public class LoadManager {
     }
 
     public Repository loadMachineSettingsFromXML(String filePath) throws JAXBException, FileNotFoundException {
-        InputStream inputStream = new FileInputStream(new File(filePath));
+        InputStream inputStream = new FileInputStream(filePath); // I deleted the new file because IntelliJ said its redundant maybe bug
 
         BTEEnigma bteEnigma = deserializeFrom(inputStream);
 
@@ -59,18 +58,18 @@ public class LoadManager {
             int notch = bteRotor.getNotch();
 
             // create columns
-            List<BTEPositioning> btePositionings = bteRotor.getBTEPositioning();
+            List<BTEPositioning> btePositioning = bteRotor.getBTEPositioning();
             List<Integer> rightColumn = new ArrayList<>();
             List<Integer> leftColumn = new ArrayList<>();
 
-            for (BTEPositioning btePositioning : btePositionings) {
-                if (btePositioning.getLeft().length() == 1 && btePositioning.getRight().length() == 1) {
-                    leftColumn.add(keyboard.charToIndex(btePositioning.getLeft().charAt(0)));
-                    rightColumn.add(keyboard.charToIndex(btePositioning.getRight().charAt(0)));
+            for (BTEPositioning btePosition : btePositioning) {
+                if (btePosition.getLeft().length() == 1 && btePosition.getRight().length() == 1) {
+                    leftColumn.add(keyboard.charToIndex(btePosition.getLeft().charAt(0)));
+                    rightColumn.add(keyboard.charToIndex(btePosition.getRight().charAt(0)));
                 }
             }
             int alphabet_length = keyboard.getAlphabetLength();
-            Rotor rotor = new RotorImpl(id, rightColumn, leftColumn, notch, alphabet_length);
+            Rotor rotor = new RotorImpl(rightColumn, leftColumn, notch, alphabet_length);
             rotorMap.put(id, rotor);
         }
 

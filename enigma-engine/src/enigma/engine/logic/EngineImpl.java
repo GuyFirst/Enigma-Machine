@@ -7,14 +7,13 @@ import enigma.engine.logic.loadManager.LoadManager;
 import enigma.engine.logic.repository.Repository;
 import enigma.machine.MachineImpl;
 import enigma.machine.Machine;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
 
 public class EngineImpl implements Engine {
     private Machine machine;
-    private LoadManager loadManager;
+    private final LoadManager loadManager;
     public Repository repository;
     // private HistoryManager historyManager;
 

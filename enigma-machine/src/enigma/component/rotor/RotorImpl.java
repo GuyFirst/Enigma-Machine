@@ -6,9 +6,9 @@ public class RotorImpl implements Rotor{
     private final List<Integer> rightColumn;
     private final List<Integer> leftColumn;
     private int notchPosition;
-    private int alphabetLength;
+    private final int alphabetLength;
 
-    public RotorImpl(int id, List<Integer> rightColumn, List<Integer> leftColumn, int notchPosition, int alphabetLength) {
+    public RotorImpl(List<Integer> rightColumn, List<Integer> leftColumn, int notchPosition, int alphabetLength) {
         this.alphabetLength = alphabetLength;
         this.rightColumn = rightColumn;
         this.leftColumn = leftColumn;
