@@ -1,4 +1,5 @@
 package enigma.engine.logic.history;
+import java.lang.module.Configuration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,9 +11,12 @@ public class HistoryManager {
     }
 
     public void addConfiguration(EnigmaConfiguration configuration) {
-        if (!configurations.contains(configuration)) {
-            configurations.add(configuration);
+        for (EnigmaConfiguration config : configurations) {
+            if (config.equals(configuration)) {
+                return;
+            }
         }
+        configurations.add(configuration);
     }
 
     public void addMessegeToConfiguration(String inputString, StringBuilder outputString, long time, EnigmaConfiguration currentConfig) {

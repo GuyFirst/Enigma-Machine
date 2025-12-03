@@ -5,8 +5,8 @@ import enigma.component.rotor.Rotor;
 import enigma.component.rotor.RotorManager;
 import enigma.engine.DTO.history.HistoryDTO;
 import enigma.engine.DTO.MachineStatusDTO;
-import enigma.engine.DTO.MessageDTO;
 import enigma.engine.logic.history.EnigmaConfiguration;
+import enigma.engine.logic.history.EnigmaMessege;
 import enigma.engine.logic.history.HistoryManager;
 import enigma.engine.logic.history.RotorLetterAndNotch;
 import enigma.engine.logic.loadManager.LoadManager;
@@ -104,9 +104,9 @@ public class EngineImpl implements Engine {
     }
 
     @Override
-    public MessageDTO processInput(String inputString) {
+    public EnigmaMessege processInput(String inputString) {
 
-        if(!isStringAbleToBeCrypted(inputString)) {
+        if(!isStringAbleToBeCrypt(inputString)) {
             throw new IllegalArgumentException("Input string contains invalid characters not present in the machine's keyboard.");
         }
 
@@ -121,10 +121,10 @@ public class EngineImpl implements Engine {
         this.currentConfig = getCurrentConfig();
         historyManager.addMessegeToConfiguration(inputString, outputString, time, initialConfig);
 
-        return new MessageDTO(inputString, outputString.toString(), time);
+        return new EnigmaMessege(inputString, outputString.toString(), time);
     }
 
-    private boolean isStringAbleToBeCrypted(String inputString) {
+    private boolean isStringAbleToBeCrypt(String inputString) {
         for (char c : inputString.toCharArray()) {
             if (!repository.getKeyboard().isCharInKeyboard(c)) {
                 return false;

@@ -27,61 +27,13 @@ public class ShowEnigmaMachineSpecificationCommand implements MenuCommandExecuta
         System.out.println("Amount of reflectors in the system: " + machineStatus.getAmountOfReflectorsInSys());
         System.out.println("Number of messages that have been processed: " + machineStatus.getAmountOfMsgsTillNow());
         if(machineStatus.isMachineLoaded()){
-            EnigmaConfiguration initialConfig = machineStatus.getInitialConfig();
-            EnigmaConfiguration currentConfig = machineStatus.getCurrentConfig();
-            StringBuilder initialConfigStr = new StringBuilder();
-            StringBuilder currentConfigStr = new StringBuilder();
             System.out.println("Initial Enigma Machine Configuration: ");
-            System.out.println(displayMachineConfiguration(initialConfig, initialConfigStr));
+            System.out.println(machineStatus.getInitialConfig());
             System.out.println("Current Enigma Machine Configuration: ");
-            System.out.println(displayMachineConfiguration(currentConfig, currentConfigStr));
+            System.out.println(machineStatus.getCurrentConfig());
         } else {
             System.out.println("The Enigma Machine is currently not loaded with a configuration.");
         }
-    }
-
-    private StringBuilder displayMachineConfiguration(EnigmaConfiguration config, StringBuilder configStr) {
-        appendRotorsToStr(config, configStr);
-        appendRotorsAndNotchesToStr(config, configStr);
-        appendReflectorToStr(config, configStr);
-        return configStr;
-    }
-
-    private void appendReflectorToStr(EnigmaConfiguration initialConfig, StringBuilder initialConfigStr) {
-
-        initialConfigStr.append("<");
-        initialConfigStr.append(initialConfig.getReflectorID());
-        initialConfigStr.append(">");
-    }
-
-    private void appendRotorsAndNotchesToStr(EnigmaConfiguration initialConfig, StringBuilder initialConfigStr) {
-
-        initialConfigStr.append("<");
-
-        for(int i = 0; i < initialConfig.getRotorLetterAndNotch().size(); i++) {
-            initialConfigStr.append(initialConfig.getRotorLetterAndNotch().get(i).getLetter());
-            initialConfigStr.append("(");
-            initialConfigStr.append(initialConfig.getRotorLetterAndNotch().get(i).getNotchPos());
-            initialConfigStr.append(")");
-            if(i != initialConfig.getRotorLetterAndNotch().size() - 1){
-                initialConfigStr.append(",");
-            }
-        }
-
-        initialConfigStr.append(">");
-    }
-
-    private void appendRotorsToStr(EnigmaConfiguration initialConfig, StringBuilder initialConfigStr) {
-
-        initialConfigStr.append("<");
-        for (int i = 0; i < initialConfig.getRotorIDs().size(); i++) {
-            initialConfigStr.append(initialConfig.getRotorIDs().get(i));
-            if(i != initialConfig.getRotorIDs().size() - 1){
-                initialConfigStr.append(",");
-            }
-        }
-
-        initialConfigStr.append(">");
     }
 
     @Override

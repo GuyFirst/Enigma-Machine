@@ -2,8 +2,8 @@ package enigma.component.menu.command.concrete.process;
 
 import enigma.component.UIController.UIController;
 import enigma.component.menu.command.template.MenuCommandExecutable;
-import enigma.engine.DTO.MessageDTO;
 import enigma.engine.logic.Engine;
+import enigma.engine.logic.history.EnigmaMessege;
 
 import java.util.Scanner;
 
@@ -17,8 +17,8 @@ public class ProcessInputCommand implements MenuCommandExecutable {
         Scanner scanner = new Scanner(System.in);
         String userInput = scanner.nextLine().toUpperCase();
         try{
-            MessageDTO msg = engine.processInput(userInput);
-            System.out.println("the message " + msg.getInputMessage() + " was processed to: " + msg.getOutputMessage());
+            EnigmaMessege msg = engine.processInput(userInput);
+            System.out.println("the message " + msg.getInput() + " was processed to: " + msg.getOutput());
         } catch (Exception e){
             System.out.println("Error during processing input: " + e.getMessage());
             throw e;

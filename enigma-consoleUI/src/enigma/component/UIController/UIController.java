@@ -63,7 +63,16 @@ public class UIController implements Runnable {
             Scanner scanner = new Scanner(System.in);
             System.out.println("Please select an option from the menu:");
             menu.displayMenu();
-            int choice = scanner.nextInt();
+            String candidateChoice = scanner.nextLine();
+            if(!candidateChoice.matches("\\d+")) {
+                System.out.println("Invalid input. Please enter a number corresponding to the menu options.");
+                continue;
+            }
+            if(Integer.parseInt(candidateChoice) < 1 || Integer.parseInt(candidateChoice) > menu.getMenuCommands().size()) {
+                System.out.println("Invalid number chosen. Please select a valid option from the menu.");
+                continue;
+            }
+            int choice = Integer.parseInt(candidateChoice);
             try {
                 menu.getMenuCommands().get(choice - 1).execute(engine);
             } catch (Exception e) {

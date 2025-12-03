@@ -6,7 +6,7 @@ package enigma.engine.logic;
 
 import enigma.engine.DTO.history.HistoryDTO;
 import enigma.engine.DTO.MachineStatusDTO;
-import enigma.engine.DTO.MessageDTO;
+import enigma.engine.logic.history.EnigmaMessege;
 import jakarta.xml.bind.JAXBException;
 
 import java.io.FileNotFoundException;
@@ -57,7 +57,7 @@ public interface Engine {
      * @param inputString The string provided by the user.
      * @return The resulting encrypted/decrypted string.
      */
-    MessageDTO processInput(String inputString);
+    EnigmaMessege processInput(String inputString);
 
     // --- 6. Reset Code ---
     /**
