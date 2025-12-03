@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class LoadXMLConfigurationCommand implements MenuCommandExecutable {
     @Override
-    public void execute(Scanner scanner, Engine engine) throws Exception {
+    public void execute(Engine engine) throws Exception {
 
         System.out.println("Please insert the exact path for the XML desired to be loaded.");
         Scanner pathScanner = new Scanner(System.in);

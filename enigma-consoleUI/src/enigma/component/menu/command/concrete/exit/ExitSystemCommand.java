@@ -5,7 +5,7 @@ import enigma.engine.logic.Engine;
 
 public class ExitSystemCommand implements MenuCommandExecutable {
     @Override
-    public void execute(java.util.Scanner scanner, Engine engine) throws Exception {
+    public void execute(Engine engine) throws Exception {
         System.out.println("Exiting system...");
         engine.exit();
     }

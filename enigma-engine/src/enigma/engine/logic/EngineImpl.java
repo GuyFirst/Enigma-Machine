@@ -106,6 +106,10 @@ public class EngineImpl implements Engine {
     @Override
     public MessageDTO processInput(String inputString) {
 
+        if(!isStringAbleToBeCrypted(inputString)) {
+            throw new IllegalArgumentException("Input string contains invalid characters not present in the machine's keyboard.");
+        }
+
         StringBuilder outputString = new StringBuilder();
         long startTime = System.nanoTime();
         for (char inputChar : inputString.toCharArray()) {
@@ -118,6 +122,15 @@ public class EngineImpl implements Engine {
         historyManager.addMessegeToConfiguration(inputString, outputString, time, initialConfig);
 
         return new MessageDTO(inputString, outputString.toString(), time);
+    }
+
+    private boolean isStringAbleToBeCrypted(String inputString) {
+        for (char c : inputString.toCharArray()) {
+            if (!repository.getKeyboard().isCharInKeyboard(c)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private EnigmaConfiguration getCurrentConfig() {

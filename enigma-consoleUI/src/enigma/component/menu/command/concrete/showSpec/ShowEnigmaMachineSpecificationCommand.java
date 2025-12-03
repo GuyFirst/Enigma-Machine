@@ -8,7 +8,7 @@ import enigma.engine.logic.history.EnigmaConfiguration;
 
 public class ShowEnigmaMachineSpecificationCommand implements MenuCommandExecutable {
     @Override
-    public void execute(java.util.Scanner scanner, Engine engine) throws Exception {
+    public void execute( Engine engine) throws Exception {
         try{
             System.out.println("Fetching Enigma Machine Specification...");
             MachineStatusDTO machineStatus = engine.getMachineStatus();

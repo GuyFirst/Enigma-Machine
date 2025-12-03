@@ -20,6 +20,7 @@ import java.util.Scanner;
 public class UIController implements Runnable {
     private final Menu menu;
     private final Engine engine;
+    public static boolean isMachineLoaded = false;
 
     public UIController(Engine engine) {
         menu = createMenu();
@@ -64,8 +65,7 @@ public class UIController implements Runnable {
             menu.displayMenu();
             int choice = scanner.nextInt();
             try {
-                menu.getMenuCommands().get(choice - 1).execute(scanner, engine);
-
+                menu.getMenuCommands().get(choice - 1).execute(engine);
             } catch (Exception e) {
                 System.out.println("An error occurred: " + e.getMessage());
             }

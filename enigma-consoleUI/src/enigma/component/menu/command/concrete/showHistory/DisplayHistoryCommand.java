@@ -13,7 +13,7 @@ public class DisplayHistoryCommand implements MenuCommandExecutable {
 //    }
 
     @Override
-    public void execute(Scanner scanner, Engine engine) throws Exception {
+    public void execute(Engine engine) throws Exception {
 
     }
 
