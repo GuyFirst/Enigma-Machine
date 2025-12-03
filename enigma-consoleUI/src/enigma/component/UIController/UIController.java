@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class UIController {
+public class UIController implements Runnable {
     private final Menu menu;
     private final Engine engine;
 
@@ -56,8 +56,8 @@ public class UIController {
         return new Menu(commands);
     }
 
-    public void start() {
-
+    @Override
+    public void run() {
         while (true) {
             Scanner scanner = new Scanner(System.in);
             System.out.println("Please select an option from the menu:");
@@ -67,7 +67,7 @@ public class UIController {
                 menu.getMenuCommands().get(choice - 1).execute(scanner, engine);
 
             } catch (Exception e) {
-               System.out.println("An error occurred: " + e.getMessage());
+                System.out.println("An error occurred: " + e.getMessage());
             }
         }
     }

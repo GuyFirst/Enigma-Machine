@@ -9,7 +9,12 @@ public class LoadXMLConfigurationCommand implements MenuCommandExecutable {
     @Override
     public void execute(Scanner scanner, Engine engine) throws Exception {
 
-        engine.loadMachineFromXml("Hi");
+        System.out.println("Please insert the exact path for the XML desired to be loaded.");
+        Scanner pathScanner = new Scanner(System.in);
+        String path = pathScanner.nextLine();
+        System.out.println("Loading XML configuration from: " + path);
+        engine.loadMachineFromXml(path);
+        System.out.println("XML configuration loaded successfully.");
     }
     @Override
     public String toString() {
