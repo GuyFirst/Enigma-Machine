@@ -72,7 +72,7 @@ public class EngineImpl implements Engine {
 
         RotorManager rotorManager = new RotorManager(currentRotors, positionIndices);
         this.machine = new MachineImpl(reflector, rotorManager, repository.getKeyboard());
-        this.initialConfig = addConfigToHistory(currentRotors, rotorIds, positions, reflectorId);
+        this.initialConfig = this.currentConfig = addConfigToHistory(currentRotors, rotorIds, positions, reflectorId);
 
     }
 
@@ -93,6 +93,8 @@ public class EngineImpl implements Engine {
 
     @Override
     public void setAutomaticCode() {
+        if(!isXMLneLoaded())
+            throw new IllegalStateException("Machine is not loaded yet. Please load an XML file first.");
         // random parameters
         List<Integer> randomRotorIds = repository.getRandomRotorIds();
         List<Character> randomRotorStartPositions = repository.getRandomPositionsForRotors(randomRotorIds.size());

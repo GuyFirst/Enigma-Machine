@@ -32,18 +32,19 @@ public class ShowEnigmaMachineSpecificationCommand implements MenuCommandExecuta
             StringBuilder initialConfigStr = new StringBuilder();
             StringBuilder currentConfigStr = new StringBuilder();
             System.out.println("Initial Enigma Machine Configuration: ");
-            displayMachineConfiguration(initialConfig, initialConfigStr);
+            System.out.println(displayMachineConfiguration(initialConfig, initialConfigStr));
             System.out.println("Current Enigma Machine Configuration: ");
-            displayMachineConfiguration(currentConfig, currentConfigStr);
+            System.out.println(displayMachineConfiguration(currentConfig, currentConfigStr));
         } else {
             System.out.println("The Enigma Machine is currently not loaded with a configuration.");
         }
     }
 
-    private void displayMachineConfiguration(EnigmaConfiguration config, StringBuilder configStr) {
+    private StringBuilder displayMachineConfiguration(EnigmaConfiguration config, StringBuilder configStr) {
         appendRotorsToStr(config, configStr);
         appendRotorsAndNotchesToStr(config, configStr);
         appendReflectorToStr(config, configStr);
+        return configStr;
     }
 
     private void appendReflectorToStr(EnigmaConfiguration initialConfig, StringBuilder initialConfigStr) {

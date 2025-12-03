@@ -1,20 +1,22 @@
 package enigma.component.menu.command.concrete.setup.autoSetup;
 
-import enigma.component.menu.command.concrete.setup.SetupStrategy;
 import enigma.component.menu.command.template.MenuCommandExecutable;
 import enigma.engine.logic.Engine;
 
-public class AutomaticSetupConfigurationCommand implements MenuCommandExecutable, SetupStrategy {
+public class AutomaticSetupConfigurationCommand implements MenuCommandExecutable {
 
     @Override
     public void execute(java.util.Scanner scanner, Engine engine) throws Exception {
-        setup();
+        try{
+            engine.setAutomaticCode();
+            System.out.println("Automatic setup completed successfully.");
+        }catch (IllegalStateException e){
+            System.out.println("Automatic setup failed: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred during automatic setup: " + e.getMessage());
+        }
     }
 
-    @Override
-    public void setup() throws Exception {
-        // TODO implement automatic setup logic
-    }
 
     @Override
     public String toString() {
