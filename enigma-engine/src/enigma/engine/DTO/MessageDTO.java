@@ -1,4 +1,4 @@
-package enigma.engine.DTO.history;
+package enigma.engine.DTO;
 
 public class MessageDTO {
     String inputMessage;

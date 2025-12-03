@@ -13,7 +13,7 @@ public class RotorLetterAndNotch {
         return letter;
     }
 
-    public int getNotch() {
+    public int getNotchPos() {
         return notch;
     }
 

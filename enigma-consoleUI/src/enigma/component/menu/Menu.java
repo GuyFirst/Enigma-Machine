@@ -12,7 +12,7 @@ public class Menu {
     }
 
     public void displayMenu() {
-        System.out.println("===== components.menu.Menu =====");
+        System.out.println("===== commands =====");
         for (int i = 0; i < MenuCommands.size(); i++) {
             System.out.println((i + 1) + ". " + MenuCommands.get(i).toString());
         }

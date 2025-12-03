@@ -4,8 +4,8 @@ import enigma.component.reflector.Reflector;
 import enigma.component.rotor.Rotor;
 import enigma.component.rotor.RotorManager;
 import enigma.engine.DTO.history.HistoryDTO;
-import enigma.engine.DTO.history.MachineStatusDTO;
-import enigma.engine.DTO.history.MessageDTO;
+import enigma.engine.DTO.MachineStatusDTO;
+import enigma.engine.DTO.MessageDTO;
 import enigma.engine.logic.history.EnigmaConfiguration;
 import enigma.engine.logic.history.HistoryManager;
 import enigma.engine.logic.history.RotorLetterAndNotch;
@@ -40,13 +40,16 @@ public class EngineImpl implements Engine {
 
     @Override
     public MachineStatusDTO getMachineStatus() {
+        if(!isXMLneLoaded())
+            throw new IllegalStateException("Machine is not loaded yet. Please load an XML file first.");
         int amountOfRotorInSys = repository.getAllRotors().size();
         int amountOfReflectorsInSys = repository.getAllReflectors().size();
         int amountOfMsgsTillNow = historyManager.getMsgsAmount();
         EnigmaConfiguration currentConfig = this.currentConfig;
         EnigmaConfiguration initialCondig = this.initialConfig;
+        boolean isMachineLoaded = isMachineLoaded();
 
-        return new MachineStatusDTO(amountOfRotorInSys, amountOfReflectorsInSys, amountOfMsgsTillNow, currentConfig, initialCondig);
+        return new MachineStatusDTO(isMachineLoaded, amountOfRotorInSys, amountOfReflectorsInSys, amountOfMsgsTillNow, currentConfig, initialCondig);
     }
 
 
@@ -146,7 +149,10 @@ public class EngineImpl implements Engine {
         return new HistoryDTO(history);
     }
 
-    @Override
+    public boolean isXMLneLoaded() {
+        return this.repository != null;
+    }
+
     public boolean isMachineLoaded() {
         return this.machine != null;
     }
