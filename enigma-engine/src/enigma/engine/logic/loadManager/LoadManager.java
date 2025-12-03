@@ -17,10 +17,7 @@ import jakarta.xml.bind.Unmarshaller;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LoadManager {
     private final static String JAXB_XML_GAME_PACKAGE_NAME = "enigma.engine.generated.BTE.classes";
@@ -56,9 +53,17 @@ public class LoadManager {
         Map<Integer, Rotor> rotorMap = new HashMap<>();
         List<BTERotor> listOfBTERotors = bteRotors.getBTERotor();
 
+        if(listOfBTERotors.size() < RotorImpl.NUM_OF_MINIMUM_ROTOR_IN_SYSTEM){
+            throw new IllegalArgumentException("The machine must contain at least three rotors.");
+        }
+        Set<Integer> idSet = new HashSet<>();
         for (BTERotor bteRotor : listOfBTERotors) {
             // get id and notch
             int id = bteRotor.getId();
+            if(idSet.contains(id)){
+                throw new IllegalArgumentException("Rotor ID must be unique, but got a duplicate ID: " + id);
+            }
+            idSet.add(id); // to ensure no duplicate IDs
             int notch = bteRotor.getNotch();
 
             // create columns
@@ -66,15 +71,24 @@ public class LoadManager {
             List<Integer> rightColumn = new ArrayList<>();
             List<Integer> leftColumn = new ArrayList<>();
 
+
+            // TODO validate that all characters in positioning are in keyboard and validate mapping
             for (BTEPositioning btePosition : btePositioning) {
                 if (btePosition.getLeft().length() == 1 && btePosition.getRight().length() == 1) {
                     leftColumn.add(keyboard.charToIndex(btePosition.getLeft().charAt(0)));
                     rightColumn.add(keyboard.charToIndex(btePosition.getRight().charAt(0)));
                 }
             }
+
             int alphabet_length = keyboard.getAlphabetLength();
             Rotor rotor = new RotorImpl(rightColumn, leftColumn, notch, alphabet_length);
             rotorMap.put(id, rotor);
+        }
+
+        for(int i = 1; i <= rotorMap.size(); i++){
+            if(!rotorMap.containsKey(i)){
+                throw new IllegalArgumentException("Rotor IDs must be consecutive integers starting from 1 to " + rotorMap.size() + ", but missing ID: " + i);
+            }
         }
 
         return rotorMap;
