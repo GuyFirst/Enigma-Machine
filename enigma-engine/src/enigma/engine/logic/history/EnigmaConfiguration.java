@@ -25,7 +25,7 @@ public class EnigmaConfiguration {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         EnigmaConfiguration that = (EnigmaConfiguration) o;
-        return Objects.equals(rotorIDs, that.rotorIDs) && Objects.equals(rotorLetterAndNotch, that.rotorLetterAndNotch) && Objects.equals(reflectorID, that.reflectorID) && Objects.equals(messeges, that.messeges);
+        return Objects.equals(rotorIDs, that.rotorIDs) && Objects.equals(rotorLetterAndNotch, that.rotorLetterAndNotch) && Objects.equals(reflectorID, that.reflectorID) ;
     }
 
     @Override
@@ -47,5 +47,51 @@ public class EnigmaConfiguration {
 
     public List<EnigmaMessege> getMesseges() {
         return messeges;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder configStr = new StringBuilder();
+        appendRotorsToStr(configStr);
+        appendRotorsAndNotchesToStr(configStr);
+        appendReflectorToStr(configStr);
+        return configStr.toString();
+    }
+
+    private void appendReflectorToStr(StringBuilder ConfigStr) {
+
+        ConfigStr.append("<");
+        ConfigStr.append(this.getReflectorID());
+        ConfigStr.append(">");
+    }
+
+    private void appendRotorsAndNotchesToStr(StringBuilder ConfigStr) {
+
+        ConfigStr.append("<");
+
+        for(int i = 0; i < this.getRotorLetterAndNotch().size(); i++) {
+            ConfigStr.append(this.getRotorLetterAndNotch().get(i).getLetter());
+            ConfigStr.append("(");
+            ConfigStr.append(this.getRotorLetterAndNotch().get(i).getNotchPos());
+            ConfigStr.append(")");
+            if(i != this.getRotorLetterAndNotch().size() - 1){
+                ConfigStr.append(",");
+            }
+        }
+
+        ConfigStr.append(">");
+    }
+
+    private void appendRotorsToStr(StringBuilder ConfigStr) {
+
+        ConfigStr.append("<");
+        for (int i = 0; i < this.getRotorIDs().size(); i++) {
+            ConfigStr.append(this.getRotorIDs().get(i));
+            if(i != this.getRotorIDs().size() - 1){
+                ConfigStr.append(",");
+            }
+        }
+
+        ConfigStr.append(">");
     }
 }

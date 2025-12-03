@@ -4,9 +4,9 @@ import enigma.component.reflector.Reflector;
 import enigma.component.rotor.Rotor;
 import enigma.component.rotor.RotorManager;
 import enigma.engine.DTO.history.HistoryDTO;
-import enigma.engine.DTO.history.MachineStatusDTO;
-import enigma.engine.DTO.history.MessageDTO;
+import enigma.engine.DTO.MachineStatusDTO;
 import enigma.engine.logic.history.EnigmaConfiguration;
+import enigma.engine.logic.history.EnigmaMessege;
 import enigma.engine.logic.history.HistoryManager;
 import enigma.engine.logic.history.RotorLetterAndNotch;
 import enigma.engine.logic.loadManager.LoadManager;
@@ -40,13 +40,16 @@ public class EngineImpl implements Engine {
 
     @Override
     public MachineStatusDTO getMachineStatus() {
+        if(!isXMLneLoaded())
+            throw new IllegalStateException("Machine is not loaded yet. Please load an XML file first.");
         int amountOfRotorInSys = repository.getAllRotors().size();
         int amountOfReflectorsInSys = repository.getAllReflectors().size();
         int amountOfMsgsTillNow = historyManager.getMsgsAmount();
         EnigmaConfiguration currentConfig = this.currentConfig;
         EnigmaConfiguration initialCondig = this.initialConfig;
+        boolean isMachineLoaded = isMachineLoaded();
 
-        return new MachineStatusDTO(amountOfRotorInSys, amountOfReflectorsInSys, amountOfMsgsTillNow, currentConfig, initialCondig);
+        return new MachineStatusDTO(isMachineLoaded, amountOfRotorInSys, amountOfReflectorsInSys, amountOfMsgsTillNow, currentConfig, initialCondig);
     }
 
 
@@ -69,7 +72,7 @@ public class EngineImpl implements Engine {
 
         RotorManager rotorManager = new RotorManager(currentRotors, positionIndices);
         this.machine = new MachineImpl(reflector, rotorManager, repository.getKeyboard());
-        this.initialConfig = addConfigToHistory(currentRotors, rotorIds, positions, reflectorId);
+        this.initialConfig = this.currentConfig = addConfigToHistory(currentRotors, rotorIds, positions, reflectorId);
 
     }
 
@@ -90,6 +93,8 @@ public class EngineImpl implements Engine {
 
     @Override
     public void setAutomaticCode() {
+        if(!isXMLneLoaded())
+            throw new IllegalStateException("Machine is not loaded yet. Please load an XML file first.");
         // random parameters
         List<Integer> randomRotorIds = repository.getRandomRotorIds();
         List<Character> randomRotorStartPositions = repository.getRandomPositionsForRotors(randomRotorIds.size());
@@ -99,7 +104,11 @@ public class EngineImpl implements Engine {
     }
 
     @Override
-    public MessageDTO processInput(String inputString) {
+    public EnigmaMessege processInput(String inputString) {
+
+        if(!isStringAbleToBeCrypt(inputString)) {
+            throw new IllegalArgumentException("Input string contains invalid characters not present in the machine's keyboard.");
+        }
 
         StringBuilder outputString = new StringBuilder();
         long startTime = System.nanoTime();
@@ -112,7 +121,16 @@ public class EngineImpl implements Engine {
         this.currentConfig = getCurrentConfig();
         historyManager.addMessegeToConfiguration(inputString, outputString, time, initialConfig);
 
-        return new MessageDTO(inputString, outputString.toString(), time);
+        return new EnigmaMessege(inputString, outputString.toString(), time);
+    }
+
+    private boolean isStringAbleToBeCrypt(String inputString) {
+        for (char c : inputString.toCharArray()) {
+            if (!repository.getKeyboard().isValidChar(c)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private EnigmaConfiguration getCurrentConfig() {
@@ -146,7 +164,10 @@ public class EngineImpl implements Engine {
         return new HistoryDTO(history);
     }
 
-    @Override
+    public boolean isXMLneLoaded() {
+        return this.repository != null;
+    }
+
     public boolean isMachineLoaded() {
         return this.machine != null;
     }

@@ -5,8 +5,8 @@ package enigma.engine.logic;
 //import DTO.MessageDTO;
 
 import enigma.engine.DTO.history.HistoryDTO;
-import enigma.engine.DTO.history.MachineStatusDTO;
-import enigma.engine.DTO.history.MessageDTO;
+import enigma.engine.DTO.MachineStatusDTO;
+import enigma.engine.logic.history.EnigmaMessege;
 import jakarta.xml.bind.JAXBException;
 
 import java.io.FileNotFoundException;
@@ -57,7 +57,7 @@ public interface Engine {
      * @param inputString The string provided by the user.
      * @return The resulting encrypted/decrypted string.
      */
-    MessageDTO processInput(String inputString);
+    EnigmaMessege processInput(String inputString);
 
     // --- 6. Reset Code ---
     /**
@@ -71,12 +71,6 @@ public interface Engine {
      * @return HistoryDTO object containing all historical records.
      */
     HistoryDTO getHistoryAndStatistics();
-
-    // --- Helper for UI Validation (Optional but useful) ---
-    /**
-     * Checks if the machine has a valid loaded configuration ready for coding.
-     */
-    boolean isMachineLoaded();
 
     void exit();
 }

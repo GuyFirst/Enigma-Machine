@@ -37,8 +37,12 @@ public class KeyboardImpl implements Keyboard {
         return alphabetString.length();
     }
 
-    private boolean isValidChar(char c) {
+    @Override
+    public boolean isValidChar(char c) {
         return alphabetString.indexOf(c) != -1;
     }
+
+    @Override
+    public String toString() { return alphabetString; }
 
 }

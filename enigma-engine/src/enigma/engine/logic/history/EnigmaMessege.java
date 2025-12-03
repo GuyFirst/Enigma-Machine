@@ -23,4 +23,9 @@ public class EnigmaMessege {
         return time;
     }
 
+    @Override
+    public String toString() {
+        return "<" + input + ">" + " --> " + "<" + output + ">" + " (" + time + " nano-seconds)";
+    }
+
 }

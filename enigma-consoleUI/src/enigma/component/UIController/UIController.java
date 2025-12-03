@@ -17,9 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class UIController {
+public class UIController implements Runnable {
     private final Menu menu;
     private final Engine engine;
+    public static boolean isMachineLoaded = false;
 
     public UIController(Engine engine) {
         menu = createMenu();
@@ -56,18 +57,26 @@ public class UIController {
         return new Menu(commands);
     }
 
-    public void start() {
-
+    @Override
+    public void run() {
         while (true) {
             Scanner scanner = new Scanner(System.in);
             System.out.println("Please select an option from the menu:");
             menu.displayMenu();
-            int choice = scanner.nextInt();
+            String candidateChoice = scanner.nextLine();
+            if(!candidateChoice.matches("\\d+")) {
+                System.out.println("Invalid input. Please enter a number corresponding to the menu options.");
+                continue;
+            }
+            if(Integer.parseInt(candidateChoice) < 1 || Integer.parseInt(candidateChoice) > menu.getMenuCommands().size()) {
+                System.out.println("Invalid number chosen. Please select a valid option from the menu.");
+                continue;
+            }
+            int choice = Integer.parseInt(candidateChoice);
             try {
-                menu.getMenuCommands().get(choice - 1).execute(scanner, engine);
-
+                menu.getMenuCommands().get(choice - 1).execute(engine);
             } catch (Exception e) {
-               System.out.println("An error occurred: " + e.getMessage());
+                System.out.println("An error occurred: " + e.getMessage());
             }
         }
     }
