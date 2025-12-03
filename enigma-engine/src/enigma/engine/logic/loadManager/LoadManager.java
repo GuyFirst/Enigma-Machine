@@ -5,6 +5,7 @@ import enigma.component.keyboard.KeyboardImpl;
 import enigma.component.reflector.Reflector;
 import enigma.component.reflector.ReflectorImpl;
 import enigma.component.reflector.ReflectedPositionsPair;
+import enigma.component.reflector.RomanValues;
 import enigma.component.rotor.Rotor;
 import enigma.component.rotor.RotorImpl;
 import enigma.engine.generated.BTE.classes.*;
@@ -36,6 +37,9 @@ public class LoadManager {
         BTEEnigma bteEnigma = deserializeFrom(inputStream);
 
         String abcForKeyboard = bteEnigma.getABC();
+        if (abcForKeyboard.trim().length() % 2 == 1) {
+            throw new IllegalArgumentException("The ABC length must be even, but got: " + abcForKeyboard.length() + "chars.");
+        }
         Keyboard keyboard = createKeyboard(abcForKeyboard);
 
         BTEReflectors bteReflectors = bteEnigma.getBTEReflectors();
@@ -81,15 +85,27 @@ public class LoadManager {
         Map<String, Reflector> reflectorMap = new HashMap<>();
         List<BTEReflector> listOfBTEReflectors = bteReflectors.getBTEReflector();
 
+        RomanValues.clear();
         for (BTEReflector bteReflector : listOfBTEReflectors) {
             List<ReflectedPositionsPair> listOfReflectedPositionsPairs = new ArrayList<>();
             String id = bteReflector.getId();
+            if(!RomanValues.romanValues.containsKey(id)){
+                throw new IllegalArgumentException("Reflector ID must be a roman value, but got: " + id);
+            } else if (RomanValues.checkIfUsed(id)){
+                throw new IllegalArgumentException("Reflector ID must be unique, but got a duplicate ID: " + id);
+            }
+            RomanValues.markAsUsed(id);
+             // to ensure no duplicate IDs
+
             List<BTEReflect> bteReflects = bteReflector.getBTEReflect();
 
             for (BTEReflect bteReflect : bteReflects) {
                 int input = bteReflect.getInput();
                 int output = bteReflect.getOutput();
-                listOfReflectedPositionsPairs.add(new ReflectedPositionsPair(--input, --output));
+                if(input == output){
+                    throw new IllegalArgumentException("Reflector cannot map a position to itself, but got map between " + input + " and " + output + ".");
+                }
+                listOfReflectedPositionsPairs.add(new ReflectedPositionsPair(--input, --output)); // convert to zero-based index
             }
             Reflector reflector = new ReflectorImpl(id, listOfReflectedPositionsPairs);
             reflectorMap.put(id, reflector);

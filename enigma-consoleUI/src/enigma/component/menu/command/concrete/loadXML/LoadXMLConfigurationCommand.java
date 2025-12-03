@@ -12,9 +12,18 @@ public class LoadXMLConfigurationCommand implements MenuCommandExecutable {
         System.out.println("Please insert the exact path for the XML desired to be loaded.");
         Scanner pathScanner = new Scanner(System.in);
         String path = pathScanner.nextLine();
+        if(!path.endsWith(".xml")){
+            System.out.println("Invalid file format. Please provide a valid XML file path.");
+            return;
+        }
         System.out.println("Loading XML configuration from: " + path);
-        engine.loadMachineFromXml(path);
-        System.out.println("XML configuration loaded successfully.");
+        try {
+            engine.loadMachineFromXml(path);
+            System.out.println("XML configuration loaded successfully.");
+        } catch (Exception e) {
+            System.out.println("Error loading XML configuration: " + e.getMessage());
+        }
+
     }
     @Override
     public String toString() {
