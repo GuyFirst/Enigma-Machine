@@ -18,9 +18,10 @@ public class LoadXMLConfigurationCommand implements MenuCommandExecutable {
             return;
         }
         File file = new File(path);
-        if(!file.exists() || !file.isFile()){
+        if(!file.exists() || !file.isFile()) {
             System.out.println("The file does not exist. Please provide a valid file path.");
             return;
+        }
         System.out.println("Loading XML configuration from: " + path);
         try {
             engine.loadMachineFromXml(path);
@@ -30,7 +31,6 @@ public class LoadXMLConfigurationCommand implements MenuCommandExecutable {
         }
 
     }
-
     @Override
     public String toString() {
         return "Read XML Configuration";

@@ -5,5 +5,5 @@ public interface Keyboard {
     char indexToChar(int index);
     int getAlphabetLength();
 
-    boolean isCharInKeyboard(char c);
+    boolean isValidChar(char c);
 }

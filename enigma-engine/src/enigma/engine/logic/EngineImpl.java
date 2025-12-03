@@ -126,7 +126,7 @@ public class EngineImpl implements Engine {
 
     private boolean isStringAbleToBeCrypt(String inputString) {
         for (char c : inputString.toCharArray()) {
-            if (!repository.getKeyboard().isCharInKeyboard(c)) {
+            if (!repository.getKeyboard().isValidChar(c)) {
                 return false;
             }
         }

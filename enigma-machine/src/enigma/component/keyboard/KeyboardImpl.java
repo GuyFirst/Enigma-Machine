@@ -38,16 +38,11 @@ public class KeyboardImpl implements Keyboard {
     }
 
     @Override
-    public boolean isCharInKeyboard(char c) {
-        for(char ch : alphabetString.toCharArray()){
-            if(ch == c)
-                return true;
-        }
-        return false;
-    }
-
-    private boolean isValidChar(char c) {
+    public boolean isValidChar(char c) {
         return alphabetString.indexOf(c) != -1;
     }
+
+    @Override
+    public String toString() { return alphabetString; }
 
 }
