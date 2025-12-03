@@ -4,6 +4,12 @@ package enigma.engine.logic;
 //import DTO.MachineSpecificationDTO;
 //import DTO.MessageDTO;
 
+import enigma.engine.DTO.history.HistoryDTO;
+import enigma.engine.DTO.history.MachineStatusDTO;
+import enigma.engine.DTO.history.MessageDTO;
+import jakarta.xml.bind.JAXBException;
+
+import java.io.FileNotFoundException;
 import java.util.List;
 
 
@@ -19,14 +25,14 @@ public interface Engine {
      * @param xmlFilePath The path provided by the user.
      * @return A success message or an error description.
      */
-    void loadMachineFromXml(String xmlFilePath);
+    void loadMachineFromXml(String xmlFilePath) throws JAXBException, FileNotFoundException;
 
     // --- 2. Display Machine Status ---
     /**
      * Retrieves the current specification and configuration status of the machine.
      * @return MachineSpecificationDTO containing all necessary status data.
      */
-    void getMachineStatus();
+    MachineStatusDTO getMachineStatus();
 
     // --- 3 & 4. Setup Code ---
     /**
@@ -51,7 +57,7 @@ public interface Engine {
      * @param inputString The string provided by the user.
      * @return The resulting encrypted/decrypted string.
      */
-    String processInput(String inputString);
+    MessageDTO processInput(String inputString);
 
     // --- 6. Reset Code ---
     /**
@@ -64,7 +70,7 @@ public interface Engine {
      * Retrieves all history of processed messages grouped by original code configurations.
      * @return HistoryDTO object containing all historical records.
      */
-    void getHistoryAndStatistics();
+    HistoryDTO getHistoryAndStatistics();
 
     // --- Helper for UI Validation (Optional but useful) ---
     /**

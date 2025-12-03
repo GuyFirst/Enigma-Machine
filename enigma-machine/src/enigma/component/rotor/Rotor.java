@@ -6,4 +6,5 @@ public interface Rotor {
     int encodeBackward(int entryLocation);
     int getNotchPosition();
     void rotate();
+    int getTopLetter();
 }
