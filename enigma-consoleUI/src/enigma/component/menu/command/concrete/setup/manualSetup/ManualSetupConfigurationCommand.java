@@ -9,7 +9,8 @@ import java.util.stream.Collectors;
 
 public class ManualSetupConfigurationCommand implements MenuCommandExecutable {
 
-    Map<String, String> romanMapping = new HashMap<>();
+    private final Map<String, String> romanMapping = new HashMap<>();
+    private final Scanner scanner = new Scanner(System.in); // Use a single Scanner instance
 
     public ManualSetupConfigurationCommand() {
         romanMapping.put("1", "I");
@@ -19,125 +20,147 @@ public class ManualSetupConfigurationCommand implements MenuCommandExecutable {
         romanMapping.put("5", "V");
     }
 
-    private List<Integer> rotorIdSetupHandler() {
-            Scanner scanner = new Scanner(System.in);
-            boolean isValidRotorIds = false;
-            List<Integer> rotorIds = new ArrayList<>();
-            do {
-                // get rotor ids like this: 1,2,3 - the most right rotor will be 3 the most left will be 1
-                System.out.println("please write the ids of the rotors you want to use in the following format: 1,2,3 (most left, ... , most right):");
-                String rotorsIdFromUser = scanner.nextLine();
+    /**
+     * Handles user input for Rotor IDs. Returns Optional.empty() if user chooses to return to menu.
+     */
+    private Optional<List<Integer>> rotorIdSetupHandler() {
+        boolean isValidRotorIds = false;
+        List<Integer> rotorIds = new ArrayList<>();
+        do {
+            System.out.println("Please write the IDs of the rotors you want to use in the following format: 1,2,3 (most left, ... , most right):");
+            String rotorsIdFromUser = scanner.nextLine();
 
-                try {
-                    rotorIds = Arrays.stream(rotorsIdFromUser.split(","))
-                            .map(String::trim)
-                            .map(Integer::parseInt)
-                            .toList();
-                    isValidRotorIds = true;
-                } catch (Exception e) {
-                    System.out.println(rotorsIdFromUser + " is not a valid format");
-                    System.out.println("Press 0 to return to menu");
-                    System.out.println("Press any other key to try again");
-                    String userDecision = scanner.nextLine();
-                    if (userDecision.equals("0")) {
-                        return null;
-                    }
+            try {
+                rotorIds = Arrays.stream(rotorsIdFromUser.split(","))
+                        .map(String::trim)
+                        .map(Integer::parseInt)
+                        .toList();
+                isValidRotorIds = true;
+            } catch (NumberFormatException e) {
+                System.out.println(rotorsIdFromUser + " is not a valid format (must be comma-separated numbers).");
+                System.out.println("Press 0 to return to menu");
+                System.out.println("Press any other key to try again");
+                String userDecision = scanner.nextLine();
+                if (userDecision.trim().equals("0")) {
+                    return Optional.empty(); // Return empty Optional to signal exit
                 }
-            } while (!isValidRotorIds);
-        return rotorIds;
+            }
+        } while (!isValidRotorIds);
+        return Optional.of(rotorIds);
     }
 
-
-
-    private List<Character> rotorPositionSetupHandler(){
+    /**
+     * Handles user input for Rotor Start Positions. Returns Optional.empty() if user chooses to return to menu.
+     */
+    private Optional<List<Character>> rotorPositionSetupHandler() {
         boolean isValidRotorPositions = false;
-        Scanner scanner = new Scanner(System.in);
         List<Character> rotorPositions = new ArrayList<>();
         do {
-            // get rotor positions: 4D8A - A is the position of the most right rotor
-            System.out.println("please write the positions of the rotors you want to use in the following format: 4D8A (most left, ... , most right):");
+            System.out.println("Please write the positions of the rotors you want to use in the following format: 4D8A (most left, ... , most right):");
             String rotorsPositionsFromUser = scanner.nextLine().toUpperCase();
-            try{
+
+            // Basic validation: positions string should not be empty
+            if (rotorsPositionsFromUser.isEmpty()) {
+                System.out.println("Positions cannot be empty.");
+                continue;
+            }
+
+            // No specific format error handling needed here beyond basic character extraction
+            // because actual position validity is checked in engine.setMachineCode
+            try {
                 rotorPositions = rotorsPositionsFromUser.chars()
                         .mapToObj(c -> (char) c)
                         .toList();
                 isValidRotorPositions = true;
-            }catch (Exception e){
-                System.out.println(rotorsPositionsFromUser + " is not a valid format");
+            } catch (Exception e) {
+                // This catch block is mostly theoretical for char conversion but kept for consistency
+                System.out.println("An unexpected error occurred: " + e.getMessage());
                 System.out.println("Press 0 to return to menu");
                 System.out.println("Press any other key to try again");
                 String userDecision = scanner.nextLine();
-                if (userDecision.equals("0")) {
-                    return null;
+                if (userDecision.trim().equals("0")) {
+                    return Optional.empty(); // Return empty Optional to signal exit
                 }
             }
 
         } while (!isValidRotorPositions);
-        return rotorPositions;
+        return Optional.of(rotorPositions);
     }
 
-    private String reflectorIdSetupHandler(){
-        //get id of reflector in roman letter - need to present to user the roman letters and the user will put decimal number
-        System.out.println("please select the reflector you want to use (decimal number):");
-        for (Map.Entry<String, String> entry : romanMapping.entrySet()) {
-            System.out.println(entry.getKey() + ". " + entry.getValue());
-        }
-        Scanner scanner = new Scanner(System.in);
+    /**
+     * Handles user input for Reflector ID. Returns Optional.empty() if user chooses to return to menu.
+     */
+    private Optional<String> reflectorIdSetupHandler() {
+
         String reflectorId = "";
-        String reflectorFromUser = "";
         boolean isValidReflectorId = false;
         do {
-            reflectorFromUser = scanner.nextLine().toUpperCase();
+            System.out.println("\nPlease select the reflector you want to use (decimal number):");
+            for (Map.Entry<String, String> entry : romanMapping.entrySet()) {
+                System.out.println(entry.getKey() + ". " + entry.getValue());
+            }
+            String reflectorFromUser = scanner.nextLine().trim(); // Trim input here
             if (!romanMapping.containsKey(reflectorFromUser)) {
-                System.out.println(reflectorFromUser + " is not a valid format");
+                System.out.println(reflectorFromUser + " is not a valid selection.");
                 System.out.println("Press 0 to return to menu");
                 System.out.println("Press any other key to try again");
                 String userDecision = scanner.nextLine();
-                if (userDecision.equals("0")) {
-                    return null;
+                if (userDecision.trim().equals("0")) {
+                    return Optional.empty(); // Return empty Optional to signal exit
                 }
             } else {
+                reflectorId = romanMapping.get(reflectorFromUser);
                 isValidReflectorId = true;
             }
         } while (!isValidReflectorId);
 
-        reflectorId = romanMapping.get(reflectorFromUser);
-        return reflectorId;
+        return Optional.of(reflectorId);
     }
 
 
     @Override
     public void execute(Engine engine) throws Exception {
-        // first check if machine is loaded
+        // First check if machine is loaded
+        // NOTE: The method name 'isXMLLoaded' should probably be 'isRepositoryLoaded' or similar,
+        // assuming it checks if the repository (holding all rotors/reflectors) is ready.
         if (!engine.isXMLLoaded()) {
             throw new IllegalStateException("Machine repository is not loaded. Please load the machine configuration before setting up the machine.");
         }
 
         do {
-            List<Integer> rotorIds = rotorIdSetupHandler();
-            if (rotorIds == null) {
-                return;
+            Optional<List<Integer>> optionalRotorIds = rotorIdSetupHandler();
+            if (optionalRotorIds.isEmpty()) {
+                return; // Exit command if user chose '0'
             }
-            List<Character> rotorPositions = rotorPositionSetupHandler();
-            if (rotorPositions == null) {
-                return;
+            List<Integer> rotorIds = optionalRotorIds.get();
+
+
+            Optional<List<Character>> optionalRotorPositions = rotorPositionSetupHandler();
+            if (optionalRotorPositions.isEmpty()) {
+                return; // Exit command if user chose '0'
             }
-            String reflectorId = reflectorIdSetupHandler();
-            if (reflectorId == null) {
-                return;
+            List<Character> rotorPositions = optionalRotorPositions.get();
+
+
+            Optional<String> optionalReflectorId = reflectorIdSetupHandler();
+            if (optionalReflectorId.isEmpty()) {
+                return; // Exit command if user chose '0'
             }
+            String reflectorId = optionalReflectorId.get();
 
             try {
+                // All Optional values are present, proceed with setup
                 engine.setMachineCode(rotorIds, rotorPositions, reflectorId);
                 UIController.isMachineLoaded = true;
                 System.out.println("Manual setup completed successfully.");
             } catch (Exception e) {
-                Scanner scanner = new Scanner(System.in);
+                // Setup failed (e.g., mismatched rotor/position counts, invalid characters, etc.)
+                System.out.println("\n--- ERROR! ---");
                 System.out.println("Error during manual setup: " + e.getMessage());
                 System.out.println("Press 0 to return to menu");
                 System.out.println("Press any other key to try again");
                 String userDecision = scanner.nextLine();
-                if (userDecision.equals("0")) {
+                if (userDecision.trim().equals("0")) {
                     return;
                 }
             }
