@@ -50,8 +50,54 @@ public class LoadManager {
 
     }
 
-    private Map<Integer, Rotor> createRotorsMap(BTERotors bteRotors, Keyboard keyboard) {
 
+    private int getId(Set<Integer> idSet, int id){
+        if(idSet.contains(id)){
+            throw new IllegalArgumentException("Rotor ID must be unique, but got a duplicate ID: " + id);
+        }
+        idSet.add(id);  // to ensure no duplicate IDs
+        return id;
+    }
+
+    private int getNotch(int rotorId, Set<Integer> notchSet, int notch, Keyboard keyboard) {
+        if(notch < 0 || notch >= keyboard.getAlphabetLength()){
+            int size = keyboard.getAlphabetLength() - 1;
+            throw new IllegalArgumentException("Rotor notch must be between 0 and the length of the abc size minus one, which is currently " + size + ", but got " + notch + " for Rotor ID " + rotorId + ".");
+        }
+        return notch;
+    }
+
+    private void checkIfDuplicateCharacterInColumn(List<Character> abcInColumn, BTEPositioning positioning, int id){
+        if(!abcInColumn.contains(positioning.getLeft().charAt(0))){
+            throw new IllegalArgumentException("Rotor ID " + id + " character in the left column '" + positioning.getLeft().charAt(0) + "' is mapped more than once.");
+        } else {
+            abcInColumn.remove((Character) positioning.getLeft().charAt(0));
+        }
+    }
+
+    private Boolean isCharacterInKeyboard(Keyboard keyboard, BTEPositioning positioning, int rotorId){
+        if(!keyboard.isValidChar(positioning.getLeft().charAt(0))){
+            throw new IllegalArgumentException("Rotor ID " + rotorId + " character in the left column '" + positioning.getLeft().charAt(0) + "' is not in the keyboard allowed characters, which is currently: " + keyboard.toString() + ".");
+        }
+        if(!keyboard.isValidChar(positioning.getRight().charAt(0))){
+            throw new IllegalArgumentException("Rotor ID " + rotorId + " character in the right column '" + positioning.getRight().charAt(0) + "' is not in the keyboard allowed characters, which is currently: " + keyboard.toString() + ".");
+        }
+        return true;
+    }
+    private void validateAndSetupPositioning(BTEPositioning btePosition, Keyboard keyboard, List<Integer> leftColumn, List<Integer> rightColumn, List<Character> abcInLeftColumn, List<Character> abcInRightColumn, int rotorId){
+            // check if character is in keyboard
+            if(isCharacterInKeyboard(keyboard, btePosition, rotorId)){
+                // add to columns if valid
+                leftColumn.add(keyboard.charToIndex(btePosition.getLeft().charAt(0)));
+                rightColumn.add(keyboard.charToIndex(btePosition.getRight().charAt(0)));
+            }
+
+            // check for duplication
+            checkIfDuplicateCharacterInColumn(abcInLeftColumn, btePosition, rotorId);
+            checkIfDuplicateCharacterInColumn(abcInRightColumn, btePosition, rotorId);
+    }
+
+    private Map<Integer, Rotor> createRotorsMap(BTERotors bteRotors, Keyboard keyboard) {
         List<BTERotor> listOfBTERotors = bteRotors.getBTERotor();
         if(listOfBTERotors.size() < EngineImpl.NUM_OF_MINIMUM_ROTOR_IN_SYSTEM){
             throw new IllegalArgumentException("The machine must contain at least three rotors.");
@@ -60,57 +106,22 @@ public class LoadManager {
 
         Set<Integer> idSet = new HashSet<>();
         for (BTERotor bteRotor : listOfBTERotors) {
-            // get id and notch
-            int id = bteRotor.getId();
-            if(idSet.contains(id)){
-                throw new IllegalArgumentException("Rotor ID must be unique, but got a duplicate ID: " + id);
-            }
-            idSet.add(id); // to ensure no duplicate IDs
-            int notch = bteRotor.getNotch();
-            if(notch < 0 || notch >= keyboard.getAlphabetLength()){
-                int size = keyboard.getAlphabetLength() - 1;
-                throw new IllegalArgumentException("Rotor notch must be between 0 and the length of the abc size minus one, which is currently " + size + ", but got " + notch + " for Rotor ID " + id + ".");
-            }
 
+            int id = getId(idSet, bteRotor.getId());
+            int notch  = getNotch(id, idSet, bteRotor.getNotch(), keyboard);
 
-            // create columns
-            List<BTEPositioning> btePositioning = bteRotor.getBTEPositioning();
             List<Integer> rightColumn = new ArrayList<>();
             List<Integer> leftColumn = new ArrayList<>();
 
-            List<Character> abcInLeftColumn = new ArrayList<>(keyboard.toString()
-                    .chars()
-                    .mapToObj(c -> (char) c)
-                    .toList());
+            List<Character> abcInLeftColumn = new ArrayList<>(keyboard.toString().chars().mapToObj(c -> (char) c).toList());
+            List<Character> abcInRightColumn = new ArrayList<>(keyboard.toString().chars().mapToObj(c -> (char) c).toList());
 
-            List<Character> abcInRightColumn = new ArrayList<>(keyboard.toString()
-                    .chars()
-                    .mapToObj(c -> (char) c)
-                    .toList());
-
+            List<BTEPositioning> btePositioning = bteRotor.getBTEPositioning();
             for (BTEPositioning btePosition : btePositioning) {
-                if (btePosition.getLeft().length() == 1 && btePosition.getRight().length() == 1) {
-                    // if char is in keyboard
-                    if(!keyboard.isValidChar(btePosition.getLeft().charAt(0))){
-                        throw new IllegalArgumentException("Rotor ID " + id + " character in the left column '" + btePosition.getLeft().charAt(0) + "' is not in the keyboard allowed characters, which is currently: " + keyboard.toString() + ".");
-                    }
-                    if(!keyboard.isValidChar(btePosition.getRight().charAt(0))){
-                        throw new IllegalArgumentException("Rotor ID " + id + " character in the right column '" + btePosition.getRight().charAt(0) + "' is not in the keyboard allowed characters, which is currently: " + keyboard.toString() + ".");
-                    }
-                    leftColumn.add(keyboard.charToIndex(btePosition.getLeft().charAt(0)));
-                    rightColumn.add(keyboard.charToIndex(btePosition.getRight().charAt(0)));
-
-                    // avoid duplication
-                    if(!abcInLeftColumn.contains(btePosition.getLeft().charAt(0))){
-                        throw new IllegalArgumentException("Rotor ID " + id + " character in the left column '" + btePosition.getLeft().charAt(0) + "' is mapped more than once.");
-                    } else {
-                        abcInLeftColumn.remove((Character) btePosition.getLeft().charAt(0));
-                    }
-                    if(!abcInRightColumn.contains(btePosition.getRight().charAt(0))){
-                        throw new IllegalArgumentException("Rotor ID " + id + " character in the right column '" + btePosition.getRight().charAt(0) + "' is mapped more than once.");
-                    } else {
-                        abcInRightColumn.remove((Character) btePosition.getRight().charAt(0));
-                    }
+                if (btePosition.getLeft().length() == 1 && btePosition.getRight().length() == 1){
+                    validateAndSetupPositioning(btePosition, keyboard, leftColumn, rightColumn, abcInLeftColumn, abcInRightColumn, id);
+                } else {
+                    throw new IllegalArgumentException("position is more than 1 character long. your XML is not valid.");
                 }
             }
 
