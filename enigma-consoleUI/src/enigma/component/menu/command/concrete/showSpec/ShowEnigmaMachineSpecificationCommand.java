@@ -3,7 +3,7 @@ package enigma.component.menu.command.concrete.showSpec;
 import enigma.component.menu.command.template.MenuCommandExecutable;
 import enigma.engine.DTO.MachineStatusDTO;
 import enigma.engine.logic.Engine;
-import enigma.engine.logic.history.EnigmaConfiguration;
+
 
 
 public class ShowEnigmaMachineSpecificationCommand implements MenuCommandExecutable {

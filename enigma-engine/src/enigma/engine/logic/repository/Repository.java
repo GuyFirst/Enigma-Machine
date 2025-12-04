@@ -3,6 +3,7 @@ package enigma.engine.logic.repository;
 import enigma.component.keyboard.Keyboard;
 import enigma.component.reflector.Reflector;
 import enigma.component.rotor.Rotor;
+import enigma.component.rotor.RotorImpl;
 
 import java.util.*;
 
@@ -38,11 +39,14 @@ public class Repository {
             return new ArrayList<>();
         }
 
-        int maxRotors = available.size();
-        int randomNumOfRotors = randomGenerator.nextInt(maxRotors) + 1; // 1..maxRotors
+        // we will use it later
+        // int maxRotors = available.size();
+        // int randomNumOfRotors = randomGenerator.nextInt(maxRotors) + 1; // 1..maxRotors
+        int numOfRotors = RotorImpl.NUM_OF_MINIMUM_ROTOR_IN_SYSTEM;
+
 
         Collections.shuffle(available, randomGenerator);
-        return new ArrayList<>(available.subList(0, randomNumOfRotors));
+        return new ArrayList<>(available.subList(0, numOfRotors));
     }
 
 
