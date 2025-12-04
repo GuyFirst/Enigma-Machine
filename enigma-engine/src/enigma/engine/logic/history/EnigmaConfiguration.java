@@ -8,17 +8,17 @@ public class EnigmaConfiguration {
     private final List<Integer> rotorIDs;
     private final List<RotorLetterAndNotch> rotorLetterAndNotch;
     private final String reflectorID;
-    private final List<EnigmaMessege> messeges;
+    private final List<EnigmaMessage> messages;
 
     public EnigmaConfiguration(List<Integer> rotorIDs, List<RotorLetterAndNotch> rotorLetterAndNotch, String reflectorID) {
         this.rotorIDs = rotorIDs;
         this.rotorLetterAndNotch = rotorLetterAndNotch;
         this.reflectorID = reflectorID;
-        this.messeges  = new ArrayList<>();
+        this.messages = new ArrayList<>();
     }
 
-    public void addMessege(String input, String output, long time){
-        this.messeges.add(new EnigmaMessege(input, output, time));
+    public void addMessage(String input, String output, long time){
+        this.messages.add(new EnigmaMessage(input, output, time));
     }
 
     @Override
@@ -30,7 +30,7 @@ public class EnigmaConfiguration {
 
     @Override
     public int hashCode() {
-        return Objects.hash(rotorIDs, rotorLetterAndNotch, reflectorID, messeges);
+        return Objects.hash(rotorIDs, rotorLetterAndNotch, reflectorID, messages);
     }
 
     public String getReflectorID() {
@@ -45,8 +45,8 @@ public class EnigmaConfiguration {
         return rotorIDs;
     }
 
-    public List<EnigmaMessege> getMesseges() {
-        return messeges;
+    public List<EnigmaMessage> getMessages() {
+        return messages;
     }
 
     @Override

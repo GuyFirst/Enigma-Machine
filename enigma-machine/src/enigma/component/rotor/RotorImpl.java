@@ -7,7 +7,7 @@ public class RotorImpl implements Rotor{
     private final List<Integer> leftColumn;
     private int notchPosition;
     private final int alphabetLength;
-    public static int NUM_OF_MINIMUM_ROTOR_IN_SYSTEM = 3;
+
 
     public RotorImpl(List<Integer> rightColumn, List<Integer> leftColumn, int notchPosition, int alphabetLength) {
         this.alphabetLength = alphabetLength;

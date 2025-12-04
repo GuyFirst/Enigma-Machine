@@ -8,6 +8,9 @@ public class AutomaticSetupConfigurationCommand implements MenuCommandExecutable
 
     @Override
     public void execute(Engine engine) throws Exception {
+        if (!engine.isXMLLoaded()) {
+            throw new IllegalStateException("Machine repository is not loaded. Please load the machine configuration before setting up the machine.");
+        }
         try{
             engine.setAutomaticCode();
             System.out.println("Automatic setup completed successfully.");

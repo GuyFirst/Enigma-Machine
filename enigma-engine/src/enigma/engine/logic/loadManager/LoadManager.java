@@ -9,6 +9,7 @@ import enigma.component.reflector.RomanValues;
 import enigma.component.rotor.Rotor;
 import enigma.component.rotor.RotorImpl;
 import enigma.engine.generated.BTE.classes.*;
+import enigma.engine.logic.EngineImpl;
 import enigma.engine.logic.repository.Repository;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -52,10 +53,11 @@ public class LoadManager {
     private Map<Integer, Rotor> createRotorsMap(BTERotors bteRotors, Keyboard keyboard) {
 
         List<BTERotor> listOfBTERotors = bteRotors.getBTERotor();
-        if(listOfBTERotors.size() < RotorImpl.NUM_OF_MINIMUM_ROTOR_IN_SYSTEM){
+        if(listOfBTERotors.size() < EngineImpl.NUM_OF_MINIMUM_ROTOR_IN_SYSTEM){
             throw new IllegalArgumentException("The machine must contain at least three rotors.");
         }
         Map<Integer, Rotor> rotorMap = new HashMap<>();
+
         Set<Integer> idSet = new HashSet<>();
         for (BTERotor bteRotor : listOfBTERotors) {
             // get id and notch
@@ -68,7 +70,7 @@ public class LoadManager {
             if(notch < 0 || notch >= keyboard.getAlphabetLength()){
                 int size = keyboard.getAlphabetLength() - 1;
                 throw new IllegalArgumentException("Rotor notch must be between 0 and the length of the abc size minus one, which is currently " + size + ", but got " + notch + " for Rotor ID " + id + ".");
-            } //maybe off by one bug?
+            }
 
 
             // create columns
@@ -88,6 +90,7 @@ public class LoadManager {
 
             for (BTEPositioning btePosition : btePositioning) {
                 if (btePosition.getLeft().length() == 1 && btePosition.getRight().length() == 1) {
+                    // if char is in keyboard
                     if(!keyboard.isValidChar(btePosition.getLeft().charAt(0))){
                         throw new IllegalArgumentException("Rotor ID " + id + " character in the left column '" + btePosition.getLeft().charAt(0) + "' is not in the keyboard allowed characters, which is currently: " + keyboard.toString() + ".");
                     }
@@ -95,12 +98,14 @@ public class LoadManager {
                         throw new IllegalArgumentException("Rotor ID " + id + " character in the right column '" + btePosition.getRight().charAt(0) + "' is not in the keyboard allowed characters, which is currently: " + keyboard.toString() + ".");
                     }
                     leftColumn.add(keyboard.charToIndex(btePosition.getLeft().charAt(0)));
+                    rightColumn.add(keyboard.charToIndex(btePosition.getRight().charAt(0)));
+
+                    // avoid duplication
                     if(!abcInLeftColumn.contains(btePosition.getLeft().charAt(0))){
                         throw new IllegalArgumentException("Rotor ID " + id + " character in the left column '" + btePosition.getLeft().charAt(0) + "' is mapped more than once.");
                     } else {
                         abcInLeftColumn.remove((Character) btePosition.getLeft().charAt(0));
                     }
-                    rightColumn.add(keyboard.charToIndex(btePosition.getRight().charAt(0)));
                     if(!abcInRightColumn.contains(btePosition.getRight().charAt(0))){
                         throw new IllegalArgumentException("Rotor ID " + id + " character in the right column '" + btePosition.getRight().charAt(0) + "' is mapped more than once.");
                     } else {
@@ -114,6 +119,7 @@ public class LoadManager {
             rotorMap.put(id, rotor);
         }
 
+        // make sure we have no holes in id sequence
         for(int i = 1; i <= rotorMap.size(); i++){
             if(!rotorMap.containsKey(i)){
                 throw new IllegalArgumentException("Rotor IDs must be consecutive integers starting from 1 to " + rotorMap.size() + ", but missing ID: " + i);

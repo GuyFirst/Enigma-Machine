@@ -6,7 +6,7 @@ import enigma.component.rotor.RotorManager;
 import enigma.engine.DTO.history.HistoryDTO;
 import enigma.engine.DTO.MachineStatusDTO;
 import enigma.engine.logic.history.EnigmaConfiguration;
-import enigma.engine.logic.history.EnigmaMessege;
+import enigma.engine.logic.history.EnigmaMessage;
 import enigma.engine.logic.history.HistoryManager;
 import enigma.engine.logic.history.RotorLetterAndNotch;
 import enigma.engine.logic.loadManager.LoadManager;
@@ -27,9 +27,10 @@ public class EngineImpl implements Engine {
     private final HistoryManager historyManager;
     private EnigmaConfiguration initialConfig;
     private EnigmaConfiguration currentConfig;
+    public static int NUM_OF_MINIMUM_ROTOR_IN_SYSTEM = 3;
 
-    public EngineImpl(HistoryManager historyManager) {
-        this.historyManager = historyManager;
+    public EngineImpl() {
+        this.historyManager = new HistoryManager();
         this.loadManager = new LoadManager();
     }
 
@@ -40,7 +41,7 @@ public class EngineImpl implements Engine {
 
     @Override
     public MachineStatusDTO getMachineStatus() {
-        if(!isXMLneLoaded())
+        if(!isXMLLoaded())
             throw new IllegalStateException("Machine is not loaded yet. Please load an XML file first.");
         int amountOfRotorInSys = repository.getAllRotors().size();
         int amountOfReflectorsInSys = repository.getAllReflectors().size();
@@ -57,15 +58,24 @@ public class EngineImpl implements Engine {
     public void setMachineCode(List<Integer> rotorIds, List<Character> positions, String reflectorId) {
 
         //ReflectorManager reflectorManager = new ReflectorManager(repository.getAllReflectors().get(reflectorId));
+        if (!repository.getAllReflectors().containsKey(reflectorId)) {
+            throw new IllegalArgumentException("Invalid reflector ID: " + reflectorId);
+        }
         Reflector reflector = repository.getAllReflectors().get(reflectorId);
         List<Rotor> currentRotors = new ArrayList<>();
         for (Integer rotorId : rotorIds) {
+            if (!repository.getAllRotors().containsKey(rotorId)) {
+                throw new IllegalArgumentException("Invalid rotor ID: " + rotorId);
+            }
             Rotor rotor = repository.getAllRotors().get(rotorId);
             currentRotors.add(rotor);
         }
 
         List<Integer> positionIndices = new ArrayList<>();
         for (Character posChar : positions) {
+            if (!repository.getKeyboard().isValidChar(posChar)) {
+                throw new IllegalArgumentException("Invalid rotor position: " + posChar);
+            }
             int index = repository.getKeyboard().charToIndex(posChar);
             positionIndices.add(index);
         }
@@ -93,7 +103,7 @@ public class EngineImpl implements Engine {
 
     @Override
     public void setAutomaticCode() {
-        if(!isXMLneLoaded())
+        if(!isXMLLoaded())
             throw new IllegalStateException("Machine is not loaded yet. Please load an XML file first.");
         // random parameters
         List<Integer> randomRotorIds = repository.getRandomRotorIds();
@@ -104,7 +114,7 @@ public class EngineImpl implements Engine {
     }
 
     @Override
-    public EnigmaMessege processInput(String inputString) {
+    public EnigmaMessage processInput(String inputString) {
 
         if(!isStringAbleToBeCrypt(inputString)) {
             throw new IllegalArgumentException("Input string contains invalid characters not present in the machine's keyboard.");
@@ -119,9 +129,9 @@ public class EngineImpl implements Engine {
         long endTime = System.nanoTime();
         long time = endTime - startTime;
         this.currentConfig = getCurrentConfig();
-        historyManager.addMessegeToConfiguration(inputString, outputString, time, initialConfig);
+        historyManager.addMessageToConfiguration(inputString, outputString, time, initialConfig);
 
-        return new EnigmaMessege(inputString, outputString.toString(), time);
+        return new EnigmaMessage(inputString, outputString.toString(), time);
     }
 
     private boolean isStringAbleToBeCrypt(String inputString) {
@@ -164,7 +174,8 @@ public class EngineImpl implements Engine {
         return new HistoryDTO(history);
     }
 
-    public boolean isXMLneLoaded() {
+    @Override
+    public boolean isXMLLoaded() {
         return this.repository != null;
     }
 

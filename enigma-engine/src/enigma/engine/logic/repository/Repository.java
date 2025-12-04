@@ -4,6 +4,7 @@ import enigma.component.keyboard.Keyboard;
 import enigma.component.reflector.Reflector;
 import enigma.component.rotor.Rotor;
 import enigma.component.rotor.RotorImpl;
+import enigma.engine.logic.EngineImpl;
 
 import java.util.*;
 
@@ -42,7 +43,7 @@ public class Repository {
         // we will use it later
         // int maxRotors = available.size();
         // int randomNumOfRotors = randomGenerator.nextInt(maxRotors) + 1; // 1..maxRotors
-        int numOfRotors = RotorImpl.NUM_OF_MINIMUM_ROTOR_IN_SYSTEM;
+        int numOfRotors = EngineImpl.NUM_OF_MINIMUM_ROTOR_IN_SYSTEM;
 
 
         Collections.shuffle(available, randomGenerator);

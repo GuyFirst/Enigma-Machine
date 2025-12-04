@@ -1,11 +1,11 @@
 package enigma.engine.logic.history;
 
-public class EnigmaMessege {
+public class EnigmaMessage {
     private final String input;
     private final String output;
     private final long time;
 
-    public EnigmaMessege(String input, String output, long time) {
+    public EnigmaMessage(String input, String output, long time) {
         this.input = input;
         this.output = output;
         this.time = time;
