@@ -1,9 +1,10 @@
 package enigma.component.reflector;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RomanValues {
+public class RomanValues implements Serializable {
     public static Map<String, Boolean> romanValues = new HashMap<>();
     public RomanValues() {
         romanValues.put("I", false);

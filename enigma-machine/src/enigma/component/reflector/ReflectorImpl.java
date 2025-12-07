@@ -1,11 +1,12 @@
 package enigma.component.reflector;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ReflectorImpl implements Reflector {
+public class ReflectorImpl implements Reflector, Serializable {
 
     private final String id;
     private final Map<Integer, Integer> wiring;

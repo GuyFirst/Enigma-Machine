@@ -10,6 +10,7 @@ import enigma.engine.logic.history.EnigmaMessage;
 import jakarta.xml.bind.JAXBException;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -75,4 +76,8 @@ public interface Engine {
     void exit();
 
     boolean isXMLLoaded();
+
+    void saveCurrentSystemStateToFile(String fileName);
+
+    void loadSystemStateFromFile(String fileName) throws IOException;
 }

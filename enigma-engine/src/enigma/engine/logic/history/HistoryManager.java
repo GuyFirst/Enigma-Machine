@@ -1,8 +1,9 @@
 package enigma.engine.logic.history;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HistoryManager {
+public class HistoryManager implements Serializable {
     private final List<EnigmaConfiguration> configurations = new ArrayList<>();
 
     public List<EnigmaConfiguration> getHistory() {

@@ -15,7 +15,7 @@ import enigma.machine.MachineImpl;
 import enigma.machine.Machine;
 import jakarta.xml.bind.JAXBException;
 
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class EngineImpl implements Engine {
     private Machine machine;
     private final LoadManager loadManager;
     private Repository repository;
-    private final HistoryManager historyManager;
+    private HistoryManager historyManager;
     private EnigmaConfiguration initialConfig;
     private EnigmaConfiguration currentConfig;
     public static int NUM_OF_MINIMUM_ROTOR_IN_SYSTEM = 3;
@@ -177,6 +177,35 @@ public class EngineImpl implements Engine {
     @Override
     public boolean isXMLLoaded() {
         return this.repository != null;
+    }
+
+    @Override
+    public void saveCurrentSystemStateToFile(String fileName) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName))) {
+            out.writeObject(machine);
+            out.writeObject(historyManager);
+            out.writeObject(repository);
+            out.writeObject(initialConfig);
+            out.writeObject(currentConfig);
+            out.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void loadSystemStateFromFile(String fileName) throws IOException {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName))) {
+            this.machine = (Machine) in.readObject();
+            this.historyManager = (HistoryManager)in.readObject();
+            this.repository = (Repository) in.readObject();
+            this.initialConfig = (EnigmaConfiguration) in.readObject();
+            this.currentConfig = (EnigmaConfiguration) in.readObject();
+
+        } catch (ClassNotFoundException e) {
+            throw new IOException("Failed to load system state from file: " + e.getMessage(), e);
+        }
+
     }
 
     public boolean isMachineLoaded() {

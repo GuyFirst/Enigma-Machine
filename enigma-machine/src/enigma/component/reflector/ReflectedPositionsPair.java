@@ -3,7 +3,9 @@ package enigma.component.reflector;
 // This class represents a single one-way mapping from the XML (e.g., 1 -> 4)
 // It can be implemented as a simple DTO/Record.
 
-public class ReflectedPositionsPair {
+import java.io.Serializable;
+
+public class ReflectedPositionsPair implements Serializable {
     private final int input;
     private final int output;
 

@@ -1,10 +1,11 @@
 package enigma.engine.logic.history;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class EnigmaConfiguration {
+public class EnigmaConfiguration implements Serializable {
     private final List<Integer> rotorIDs;
     private final List<RotorLetterAndNotch> rotorLetterAndNotch;
     private final String reflectorID;

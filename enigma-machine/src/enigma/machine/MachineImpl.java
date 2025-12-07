@@ -4,7 +4,9 @@ import enigma.component.keyboard.Keyboard;
 import enigma.component.reflector.Reflector;
 import enigma.component.rotor.RotorManager;
 
-public class MachineImpl implements Machine {
+import java.io.Serializable;
+
+public class MachineImpl implements Machine, Serializable {
     private final Reflector reflector;
     private final RotorManager rotorManager;
     private final Keyboard keyboard;

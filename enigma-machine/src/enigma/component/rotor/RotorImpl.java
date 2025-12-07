@@ -1,8 +1,9 @@
 package enigma.component.rotor;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class RotorImpl implements Rotor{
+public class RotorImpl implements Rotor, Serializable {
     private final List<Integer> rightColumn;
     private final List<Integer> leftColumn;
     private int notchPosition;

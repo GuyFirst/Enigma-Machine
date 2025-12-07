@@ -6,9 +6,10 @@ import enigma.component.rotor.Rotor;
 import enigma.component.rotor.RotorImpl;
 import enigma.engine.logic.EngineImpl;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Repository {
+public class Repository implements Serializable {
     private final Map<Integer, Rotor> allRotors;
     private final Map<String, Reflector> allReflectors;
     private final Keyboard keyboard;

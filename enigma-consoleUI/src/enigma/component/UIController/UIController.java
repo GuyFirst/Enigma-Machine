@@ -2,6 +2,8 @@ package enigma.component.UIController;
 
 // import component.menu.*;
 import enigma.component.menu.Menu;
+import enigma.component.menu.command.concrete.load.system.LoadSystemState;
+import enigma.component.menu.command.concrete.save.system.SaveCurrentSystemState;
 import enigma.component.menu.command.concrete.setup.autoSetup.AutomaticSetupConfigurationCommand;
 import enigma.component.menu.command.concrete.exit.ExitSystemCommand;
 import enigma.component.menu.command.concrete.loadXML.LoadXMLConfigurationCommand;
@@ -53,6 +55,13 @@ public class UIController implements Runnable {
 
         // 8. Exit System
         commands.add(new ExitSystemCommand());
+
+        // 9. Save Current System State
+        commands.add(new SaveCurrentSystemState());
+
+        // 10. Load System State from File
+        commands.add(new LoadSystemState());
+
 
         return new Menu(commands);
     }
