@@ -1,5 +1,7 @@
 package enigma.machine;
 
-public interface Machine {
+import java.io.Serializable;
+
+public interface Machine  {
     char encryptChar(char inputChar);
 }

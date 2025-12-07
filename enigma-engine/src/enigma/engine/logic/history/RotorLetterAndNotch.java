@@ -1,8 +1,9 @@
 package enigma.engine.logic.history;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class RotorLetterAndNotch {
+public class RotorLetterAndNotch implements Serializable {
     private final char letter;
     private final int notch;
 

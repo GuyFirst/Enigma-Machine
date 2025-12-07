@@ -1,8 +1,9 @@
 package enigma.component.rotor;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class RotorManager {
+public class RotorManager implements Serializable {
     private final List<Rotor> currentRotors;
 
     public RotorManager(List<Rotor> currentRotors, List<Integer> positionIndices) {

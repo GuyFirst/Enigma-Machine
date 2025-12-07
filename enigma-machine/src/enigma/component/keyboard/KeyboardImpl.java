@@ -1,9 +1,10 @@
 package enigma.component.keyboard;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class KeyboardImpl implements Keyboard {
+public class KeyboardImpl implements Keyboard, Serializable {
     private final String alphabetString;
     private final Map<Character, Integer> mapFromCharToInt;
     private final Map<Integer, Character> mapFromIntToChar;

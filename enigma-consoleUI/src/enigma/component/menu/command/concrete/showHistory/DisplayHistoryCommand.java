@@ -21,7 +21,7 @@ public class DisplayHistoryCommand implements MenuCommandExecutable {
                 int numOfMsgs = 1;
                 for(EnigmaMessage message : config.getMessages()) {
 
-                    System.out.println(numOfMsgs + ". " + message);
+                    System.out.println(numOfMsgs++ + ". " + message);
                 }
             }
         }

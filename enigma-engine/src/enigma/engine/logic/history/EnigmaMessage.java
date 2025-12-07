@@ -1,6 +1,8 @@
 package enigma.engine.logic.history;
 
-public class EnigmaMessage {
+import java.io.Serializable;
+
+public class EnigmaMessage implements Serializable {
     private final String input;
     private final String output;
     private final long time;

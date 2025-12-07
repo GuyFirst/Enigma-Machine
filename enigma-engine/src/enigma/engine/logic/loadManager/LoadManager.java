@@ -18,9 +18,10 @@ import jakarta.xml.bind.Unmarshaller;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.*;
 
-public class LoadManager {
+public class LoadManager implements Serializable {
     private final static String JAXB_XML_GAME_PACKAGE_NAME = "enigma.engine.generated.BTE.classes";
 
     private static BTEEnigma deserializeFrom(InputStream in) throws JAXBException {
