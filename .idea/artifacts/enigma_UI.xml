@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="enigma-UI">
+    <output-path>D:/PATAMAL_EX1_JARS</output-path>
+    <root id="archive" name="enigma-UI.jar">
+      <element id="module-output" name="enigma-consoleUI" />
+    </root>
+  </artifact>
+</component>
