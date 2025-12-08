@@ -91,7 +91,7 @@ This module is responsible for the user interface, command presentation, and I/O
 
 1.  **Clone the repository:**
     ```bash
-    git clone [Your GitHub Repository URL Here]
+    git clone https://github.com/GuyFirst/Enigma-Machine.git
     ```
 2.  **Compile and Run (Standard JAR execution):**
     * The project should be built to produce a runnable JAR file containing both the UI and Engine modules.
