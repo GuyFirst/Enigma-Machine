@@ -37,7 +37,7 @@ The implementation is structured into three modules, ensuring clear separation o
 
 This module is the foundational library containing all necessary classes to assemble, configure, and execute the electromechanical logic of the Enigma machine. Its primary function is the transformation of a numerical input index into a corresponding output index.
 
-* **Note:** The Plugboard component is not yet developed, as its implementation is only required for Exercise 2.
+* **Note:** The Plugboard component is not yet developed.
 
 #### Key Classes:
 
