@@ -93,12 +93,7 @@ This module is responsible for the user interface, command presentation, and I/O
     ```bash
     git clone https://github.com/GuyFirst/Enigma-Machine.git
     ```
-2.  **Compile and Run (Standard JAR execution):**
-    * The project should be built to produce a runnable JAR file containing both the UI and Engine modules.
-    * Execute the application from the command line:
-        ```bash
-        java -jar enigma-machine-ex1.jar
-        ```
+2.  **TODO**
 
 ### 📜 Available Commands (Menu Display)
 
@@ -108,12 +103,12 @@ The following **10 commands** are available via the console menu:
 2.  **Display Machine Status**
 3.  **Manual Code Setup**
 4.  **Automatic Code Setup**
-5.  **Save State of Machine**
-6.  **Load State of Machine**
-7.  **Process Input (Encrypt/Decrypt)**
-8.  **Reset to Original Code**
-9.  **Get History and Statistics**
-10. **Exit System**
+5.  **Process Input (Encrypt/Decrypt)**
+6.  **Reset to Original Code**
+7.  **Get History and Statistics**
+8.  **Exit System**
+9.  **Save State of Machine**
+10. **Load State of Machine**
 
 ---
 
