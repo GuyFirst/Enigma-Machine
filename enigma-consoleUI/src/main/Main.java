@@ -49,9 +49,8 @@ public class Main {
 
     public static void main(String[] args) {
         // 1. Run the ASCII art introduction sequence
-        // 11printAsciiArtIntroduction();
+        printAsciiArtIntroduction();
 
-        // 2. Original application startup logic
         UIController enigmaUIController = new UIController(new EngineImpl());
         enigmaUIController.run();
     }
