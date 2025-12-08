@@ -123,6 +123,7 @@ public class ManualSetupConfigurationCommand implements MenuCommandExecutable {
         // First check if machine is loaded
         // NOTE: The method name 'isXMLLoaded' should probably be 'isRepositoryLoaded' or similar,
         // assuming it checks if the repository (holding all rotors/reflectors) is ready.
+        printBorders();
         if (!engine.isXMLLoaded()) {
             throw new IllegalStateException("Machine repository is not loaded. Please load the machine configuration before setting up the machine.");
         }
@@ -165,6 +166,7 @@ public class ManualSetupConfigurationCommand implements MenuCommandExecutable {
                 }
             }
         } while (!UIController.isMachineLoaded);
+        printBorders();
     }
 
 

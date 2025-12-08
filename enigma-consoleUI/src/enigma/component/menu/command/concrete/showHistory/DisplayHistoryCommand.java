@@ -10,6 +10,7 @@ public class DisplayHistoryCommand implements MenuCommandExecutable {
 
     @Override
     public void execute(Engine engine) throws Exception {
+        printBorders();
         HistoryDTO history = engine.getHistoryAndStatistics();
         System.out.println("----- Machine Usage History -----");
         for(EnigmaConfiguration config : history.getHistory()) {
@@ -25,6 +26,7 @@ public class DisplayHistoryCommand implements MenuCommandExecutable {
                 }
             }
         }
+        printBorders();
 
     }
 

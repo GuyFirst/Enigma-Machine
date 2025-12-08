@@ -9,6 +9,7 @@ import enigma.engine.logic.Engine;
 public class ShowEnigmaMachineSpecificationCommand implements MenuCommandExecutable {
     @Override
     public void execute( Engine engine) throws Exception {
+        printBorders();
         try{
             System.out.println("Fetching Enigma Machine Specification...");
             MachineStatusDTO machineStatus = engine.getMachineStatus();
@@ -18,6 +19,8 @@ public class ShowEnigmaMachineSpecificationCommand implements MenuCommandExecuta
 
         } catch (Exception e) {
             System.out.println("An unexpected error occurred: " + e.getMessage());
+        } finally {
+            printBorders();
         }
     }
 
