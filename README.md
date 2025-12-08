@@ -80,21 +80,6 @@ This module is responsible for the user interface, command presentation, and I/O
 
 ---
 
-## 🛠️ Usage and Execution
-
-### Prerequisites
-
-1.  Java Development Kit (JDK) **21** or higher.
-2.  Apache Maven (or a standard IntelliJ project setup capable of building JARs).
-
-### 🚀 Running the Application (Exercise 1)
-
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/GuyFirst/Enigma-Machine.git
-    ```
-2.  **TODO**
-
 ### 📜 Available Commands (Menu Display)
 
 The following **10 commands** are available via the console menu:
