@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class LoadManager implements Serializable {
     private final static String JAXB_XML_GAME_PACKAGE_NAME = "enigma.engine.generated.BTE.classes";
@@ -32,22 +33,34 @@ public class LoadManager implements Serializable {
 
     public Repository loadMachineSettingsFromXML(String filePath) throws JAXBException, FileNotFoundException {
         InputStream inputStream = new FileInputStream(filePath); // I deleted the new file because IntelliJ said its redundant maybe bug
+        try {
+            BTEEnigma bteEnigma = deserializeFrom(inputStream);
 
-        BTEEnigma bteEnigma = deserializeFrom(inputStream);
 
-        String abcForKeyboard = bteEnigma.getABC();
-        if (abcForKeyboard.trim().length() % 2 == 1) {
-            throw new IllegalArgumentException("The ABC length must be even, but got: " + abcForKeyboard.length() + "chars.");
+
+            String abcForKeyboard = bteEnigma.getABC().trim().toUpperCase();
+            Set<Character> characterSet = abcForKeyboard.chars()
+                    .mapToObj(c -> (char)c)
+                    .collect(Collectors.toSet());
+            if (characterSet.size() < abcForKeyboard.length()) {
+                throw new IllegalArgumentException("Repeated character found in XML file");
+            }
+            if (abcForKeyboard.length() % 2 == 1) {
+                throw new IllegalArgumentException("The ABC length must be even, but got: " + abcForKeyboard.length() + "chars.");
+            }
+            Keyboard keyboard = createKeyboard(abcForKeyboard);
+
+            BTEReflectors bteReflectors = bteEnigma.getBTEReflectors();
+            Map<String, Reflector> allReflectors = createReflectorsMap(bteReflectors);
+
+            BTERotors bteRotors = bteEnigma.getBTERotors();
+            Map<Integer, Rotor> allRotors = createRotorsMap(bteRotors, keyboard);
+
+            return new Repository(allRotors, allReflectors, keyboard);
+        } catch (JAXBException e) {
+            throw new JAXBException("invalid chars in XML file");
         }
-        Keyboard keyboard = createKeyboard(abcForKeyboard);
 
-        BTEReflectors bteReflectors = bteEnigma.getBTEReflectors();
-        Map<String, Reflector> allReflectors = createReflectorsMap(bteReflectors);
-
-        BTERotors bteRotors = bteEnigma.getBTERotors();
-        Map<Integer, Rotor> allRotors = createRotorsMap(bteRotors, keyboard);
-
-        return new Repository(allRotors, allReflectors, keyboard);
 
     }
 
