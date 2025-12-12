@@ -17,7 +17,7 @@
 				<BTE-Positioning right="B" left="F"/>
 				<BTE-Positioning right="C" left="B"/>
 				<BTE-Positioning right="D" left="E"/>
-				<BTE-Positioning right="E" left="C"/>				
+				<BTE-Positioning right="E" left="C"/>
 				<BTE-Positioning right="F" left="D"/>				
 			</BTE-Rotor>						
 			<BTE-Rotor id="2" notch="1">
