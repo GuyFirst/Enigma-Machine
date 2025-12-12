@@ -22,7 +22,7 @@ public class ProcessInputCommand implements MenuCommandExecutable {
             System.out.println("the message " + msg.getInput() + " was processed to: " + msg.getOutput());
         } catch (Exception e){
             System.out.println("Error during processing input: " + e.getMessage());
-            throw e;
+            return;
         }
         printBorders();
     }

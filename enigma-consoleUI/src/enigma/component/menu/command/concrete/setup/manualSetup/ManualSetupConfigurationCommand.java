@@ -35,18 +35,21 @@ public class ManualSetupConfigurationCommand implements MenuCommandExecutable {
                         .map(String::trim)
                         .map(Integer::parseInt)
                         .toList();
+
+                // Check for uniqueness - if there are duplicates, the set size will be smaller than the list size
                 Set<Integer> uniqueIds = new HashSet<>(rotorIds);
                 if (uniqueIds.size() != rotorIds.size()) {
-                    System.out.println("Rotor IDs must be unique.");
+                    System.out.println(rotorsIdFromUser + " contains duplicate rotor IDs (numbers must be unique).");
                     System.out.println("Press 0 to return to menu");
                     System.out.println("Press any other key to try again");
                     String userDecision = scanner.nextLine();
                     if (userDecision.trim().equals("0")) {
                         return Optional.empty(); // Return empty Optional to signal exit
+                    } else {
+                        continue;
                     }
-                    isValidRotorIds = false;
-                }else{
-                isValidRotorIds = true;}
+                }
+                isValidRotorIds = true;
             } catch (NumberFormatException e) {
                 System.out.println(rotorsIdFromUser + " is not a valid format (must be comma-separated numbers).");
                 System.out.println("Press 0 to return to menu");
@@ -136,7 +139,7 @@ public class ManualSetupConfigurationCommand implements MenuCommandExecutable {
         // assuming it checks if the repository (holding all rotors/reflectors) is ready.
         printBorders();
         if (!engine.isXMLLoaded()) {
-            throw new IllegalStateException("Machine repository is not loaded. Please load the machine configuration before setting up the machine.");
+            throw new IllegalStateException("XML file is not loaded. Please configure the system via XML configuration or loading an existing state via file.");
         }
 
         do {

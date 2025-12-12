@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <BTE-Enigma xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../Downloads/Enigma-Ex1.xsd">
 		<ABC>
-            ABCDEF
+            aBCDEF
 		</ABC>
 		<BTE-Rotors>
 			<BTE-Rotor id="1" notch="4">
-				<BTE-Positioning right="A" left="F"/>
+				<BTE-Positioning right="a" left="F"/>
 				<BTE-Positioning right="B" left="E"/>
 				<BTE-Positioning right="C" left="D"/>
 				<BTE-Positioning right="D" left="C"/>
 				<BTE-Positioning right="E" left="B"/>				
-				<BTE-Positioning right="F" left="A"/>
+				<BTE-Positioning right="F" left="a"/>
 			</BTE-Rotor>
 			<BTE-Rotor id="3" notch="2">
-				<BTE-Positioning right="A" left="A"/>
+				<BTE-Positioning right="a" left="a"/>
 				<BTE-Positioning right="B" left="F"/>
 				<BTE-Positioning right="C" left="B"/>
 				<BTE-Positioning right="D" left="E"/>
@@ -21,13 +21,13 @@
 				<BTE-Positioning right="F" left="D"/>				
 			</BTE-Rotor>						
 			<BTE-Rotor id="2" notch="1">
-				<BTE-Positioning right="A" left="E"/>
+				<BTE-Positioning right="a" left="E"/>
 				<BTE-Positioning right="B" left="B"/>
 				<BTE-Positioning right="C" left="D"/>
 				<BTE-Positioning right="D" left="F"/>
-				<BTE-Positioning right="E" left="C"/>
-				<BTE-Positioning right="F" left="A"/>
-			</BTE-Rotor>
+				<BTE-Positioning right="E" left="C"/>				
+				<BTE-Positioning right="F" left="a"/>
+			</BTE-Rotor>						
 		</BTE-Rotors>
 		<BTE-Reflectors>
 			<BTE-Reflector id="I">

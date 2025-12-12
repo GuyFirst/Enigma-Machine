@@ -42,7 +42,7 @@ public class EngineImpl implements Engine {
     @Override
     public MachineStatusDTO getMachineStatus() {
         if(!isXMLLoaded())
-            throw new IllegalStateException("Machine is not loaded yet. Please load an XML file first.");
+            throw new IllegalStateException("XML file is not loaded. Please configure the system via XML configuration or loading an existing state via file.");
         int amountOfRotorInSys = repository.getAllRotors().size();
         int amountOfReflectorsInSys = repository.getAllReflectors().size();
         int amountOfMsgsTillNow = historyManager.getMsgsAmount();
