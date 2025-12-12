@@ -10,14 +10,14 @@
 				<BTE-Positioning right="C" left="D"/>
 				<BTE-Positioning right="D" left="C"/>
 				<BTE-Positioning right="E" left="B"/>				
-				<BTE-Positioning right="F" left="A"/>				
+				<BTE-Positioning right="F" left="A"/>
 			</BTE-Rotor>
 			<BTE-Rotor id="3" notch="2">
 				<BTE-Positioning right="A" left="A"/>
 				<BTE-Positioning right="B" left="F"/>
 				<BTE-Positioning right="C" left="B"/>
 				<BTE-Positioning right="D" left="E"/>
-				<BTE-Positioning right="E" left="C"/>				
+				<BTE-Positioning right="E" left="C"/>
 				<BTE-Positioning right="F" left="D"/>				
 			</BTE-Rotor>						
 			<BTE-Rotor id="2" notch="1">
@@ -25,9 +25,9 @@
 				<BTE-Positioning right="B" left="B"/>
 				<BTE-Positioning right="C" left="D"/>
 				<BTE-Positioning right="D" left="F"/>
-				<BTE-Positioning right="E" left="C"/>				
-				<BTE-Positioning right="F" left="A"/>				
-			</BTE-Rotor>						
+				<BTE-Positioning right="E" left="C"/>
+				<BTE-Positioning right="F" left="A"/>
+			</BTE-Rotor>
 		</BTE-Rotors>
 		<BTE-Reflectors>
 			<BTE-Reflector id="I">

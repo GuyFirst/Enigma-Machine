@@ -35,7 +35,18 @@ public class ManualSetupConfigurationCommand implements MenuCommandExecutable {
                         .map(String::trim)
                         .map(Integer::parseInt)
                         .toList();
-                isValidRotorIds = true;
+                Set<Integer> uniqueIds = new HashSet<>(rotorIds);
+                if (uniqueIds.size() != rotorIds.size()) {
+                    System.out.println("Rotor IDs must be unique.");
+                    System.out.println("Press 0 to return to menu");
+                    System.out.println("Press any other key to try again");
+                    String userDecision = scanner.nextLine();
+                    if (userDecision.trim().equals("0")) {
+                        return Optional.empty(); // Return empty Optional to signal exit
+                    }
+                    isValidRotorIds = false;
+                }else{
+                isValidRotorIds = true;}
             } catch (NumberFormatException e) {
                 System.out.println(rotorsIdFromUser + " is not a valid format (must be comma-separated numbers).");
                 System.out.println("Press 0 to return to menu");

@@ -15,7 +15,7 @@ public class RomanValues implements Serializable {
     }
 
     public static void markAsUsed(String id){
-        romanValues.put("id", true);
+        romanValues.put(id, true);
     }
 
     public static Boolean checkIfUsed(String id){
