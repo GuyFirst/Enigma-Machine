@@ -12,6 +12,11 @@ public class DisplayHistoryCommand implements MenuCommandExecutable {
     public void execute(Engine engine) throws Exception {
         printBorders();
         HistoryDTO history = engine.getHistoryAndStatistics();
+        if(history.getHistory().isEmpty()) {
+            System.out.println("No history available. No configurations have been used yet.");
+            printBorders();
+            return;
+        }
         System.out.println("----- Machine Usage History -----");
         for(EnigmaConfiguration config : history.getHistory()) {
             System.out.println(config);
