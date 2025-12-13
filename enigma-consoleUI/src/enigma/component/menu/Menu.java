@@ -1,7 +1,6 @@
 package enigma.component.menu;
 
 import enigma.component.menu.command.template.MenuCommandExecutable;
-
 import java.util.List;
 
 public class Menu {
