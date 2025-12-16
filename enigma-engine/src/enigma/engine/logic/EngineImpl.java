@@ -89,7 +89,7 @@ public class EngineImpl implements Engine {
         RotorManager rotorManager = new RotorManager(currentRotors, positionIndices);
         this.plugBoardConfig = plugBoardConfig;
         this.machine = new MachineImpl(reflector, rotorManager, repository.getKeyboard(), new PlugboardImpl(plugBoardConfig));
-        this.initialConfig = this.currentConfig = addConfigToHistory(currentRotors, rotorIds, positions, reflectorId);
+        this.initialConfig = this.currentConfig = addConfigToHistory(currentRotors, rotorIds, positions, reflectorId, plugBoardConfig);
 
     }
 
@@ -130,7 +130,7 @@ public class EngineImpl implements Engine {
         return false;
     }
 
-    private EnigmaConfiguration addConfigToHistory(List<Rotor> currentRotors, List<Integer> rotorIds, List<Character> positions, String reflectorId) {
+    private EnigmaConfiguration addConfigToHistory(List<Rotor> currentRotors, List<Integer> rotorIds, List<Character> positions, String reflectorId, Map<Character, Character> plugBoardConfig) {
 
         List<RotorLetterAndNotch> rotorLetterAndNotches = new ArrayList<>();
         for (int i = 0; i < currentRotors.size(); i++){
@@ -140,7 +140,7 @@ public class EngineImpl implements Engine {
             rotorLetterAndNotches.add(new RotorLetterAndNotch(topLetter, notchPos));
         }
 
-        EnigmaConfiguration configuration = new EnigmaConfiguration(rotorIds, rotorLetterAndNotches, reflectorId);
+        EnigmaConfiguration configuration = new EnigmaConfiguration(rotorIds, rotorLetterAndNotches, reflectorId, plugBoardConfig);
         historyManager.addConfiguration(configuration);
         return configuration;
     }
@@ -230,7 +230,7 @@ public class EngineImpl implements Engine {
             char topLetter = repository.getKeyboard().indexToChar(rotor.getTopLetter());
             rotorLetterAndNotches.add(new RotorLetterAndNotch(topLetter, notchPos));
         }
-        return new EnigmaConfiguration(rotorIds, rotorLetterAndNotches, reflectorId);
+        return new EnigmaConfiguration(rotorIds, rotorLetterAndNotches, reflectorId, this.plugBoardConfig);
     }
 
     @Override
