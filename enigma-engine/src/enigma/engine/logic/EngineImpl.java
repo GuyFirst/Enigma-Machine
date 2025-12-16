@@ -82,11 +82,42 @@ public class EngineImpl implements Engine {
             positionIndices.add(index);
         }
 
+        if(plugBoardConfigNotValid(plugBoardConfig, repository.getKeyboard())) {
+            throw new IllegalArgumentException("Invalid plugBoard configuration.");
+            //TODO: more specific exception
+        }
         RotorManager rotorManager = new RotorManager(currentRotors, positionIndices);
         this.plugBoardConfig = plugBoardConfig;
         this.machine = new MachineImpl(reflector, rotorManager, repository.getKeyboard(), new PlugboardImpl(plugBoardConfig));
         this.initialConfig = this.currentConfig = addConfigToHistory(currentRotors, rotorIds, positions, reflectorId);
 
+    }
+
+    private boolean plugBoardConfigNotValid(Map<Character, Character> plugBoardConfig, Keyboard keyboard) {
+        Set<Character> usedChars = new HashSet<>();
+        for (Map.Entry<Character, Character> entry : plugBoardConfig.entrySet()) {
+            char charA = entry.getKey();
+            char charB = entry.getValue();
+
+            // Check if characters are valid
+            if (!keyboard.isValidChar(charA) || !keyboard.isValidChar(charB)) {
+                return true;
+            }
+
+            // Check for self-mapping
+            if (charA == charB) {
+                return true;
+            }
+
+            // Check for duplicate mappings
+            if (usedChars.contains(charA) || usedChars.contains(charB)) {
+                return true;
+            }
+
+            usedChars.add(charA);
+            usedChars.add(charB);
+        }
+        return false;
     }
 
     private EnigmaConfiguration addConfigToHistory(List<Rotor> currentRotors, List<Integer> rotorIds, List<Character> positions, String reflectorId) {
