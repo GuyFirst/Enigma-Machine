@@ -1,5 +1,7 @@
 package enigma.engine.logic;
 
+import enigma.component.keyboard.Keyboard;
+import enigma.component.plugboard.PlugboardImpl;
 import enigma.component.reflector.Reflector;
 import enigma.component.rotor.Rotor;
 import enigma.component.rotor.RotorManager;
@@ -16,8 +18,7 @@ import enigma.machine.Machine;
 import jakarta.xml.bind.JAXBException;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 public class EngineImpl implements Engine {
@@ -28,6 +29,7 @@ public class EngineImpl implements Engine {
     private EnigmaConfiguration initialConfig;
     private EnigmaConfiguration currentConfig;
     public static int NUM_OF_MINIMUM_ROTOR_IN_SYSTEM = 3;
+    private Map<Character , Character> plugBoardConfig;
 
     public EngineImpl() {
         this.historyManager = new HistoryManager();
@@ -47,15 +49,15 @@ public class EngineImpl implements Engine {
         int amountOfReflectorsInSys = repository.getAllReflectors().size();
         int amountOfMsgsTillNow = historyManager.getMsgsAmount();
         EnigmaConfiguration currentConfig = this.currentConfig;
-        EnigmaConfiguration initialCondig = this.initialConfig;
+        EnigmaConfiguration initialConfig = this.initialConfig;
         boolean isMachineLoaded = isMachineLoaded();
 
-        return new MachineStatusDTO(isMachineLoaded, amountOfRotorInSys, amountOfReflectorsInSys, amountOfMsgsTillNow, currentConfig, initialCondig);
+        return new MachineStatusDTO(isMachineLoaded, amountOfRotorInSys, amountOfReflectorsInSys, amountOfMsgsTillNow, currentConfig, initialConfig);
     }
 
 
     @Override
-    public void setMachineCode(List<Integer> rotorIds, List<Character> positions, String reflectorId) {
+    public void setMachineCode(List<Integer> rotorIds, List<Character> positions, String reflectorId, Map<Character, Character> plugBoardConfig) {
 
         //ReflectorManager reflectorManager = new ReflectorManager(repository.getAllReflectors().get(reflectorId));
         if (!repository.getAllReflectors().containsKey(reflectorId)) {
@@ -81,7 +83,8 @@ public class EngineImpl implements Engine {
         }
 
         RotorManager rotorManager = new RotorManager(currentRotors, positionIndices);
-        this.machine = new MachineImpl(reflector, rotorManager, repository.getKeyboard());
+        this.plugBoardConfig = plugBoardConfig;
+        this.machine = new MachineImpl(reflector, rotorManager, repository.getKeyboard(), new PlugboardImpl(plugBoardConfig));
         this.initialConfig = this.currentConfig = addConfigToHistory(currentRotors, rotorIds, positions, reflectorId);
 
     }
@@ -109,8 +112,41 @@ public class EngineImpl implements Engine {
         List<Integer> randomRotorIds = repository.getRandomRotorIds();
         List<Character> randomRotorStartPositions = repository.getRandomPositionsForRotors(randomRotorIds.size());
         String randomReflectorId = repository.getRandomReflectorId();
+        Map<Character, Character> plugBoardConfig = createRandomPlugBoardConfig();
+        setMachineCode(randomRotorIds, randomRotorStartPositions, randomReflectorId, plugBoardConfig);
+    }
 
-        setMachineCode(randomRotorIds, randomRotorStartPositions, randomReflectorId);
+    private Map<Character, Character> createRandomPlugBoardConfig() {
+
+        String alphabet = repository.getKeyboard().toString();
+        Random random = new java.util.Random();
+        Map<Character, Character> plugboardMap = new HashMap<>();
+
+        List<Character> availableChars = new ArrayList<>();
+        for (char c : alphabet.toCharArray()) {
+            availableChars.add(c);
+        }
+
+        int maxNumOfPairs = availableChars.size() / 2;
+        int randomNumOfPairs = random.nextInt(maxNumOfPairs + 1); // +1 to include the maximum
+
+        // Debugging print (optional, but useful for verification)
+        System.out.println("Generating Plugboard with " + randomNumOfPairs + " pairs.");
+
+        // 4. Loop N times to create the pairs
+        for (int i = 0; i < randomNumOfPairs; i++) {
+
+            int indexA = random.nextInt(availableChars.size());
+            Character charA = availableChars.remove(indexA);
+
+            int indexB = random.nextInt(availableChars.size());
+            Character charB = availableChars.remove(indexB);
+
+            plugboardMap.put(charA, charB);
+            plugboardMap.put(charB, charA);
+
+        }
+        return plugboardMap;
     }
 
     @Override
@@ -165,7 +201,8 @@ public class EngineImpl implements Engine {
         for (RotorLetterAndNotch rotorLetterAndNotch : rotorLetterAndNotches){
             positions.add(rotorLetterAndNotch.getLetter());
         }
-        setMachineCode(rotorIds, positions, reflectorId);
+
+        setMachineCode(rotorIds, positions, reflectorId, this.plugBoardConfig);
     }
 
     @Override

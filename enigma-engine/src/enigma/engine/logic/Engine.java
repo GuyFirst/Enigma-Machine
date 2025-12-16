@@ -12,6 +12,7 @@ import jakarta.xml.bind.JAXBException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -43,7 +44,7 @@ public interface Engine {
      * @param reflectorId The chosen reflector ID.
      * @return The new code in the required compact string format.
      */
-    void setMachineCode(List<Integer> rotorIds, List<Character> positions, String reflectorId);
+    void setMachineCode(List<Integer> rotorIds, List<Character> positions, String reflectorId, Map<Character, Character> plugboardConfig);
 
     /**
      * Sets a random, valid machine configuration automatically.
