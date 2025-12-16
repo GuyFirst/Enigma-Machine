@@ -3,9 +3,9 @@ package enigma.component.menu.command.concrete.setup.manualSetup;
 import enigma.component.UIController.UIController;
 import enigma.component.menu.command.template.MenuCommandExecutable;
 import enigma.engine.logic.Engine;
+import enigma.engine.logic.EngineImpl;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ManualSetupConfigurationCommand implements MenuCommandExecutable {
 
@@ -23,11 +23,12 @@ public class ManualSetupConfigurationCommand implements MenuCommandExecutable {
     /**
      * Handles user input for Rotor IDs. Returns Optional.empty() if user chooses to return to menu.
      */
-    private Optional<List<Integer>> rotorIdSetupHandler() {
+    private Optional<List<Integer>> rotorIdSetupHandler(int numOfUsedRotorsInMachine) {
         boolean isValidRotorIds = false;
         List<Integer> rotorIds = new ArrayList<>();
         do {
-            System.out.println("Please write the IDs of the rotors you want to use in the following format: 1,2,3 (most left, ... , most right):");
+            System.out.println("Please write the IDs of the rotors you want to use in the following format: 1,2,3 (most left, ... , most right)");
+            System.out.println("make sure to write exactly " + numOfUsedRotorsInMachine + " unique rotor IDs:");
             String rotorsIdFromUser = scanner.nextLine();
 
             try {
@@ -36,10 +37,20 @@ public class ManualSetupConfigurationCommand implements MenuCommandExecutable {
                         .map(Integer::parseInt)
                         .toList();
 
-                // Check for uniqueness - if there are duplicates, the set size will be smaller than the list size
                 Set<Integer> uniqueIds = new HashSet<>(rotorIds);
                 if (uniqueIds.size() != rotorIds.size()) {
                     System.out.println(rotorsIdFromUser + " contains duplicate rotor IDs (numbers must be unique).");
+                    System.out.println("Press 0 to return to menu");
+                    System.out.println("Press any other key to try again");
+                    String userDecision = scanner.nextLine();
+                    if (userDecision.trim().equals("0")) {
+                        return Optional.empty(); // Return empty Optional to signal exit
+                    } else {
+                        continue;
+                    }
+                }
+                if (rotorIds.size() != numOfUsedRotorsInMachine) {
+                    System.out.println("You must enter exactly " + numOfUsedRotorsInMachine + " rotor IDs.");
                     System.out.println("Press 0 to return to menu");
                     System.out.println("Press any other key to try again");
                     String userDecision = scanner.nextLine();
@@ -79,8 +90,16 @@ public class ManualSetupConfigurationCommand implements MenuCommandExecutable {
                 continue;
             }
 
-            // No specific format error handling needed here beyond basic character extraction
-            // because actual position validity is checked in engine.setMachineCode
+            if (rotorsPositionsFromUser.length() != EngineImpl.NUM_OF_USED_ROTORS_IN_MACHINE) {
+                System.out.println("You must enter exactly " + EngineImpl.NUM_OF_USED_ROTORS_IN_MACHINE + " rotor positions.");
+                System.out.println("Press 0 to return to menu");
+                System.out.println("Press any other key to try again");
+                String userDecision = scanner.nextLine();
+                if (userDecision.trim().equals("0")) {
+                    return Optional.empty(); // Return empty Optional to signal exit
+                }
+                continue;
+            }
             try {
                 rotorPositions = rotorsPositionsFromUser.chars()
                         .mapToObj(c -> (char) c)
@@ -143,7 +162,7 @@ public class ManualSetupConfigurationCommand implements MenuCommandExecutable {
         }
 
         do {
-            Optional<List<Integer>> optionalRotorIds = rotorIdSetupHandler();
+            Optional<List<Integer>> optionalRotorIds = rotorIdSetupHandler(EngineImpl.NUM_OF_USED_ROTORS_IN_MACHINE);
             if (optionalRotorIds.isEmpty()) {
                 return; // Exit command if user chose '0'
             }
