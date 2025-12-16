@@ -44,7 +44,7 @@ public class Repository implements Serializable {
         // we will use it later
         // int maxRotors = available.size();
         // int randomNumOfRotors = randomGenerator.nextInt(maxRotors) + 1; // 1..maxRotors
-        int numOfRotors = EngineImpl.NUM_OF_MINIMUM_ROTOR_IN_SYSTEM;
+        int numOfRotors = EngineImpl.NUM_OF_USED_ROTORS_IN_MACHINE;
 
 
         Collections.shuffle(available, randomGenerator);
