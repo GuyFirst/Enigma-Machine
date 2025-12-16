@@ -94,29 +94,39 @@ public class EngineImpl implements Engine {
     }
 
     private boolean plugBoardConfigNotValid(Map<Character, Character> plugBoardConfig, Keyboard keyboard) {
-        Set<Character> usedChars = new HashSet<>();
+        Set<Character> validatedChars = new HashSet<>();
+
         for (Map.Entry<Character, Character> entry : plugBoardConfig.entrySet()) {
             char charA = entry.getKey();
             char charB = entry.getValue();
 
-            // Check if characters are valid
+            // Since the map contains A->B and B->A, we skip the entry where the key is alphabetically larger.
+            if (charA > charB) {
+                continue;
+            }
+
+
             if (!keyboard.isValidChar(charA) || !keyboard.isValidChar(charB)) {
+                // If either character is outside the machine's alphabet
                 return true;
             }
 
-            // Check for self-mapping
+            // 2. Check for self-mapping (A -> A)
             if (charA == charB) {
+                // This case should ideally be caught in the UI layer, but checked here for safety.
                 return true;
             }
 
-            // Check for duplicate mappings
-            if (usedChars.contains(charA) || usedChars.contains(charB)) {
+            if (validatedChars.contains(charA) || validatedChars.contains(charB)) {
                 return true;
             }
 
-            usedChars.add(charA);
-            usedChars.add(charB);
+            // Mark the connection as validated and used
+            validatedChars.add(charA);
+            validatedChars.add(charB);
         }
+
+        // If the loop completes without returning true, the configuration is valid.
         return false;
     }
 
