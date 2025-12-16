@@ -19,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,6 +36,7 @@ public class LoadManager implements Serializable {
         InputStream inputStream = new FileInputStream(filePath); // I deleted the new file because IntelliJ said its redundant maybe bug
         try {
             BTEEnigma bteEnigma = deserializeFrom(inputStream);
+            EngineImpl.NUM_OF_USED_ROTORS_IN_MACHINE = bteEnigma.getRotorsCount().intValue();
             String abcForKeyboard = bteEnigma.getABC().trim().toUpperCase();
             Set<Character> characterSet = abcForKeyboard.chars()
                     .mapToObj(c -> (char)c)
@@ -109,8 +111,8 @@ public class LoadManager implements Serializable {
 
     private Map<Integer, Rotor> createRotorsMap(BTERotors bteRotors, Keyboard keyboard) {
         List<BTERotor> listOfBTERotors = bteRotors.getBTERotor();
-        if(listOfBTERotors.size() < EngineImpl.NUM_OF_MINIMUM_ROTOR_IN_SYSTEM){
-            throw new IllegalArgumentException("The machine must contain at least three rotors.");
+        if(listOfBTERotors.size() < EngineImpl.NUM_OF_USED_ROTORS_IN_MACHINE){
+            throw new IllegalArgumentException("The machine must have at least " + EngineImpl.NUM_OF_USED_ROTORS_IN_MACHINE + " rotors (as written in rotors count attribute), but got only " + listOfBTERotors.size() + " rotors in your XML.");
         }
         Map<Integer, Rotor> rotorMap = new HashMap<>();
 
