@@ -19,7 +19,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class LoadManager implements Serializable {
     private final static String JAXB_XML_GAME_PACKAGE_NAME = "enigma.engine.generated.BTE.classes";
@@ -32,22 +34,31 @@ public class LoadManager implements Serializable {
 
     public Repository loadMachineSettingsFromXML(String filePath) throws JAXBException, FileNotFoundException {
         InputStream inputStream = new FileInputStream(filePath); // I deleted the new file because IntelliJ said its redundant maybe bug
+        try {
+            BTEEnigma bteEnigma = deserializeFrom(inputStream);
+            EngineImpl.NUM_OF_USED_ROTORS_IN_MACHINE = bteEnigma.getRotorsCount().intValue();
+            String abcForKeyboard = bteEnigma.getABC().trim().toUpperCase();
+            Set<Character> characterSet = abcForKeyboard.chars()
+                    .mapToObj(c -> (char)c)
+                    .collect(Collectors.toSet());
+            if (characterSet.size() < abcForKeyboard.length()) {
+                throw new IllegalArgumentException("Repeated character found in XML file");
+            }
+            if (abcForKeyboard.length() % 2 == 1) {
+                throw new IllegalArgumentException("The ABC length must be even, but got: " + abcForKeyboard.length() + " chars.");
+            }
+            Keyboard keyboard = createKeyboard(abcForKeyboard);
 
-        BTEEnigma bteEnigma = deserializeFrom(inputStream);
+            BTEReflectors bteReflectors = bteEnigma.getBTEReflectors();
+            Map<String, Reflector> allReflectors = createReflectorsMap(bteReflectors);
 
-        String abcForKeyboard = bteEnigma.getABC();
-        if (abcForKeyboard.trim().length() % 2 == 1) {
-            throw new IllegalArgumentException("The ABC length must be even, but got: " + abcForKeyboard.length() + "chars.");
+            BTERotors bteRotors = bteEnigma.getBTERotors();
+            Map<Integer, Rotor> allRotors = createRotorsMap(bteRotors, keyboard);
+
+            return new Repository(allRotors, allReflectors, keyboard);
+        } catch (JAXBException e) {
+            throw new JAXBException("Something went wrong. Please check if your XML is valid because it looks like its not, check for invalid characters (like &) or wrong structure.");
         }
-        Keyboard keyboard = createKeyboard(abcForKeyboard);
-
-        BTEReflectors bteReflectors = bteEnigma.getBTEReflectors();
-        Map<String, Reflector> allReflectors = createReflectorsMap(bteReflectors);
-
-        BTERotors bteRotors = bteEnigma.getBTERotors();
-        Map<Integer, Rotor> allRotors = createRotorsMap(bteRotors, keyboard);
-
-        return new Repository(allRotors, allReflectors, keyboard);
 
     }
 
@@ -69,7 +80,7 @@ public class LoadManager implements Serializable {
     }
 
     private void checkIfDuplicateCharacterInColumn(List<Character> abcInColumn, BTEPositioning positioning, int id){
-        if(!abcInColumn.contains(positioning.getLeft().charAt(0))){
+        if(!abcInColumn.contains(positioning.getLeft().toUpperCase().charAt(0))){
             throw new IllegalArgumentException("Rotor ID " + id + " character in the left column '" + positioning.getLeft().charAt(0) + "' is mapped more than once.");
         } else {
             abcInColumn.remove((Character) positioning.getLeft().charAt(0));
@@ -77,10 +88,10 @@ public class LoadManager implements Serializable {
     }
 
     private Boolean isCharacterInKeyboard(Keyboard keyboard, BTEPositioning positioning, int rotorId){
-        if(!keyboard.isValidChar(positioning.getLeft().charAt(0))){
+        if(!keyboard.isValidChar(positioning.getLeft().toUpperCase().charAt(0))){
             throw new IllegalArgumentException("Rotor ID " + rotorId + " character in the left column '" + positioning.getLeft().charAt(0) + "' is not in the keyboard allowed characters, which is currently: " + keyboard.toString() + ".");
         }
-        if(!keyboard.isValidChar(positioning.getRight().charAt(0))){
+        if(!keyboard.isValidChar(positioning.getRight().toUpperCase().charAt(0))){
             throw new IllegalArgumentException("Rotor ID " + rotorId + " character in the right column '" + positioning.getRight().charAt(0) + "' is not in the keyboard allowed characters, which is currently: " + keyboard.toString() + ".");
         }
         return true;
@@ -89,8 +100,8 @@ public class LoadManager implements Serializable {
             // check if character is in keyboard
             if(isCharacterInKeyboard(keyboard, btePosition, rotorId)){
                 // add to columns if valid
-                leftColumn.add(keyboard.charToIndex(btePosition.getLeft().charAt(0)));
-                rightColumn.add(keyboard.charToIndex(btePosition.getRight().charAt(0)));
+                leftColumn.add(keyboard.charToIndex(btePosition.getLeft().toUpperCase().charAt(0)));
+                rightColumn.add(keyboard.charToIndex(btePosition.getRight().toUpperCase().charAt(0)));
             }
 
             // check for duplication
@@ -100,14 +111,13 @@ public class LoadManager implements Serializable {
 
     private Map<Integer, Rotor> createRotorsMap(BTERotors bteRotors, Keyboard keyboard) {
         List<BTERotor> listOfBTERotors = bteRotors.getBTERotor();
-        if(listOfBTERotors.size() < EngineImpl.NUM_OF_MINIMUM_ROTOR_IN_SYSTEM){
-            throw new IllegalArgumentException("The machine must contain at least three rotors.");
+        if(listOfBTERotors.size() < EngineImpl.NUM_OF_USED_ROTORS_IN_MACHINE){
+            throw new IllegalArgumentException("The machine must have at least " + EngineImpl.NUM_OF_USED_ROTORS_IN_MACHINE + " rotors (as written in rotors count attribute), but got only " + listOfBTERotors.size() + " rotors in your XML.");
         }
         Map<Integer, Rotor> rotorMap = new HashMap<>();
 
         Set<Integer> idSet = new HashSet<>();
         for (BTERotor bteRotor : listOfBTERotors) {
-
             int id = getId(idSet, bteRotor.getId());
             int notch  = getNotch(id, idSet, bteRotor.getNotch(), keyboard);
 
@@ -149,7 +159,7 @@ public class LoadManager implements Serializable {
         RomanValues.clear();
         for (BTEReflector bteReflector : listOfBTEReflectors) {
             List<ReflectedPositionsPair> listOfReflectedPositionsPairs = new ArrayList<>();
-            String id = bteReflector.getId();
+            String id = bteReflector.getId().trim();
             if(!RomanValues.romanValues.containsKey(id)){
                 throw new IllegalArgumentException("Reflector ID must be a roman value, but got: " + id);
             } else if (RomanValues.checkIfUsed(id)){
@@ -164,7 +174,7 @@ public class LoadManager implements Serializable {
                 int input = bteReflect.getInput();
                 int output = bteReflect.getOutput();
                 if(input == output){
-                    throw new IllegalArgumentException("Reflector cannot map a position to itself, but got map between " + input + " and " + output + ".");
+                    throw new IllegalArgumentException("Reflector cannot map a position to itself, but got map between " + input + " and " + output + " in Reflector " + id + ".");
                 }
                 listOfReflectedPositionsPairs.add(new ReflectedPositionsPair(--input, --output)); // convert to zero-based index
             }

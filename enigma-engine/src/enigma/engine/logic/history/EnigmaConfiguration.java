@@ -1,20 +1,20 @@
 package enigma.engine.logic.history;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class EnigmaConfiguration implements Serializable {
     private final List<Integer> rotorIDs;
     private final List<RotorLetterAndNotch> rotorLetterAndNotch;
     private final String reflectorID;
+    private final Map<Character, Character> plugBoardMapping;
     private final List<EnigmaMessage> messages;
 
-    public EnigmaConfiguration(List<Integer> rotorIDs, List<RotorLetterAndNotch> rotorLetterAndNotch, String reflectorID) {
+    public EnigmaConfiguration(List<Integer> rotorIDs, List<RotorLetterAndNotch> rotorLetterAndNotch, String reflectorID, Map<Character, Character> plugboardMapping) {
         this.rotorIDs = rotorIDs;
         this.rotorLetterAndNotch = rotorLetterAndNotch;
         this.reflectorID = reflectorID;
+        this.plugBoardMapping = plugboardMapping;
         this.messages = new ArrayList<>();
     }
 
@@ -56,7 +56,31 @@ public class EnigmaConfiguration implements Serializable {
         appendRotorsToStr(configStr);
         appendRotorsAndNotchesToStr(configStr);
         appendReflectorToStr(configStr);
+        appendPlugBoardToStr(configStr);
         return configStr.toString();
+    }
+
+    private void appendPlugBoardToStr(StringBuilder configStr) {
+
+        List<Character> keys = new ArrayList<>(this.plugBoardMapping.keySet());
+        Collections.sort(keys);
+
+        List<String> pairStrings = new ArrayList<>();
+
+        for (char key : keys) {
+            char value = this.plugBoardMapping.get(key);
+
+            if (key < value) {
+                // Append the pair in the A|B format
+                pairStrings.add(key + "|" + value);
+            }
+        }
+
+        String joinedPairs = String.join(",", pairStrings);
+
+        configStr.append("<");
+        configStr.append(joinedPairs);
+        configStr.append(">");
     }
 
     private void appendReflectorToStr(StringBuilder ConfigStr) {

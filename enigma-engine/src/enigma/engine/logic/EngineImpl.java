@@ -1,5 +1,7 @@
 package enigma.engine.logic;
 
+import enigma.component.keyboard.Keyboard;
+import enigma.component.plugboard.PlugboardImpl;
 import enigma.component.reflector.Reflector;
 import enigma.component.rotor.Rotor;
 import enigma.component.rotor.RotorManager;
@@ -16,8 +18,8 @@ import enigma.machine.Machine;
 import jakarta.xml.bind.JAXBException;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigInteger;
+import java.util.*;
 
 
 public class EngineImpl implements Engine {
@@ -27,7 +29,8 @@ public class EngineImpl implements Engine {
     private HistoryManager historyManager;
     private EnigmaConfiguration initialConfig;
     private EnigmaConfiguration currentConfig;
-    public static int NUM_OF_MINIMUM_ROTOR_IN_SYSTEM = 3;
+    public static int NUM_OF_USED_ROTORS_IN_MACHINE;
+    private Map<Character , Character> plugBoardConfig;
 
     public EngineImpl() {
         this.historyManager = new HistoryManager();
@@ -42,20 +45,20 @@ public class EngineImpl implements Engine {
     @Override
     public MachineStatusDTO getMachineStatus() {
         if(!isXMLLoaded())
-            throw new IllegalStateException("Machine is not loaded yet. Please load an XML file first.");
+            throw new IllegalStateException("XML file is not loaded. Please configure the system via XML configuration or loading an existing state via file.");
         int amountOfRotorInSys = repository.getAllRotors().size();
         int amountOfReflectorsInSys = repository.getAllReflectors().size();
         int amountOfMsgsTillNow = historyManager.getMsgsAmount();
         EnigmaConfiguration currentConfig = this.currentConfig;
-        EnigmaConfiguration initialCondig = this.initialConfig;
+        EnigmaConfiguration initialConfig = this.initialConfig;
         boolean isMachineLoaded = isMachineLoaded();
 
-        return new MachineStatusDTO(isMachineLoaded, amountOfRotorInSys, amountOfReflectorsInSys, amountOfMsgsTillNow, currentConfig, initialCondig);
+        return new MachineStatusDTO(isMachineLoaded, amountOfRotorInSys, amountOfReflectorsInSys, amountOfMsgsTillNow, currentConfig, initialConfig);
     }
 
 
     @Override
-    public void setMachineCode(List<Integer> rotorIds, List<Character> positions, String reflectorId) {
+    public void setMachineCode(List<Integer> rotorIds, List<Character> positions, String reflectorId, Map<Character, Character> plugBoardConfig) {
 
         //ReflectorManager reflectorManager = new ReflectorManager(repository.getAllReflectors().get(reflectorId));
         if (!repository.getAllReflectors().containsKey(reflectorId)) {
@@ -80,13 +83,55 @@ public class EngineImpl implements Engine {
             positionIndices.add(index);
         }
 
+        if(plugBoardConfigNotValid(plugBoardConfig, repository.getKeyboard())) {
+            throw new IllegalArgumentException("Invalid plugBoard configuration.");
+            //TODO: more specific exception
+        }
         RotorManager rotorManager = new RotorManager(currentRotors, positionIndices);
-        this.machine = new MachineImpl(reflector, rotorManager, repository.getKeyboard());
-        this.initialConfig = this.currentConfig = addConfigToHistory(currentRotors, rotorIds, positions, reflectorId);
+        this.plugBoardConfig = plugBoardConfig;
+        this.machine = new MachineImpl(reflector, rotorManager, repository.getKeyboard(), new PlugboardImpl(plugBoardConfig));
+        this.initialConfig = this.currentConfig = addConfigToHistory(currentRotors, rotorIds, positions, reflectorId, plugBoardConfig);
 
     }
 
-    private EnigmaConfiguration addConfigToHistory(List<Rotor> currentRotors, List<Integer> rotorIds, List<Character> positions, String reflectorId) {
+    private boolean plugBoardConfigNotValid(Map<Character, Character> plugBoardConfig, Keyboard keyboard) {
+        Set<Character> validatedChars = new HashSet<>();
+
+        for (Map.Entry<Character, Character> entry : plugBoardConfig.entrySet()) {
+            char charA = entry.getKey();
+            char charB = entry.getValue();
+
+            // Since the map contains A->B and B->A, we skip the entry where the key is alphabetically larger.
+            if (charA > charB) {
+                continue;
+            }
+
+
+            if (!keyboard.isValidChar(charA) || !keyboard.isValidChar(charB)) {
+                // If either character is outside the machine's alphabet
+                return true;
+            }
+
+            // 2. Check for self-mapping (A -> A)
+            if (charA == charB) {
+                // This case should ideally be caught in the UI layer, but checked here for safety.
+                return true;
+            }
+
+            if (validatedChars.contains(charA) || validatedChars.contains(charB)) {
+                return true;
+            }
+
+            // Mark the connection as validated and used
+            validatedChars.add(charA);
+            validatedChars.add(charB);
+        }
+
+        // If the loop completes without returning true, the configuration is valid.
+        return false;
+    }
+
+    private EnigmaConfiguration addConfigToHistory(List<Rotor> currentRotors, List<Integer> rotorIds, List<Character> positions, String reflectorId, Map<Character, Character> plugBoardConfig) {
 
         List<RotorLetterAndNotch> rotorLetterAndNotches = new ArrayList<>();
         for (int i = 0; i < currentRotors.size(); i++){
@@ -96,7 +141,7 @@ public class EngineImpl implements Engine {
             rotorLetterAndNotches.add(new RotorLetterAndNotch(topLetter, notchPos));
         }
 
-        EnigmaConfiguration configuration = new EnigmaConfiguration(rotorIds, rotorLetterAndNotches, reflectorId);
+        EnigmaConfiguration configuration = new EnigmaConfiguration(rotorIds, rotorLetterAndNotches, reflectorId, plugBoardConfig);
         historyManager.addConfiguration(configuration);
         return configuration;
     }
@@ -109,8 +154,41 @@ public class EngineImpl implements Engine {
         List<Integer> randomRotorIds = repository.getRandomRotorIds();
         List<Character> randomRotorStartPositions = repository.getRandomPositionsForRotors(randomRotorIds.size());
         String randomReflectorId = repository.getRandomReflectorId();
+        Map<Character, Character> plugBoardConfig = createRandomPlugBoardConfig();
+        setMachineCode(randomRotorIds, randomRotorStartPositions, randomReflectorId, plugBoardConfig);
+    }
 
-        setMachineCode(randomRotorIds, randomRotorStartPositions, randomReflectorId);
+    private Map<Character, Character> createRandomPlugBoardConfig() {
+
+        String alphabet = repository.getKeyboard().toString();
+        Random random = new java.util.Random();
+        Map<Character, Character> plugboardMap = new HashMap<>();
+
+        List<Character> availableChars = new ArrayList<>();
+        for (char c : alphabet.toCharArray()) {
+            availableChars.add(c);
+        }
+
+        int maxNumOfPairs = availableChars.size() / 2;
+        int randomNumOfPairs = random.nextInt(maxNumOfPairs + 1); // +1 to include the maximum
+
+        // Debugging print (optional, but useful for verification)
+        System.out.println("Generating Plugboard with " + randomNumOfPairs + " pairs.");
+
+        // 4. Loop N times to create the pairs
+        for (int i = 0; i < randomNumOfPairs; i++) {
+
+            int indexA = random.nextInt(availableChars.size());
+            Character charA = availableChars.remove(indexA);
+
+            int indexB = random.nextInt(availableChars.size());
+            Character charB = availableChars.remove(indexB);
+
+            plugboardMap.put(charA, charB);
+            plugboardMap.put(charB, charA);
+
+        }
+        return plugboardMap;
     }
 
     @Override
@@ -153,7 +231,7 @@ public class EngineImpl implements Engine {
             char topLetter = repository.getKeyboard().indexToChar(rotor.getTopLetter());
             rotorLetterAndNotches.add(new RotorLetterAndNotch(topLetter, notchPos));
         }
-        return new EnigmaConfiguration(rotorIds, rotorLetterAndNotches, reflectorId);
+        return new EnigmaConfiguration(rotorIds, rotorLetterAndNotches, reflectorId, this.plugBoardConfig);
     }
 
     @Override
@@ -165,7 +243,8 @@ public class EngineImpl implements Engine {
         for (RotorLetterAndNotch rotorLetterAndNotch : rotorLetterAndNotches){
             positions.add(rotorLetterAndNotch.getLetter());
         }
-        setMachineCode(rotorIds, positions, reflectorId);
+
+        setMachineCode(rotorIds, positions, reflectorId, this.plugBoardConfig);
     }
 
     @Override

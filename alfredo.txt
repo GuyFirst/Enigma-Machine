@@ -1,0 +1,22 @@
+ok so all I did today is
+
+- implementing the plugboard
+there's a new component in the machine module called Plugboard
+it has a method called "substitute" that takes a character and returns the
+substituted character according to the plugboard configuration, or the same character if
+there's no substitution for it
+
+- refactored all the relevant commands
+manual code - asking the user to write the plugboard configuration (or " " for nothing)
+
+automatic code - generating random number of pairs between 0 and half the alphabet size,
+and for each one generating two random letters that are not already used in the plugboard
+
+showSpec - updated to include the plugboard configuration in the output
+
+- added the new generated classes from the xjc
+ the new classes has one minor change - attribute called "rotorCount" hat decides how many rotors will be used in the machine.
+ its an data member in BTEenigma class and you can see in the "loadFromXML" method in the MachineLoader class how its used to create the machine with the right number of rotors.
+
+its basically just replaced the "NUM_OF_ROTORS = 3" to be decided in runtime from the xml (so its not constant might want to change the big letters tho)
+

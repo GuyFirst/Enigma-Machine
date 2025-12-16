@@ -9,11 +9,13 @@ public class LoadSystemState implements MenuCommandExecutable {
 
     @Override
     public void execute(Engine engine) throws Exception {
+        printBorders();
         System.out.println("Please enter the file path to load the system state from: ");
         Scanner scanner = new Scanner(System.in);
         String filePath = scanner.nextLine();
         engine.loadSystemStateFromFile(filePath);
         System.out.println("System state loaded successfully from: " + filePath);
+        printBorders();
     }
 
     @Override

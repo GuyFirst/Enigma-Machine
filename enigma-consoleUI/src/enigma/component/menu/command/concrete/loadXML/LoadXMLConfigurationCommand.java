@@ -2,6 +2,7 @@ package enigma.component.menu.command.concrete.loadXML;
 
 import enigma.component.menu.command.template.MenuCommandExecutable;
 import enigma.engine.logic.Engine;
+import jakarta.xml.bind.JAXBException;
 
 import java.io.File;
 import java.util.Scanner;
@@ -9,7 +10,7 @@ import java.util.Scanner;
 public class LoadXMLConfigurationCommand implements MenuCommandExecutable {
     @Override
     public void execute(Engine engine) throws Exception {
-
+        printBorders();
         System.out.println("Please insert the exact path for the XML desired to be loaded.");
         Scanner pathScanner = new Scanner(System.in);
         String path = pathScanner.nextLine();
@@ -29,7 +30,7 @@ public class LoadXMLConfigurationCommand implements MenuCommandExecutable {
         } catch (Exception e) {
             System.out.println("Error loading XML configuration: " + e.getMessage());
         }
-
+        printBorders();
     }
     @Override
     public String toString() {

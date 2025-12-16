@@ -8,6 +8,7 @@ public class ResetCodeCommand implements MenuCommandExecutable {
 
     @Override
     public void execute(Engine engine) throws Exception {
+        printBorders();
         if(!UIController.isMachineLoaded)
             throw new IllegalStateException("Machine configuration is not loaded. Please load the machine configuration before processing input.");
         System.out.println("Resetting code to default state...");
@@ -18,6 +19,7 @@ public class ResetCodeCommand implements MenuCommandExecutable {
             System.out.println("Error during resetting code: " + e.getMessage());
             throw e;
         }
+        printBorders();
     }
     @Override
     public String toString() {
