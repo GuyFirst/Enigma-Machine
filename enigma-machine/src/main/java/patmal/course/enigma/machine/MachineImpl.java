@@ -1,9 +1,9 @@
 package patmal.course.enigma.machine;
 
-import enigma.component.keyboard.Keyboard;
-import enigma.component.plugboard.Plugboard;
-import enigma.component.reflector.Reflector;
-import enigma.component.rotor.RotorManager;
+import patmal.course.enigma.component.keyboard.Keyboard;
+import patmal.course.enigma.component.plugboard.Plugboard;
+import patmal.course.enigma.component.reflector.Reflector;
+import patmal.course.enigma.component.rotor.RotorManager;
 
 import java.io.Serializable;
 import java.util.Map;
