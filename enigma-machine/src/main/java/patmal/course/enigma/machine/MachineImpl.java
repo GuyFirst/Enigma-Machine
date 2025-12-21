@@ -6,7 +6,6 @@ import patmal.course.enigma.component.reflector.Reflector;
 import patmal.course.enigma.component.rotor.RotorManager;
 
 import java.io.Serializable;
-import java.util.Map;
 
 public class MachineImpl implements Machine, Serializable {
     private final Reflector reflector;
