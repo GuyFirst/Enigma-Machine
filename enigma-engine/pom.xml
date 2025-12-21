@@ -10,6 +10,19 @@
     </parent>
 
     <artifactId>enigma-engine</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>patmal.course.enigma</groupId>
+            <artifactId>enigma-machine</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>patmal.course.enigma</groupId>
+            <artifactId>enigma-loader</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
