@@ -24,7 +24,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class LoadManager implements Serializable {
-    private final static String JAXB_XML_GAME_PACKAGE_NAME = "enigma.engine.generated.BTE.classes";
+    private final static String JAXB_XML_GAME_PACKAGE_NAME = "patmal.course.enigma.loader.schema";
 
     private static BTEEnigma deserializeFrom(InputStream in) throws JAXBException {
         JAXBContext jc = JAXBContext.newInstance(JAXB_XML_GAME_PACKAGE_NAME);

@@ -27,7 +27,7 @@ public class LoadXMLConfigurationCommand implements MenuCommandExecutable {
             engine.loadMachineFromXml(path);
             System.out.println("XML configuration loaded successfully.");
         } catch (Exception e) {
-            System.out.println("Error loading XML configuration: " + e.getMessage());
+            e.printStackTrace();
         }
         printBorders();
     }
