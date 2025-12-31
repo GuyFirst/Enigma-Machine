@@ -68,12 +68,16 @@ You can run the project end-to-end using the following methods:
 ### Manual Steps
 
 ```bash
-# Clone the repository
 git clone https://github.com/GuyFirst/Enigma-Machine ./enigma
+
 cd enigma
 
-# Build the project
 call mvn clean install
+
+cd target
+
+java -jar enigma-machine-ex2.jar
+```
 
 # Run the executable
 cd target
