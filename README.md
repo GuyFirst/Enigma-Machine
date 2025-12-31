@@ -77,6 +77,7 @@ call mvn clean install
 cd target
 
 java -jar enigma-machine-ex2.jar
+
 ```
 
 # Run the executable
