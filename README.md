@@ -40,8 +40,10 @@ Once the application is running, the following commands are available through th
 3.  **Set Initial Code (Manual)**: Manually configure the active rotors, their starting positions, the chosen reflector, and the plugboard connections.
 4.  **Set Initial Code (Automatic)**: Let the system randomly select and configure the machine state.
 5. **Process Input (Symmetric Encryption/Decryption)**: Process a message through the machine's current configuration. The Enigma machine is reciprocal by design, meaning the encryption and decryption processes are identical.
+
 Example: If a specific machine state maps "HELLO" to "AKVPD", then resetting the machine to that exact same state and processing "AKVPD" will return "HELLO".
 Requirement: To decrypt a message, the machine must be set to the same initial code (rotors, positions, and plugboard) used during encryption.
+
 6.  **Reset Current Code**: Reset the rotors to their initial starting positions (the last "ground state" configured).
 7.  **History and Statistics**: Display all previous encryptions and performance metrics for the current session.
 8.  **Exit**: Safely terminate the application.
