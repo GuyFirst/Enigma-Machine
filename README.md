@@ -31,6 +31,21 @@ This repository is a Maven aggregator project (packaging: `pom`) composed of the
 * **`enigma-console`**: Console-based user interface and application entry point.
 
 ---
+## 🕹 Console Menu Commands
+
+Once the application is running, the following commands are available through the main menu:
+
+1.  **Load Machine Definition**: Load an XML file containing the machine's technical specifications (rotors, reflectors, alphabet).
+2.  **Display Machine Specifications**: View the current machine setup, including available rotors, alphabet size, and the number of messages processed.
+3.  **Set Initial Code (Manual)**: Manually configure the active rotors, their starting positions, the chosen reflector, and the plugboard connections.
+4.  **Set Initial Code (Automatic)**: Let the system randomly select and configure the machine state.
+5.  **Process Input**: Enter a string to be encrypted or decrypted based on the current machine configuration.
+6.  **Reset Current Code**: Reset the rotors to their initial starting positions (the last "ground state" configured).
+7.  **History and Statistics**: Display all previous encryptions and performance metrics for the current session.
+8.  **Exit**: Safely terminate the application.
+9.  **Save Current System State**: saves the current state of the machine (settings and history) in a file.
+10.  **Load Ssystem State**: loads a machine from an existing file
+---
 
 ## 🔨 Build
 
