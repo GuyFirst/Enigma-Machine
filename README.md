@@ -33,22 +33,21 @@ This repository is a Maven aggregator project (packaging: `pom`) composed of the
 ---
 ## 🕹 Console Menu Commands
 
-Once the application is running, the following commands are available through the main menu:
+Once the application is running, you can navigate through the following options:
 
-1.  **Load Machine Definition**: Load an XML file containing the machine's technical specifications (rotors, reflectors, alphabet).
-2.  **Display Machine Specifications**: View the current machine setup, including available rotors, alphabet size, and the number of messages processed.
-3.  **Set Initial Code (Manual)**: Manually configure the active rotors, their starting positions, the chosen reflector, and the plugboard connections.
-4.  **Set Initial Code (Automatic)**: Let the system randomly select and configure the machine state.
-5. **Process Input (Symmetric Encryption/Decryption)**: Process a message through the machine's current configuration. The Enigma machine is reciprocal by design, meaning the encryption and decryption processes are identical.
-
-Example: If a specific machine state maps "HELLO" to "AKVPD", then resetting the machine to that exact same state and processing "AKVPD" will return "HELLO".
-Requirement: To decrypt a message, the machine must be set to the same initial code (rotors, positions, and plugboard) used during encryption.
-
-6.  **Reset Current Code**: Reset the rotors to their initial starting positions (the last "ground state" configured).
-7.  **History and Statistics**: Display all previous encryptions and performance metrics for the current session.
-8.  **Exit**: Safely terminate the application.
-9.  **Save Current System State**: saves the current state of the machine (settings and history) in a file.
-10.  **Load Ssystem State**: loads a machine from an existing file
+1.  **Load Machine Definition**: Import an XML file containing the machine's technical specifications (available rotors, reflectors, and alphabet).
+2.  **Display Machine Specifications**: View the current system status, including available components, alphabet size, and a count of processed messages.
+3.  **Set Initial Code (Manual)**: Manually choose the active rotors, set their starting positions, select a reflector, and configure plugboard connections.
+4.  **Set Initial Code (Automatic)**: Let the system generate a randomized valid configuration (random rotors, positions, reflector, and plugs).
+5.  **Process Input (Symmetric Encryption/Decryption)**: Process a message through the current machine state. The Enigma is **reciprocal by design**, meaning the same process handles both encryption and decryption.
+    > **Example**: If a specific configuration maps **"HELLO"** to **"AKVPD"**, then resetting the machine to that exact state and processing **"AKVPD"** will return **"HELLO"**.
+    > 
+    > **Note**: Successful decryption requires the machine to be at the exact same "ground state" (initial code) used during encryption.
+6.  **Reset Current Code**: Reset the rotors to the starting positions of the last defined configuration.
+7.  **History and Statistics**: Display all processed messages and performance data for the current session.
+8.  **Save Current System State**: Persist the current machine configuration and session history into a local file.
+9.  **Load System State**: Restore a previously saved session (including machine setup and history) from a file.
+10. **Exit**: Securely terminate the application.
 ---
 
 ## 🔨 Build
