@@ -69,7 +69,7 @@ You can run the project end-to-end using the following methods:
 
 ```bash
 # Clone the repository
-git clone [https://github.com/GuyFirst/Enigma-Machine](https://github.com/GuyFirst/Enigma-Machine) ./enigma
+git clone https://github.com/GuyFirst/Enigma-Machine ./enigma
 cd enigma
 
 # Build the project
