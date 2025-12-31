@@ -13,34 +13,43 @@ Machine definitions are loaded from **XML files validated by XSD**, and the encr
 * **Maven:** 3.8+
 
 **Verify your environment:**
+
 ```bash
 java -version
 mvn -version
-📂 Project Structure
-This repository is a Maven aggregator project (packaging: pom) composed of the following modules:
+```
 
-enigma-machine Low-level machine components such as rotors, reflector, and internal wiring logic.
+---
 
-enigma-loader XML loading and validation layer using XSD and JAXB.
+## 📂 Project Structure
 
-enigma-engine Core application logic responsible for machine orchestration, configuration management, encryption flow, and history tracking.
+This repository is a Maven aggregator project (packaging: `pom`) composed of the following modules:
 
-enigma-console Console-based user interface and application entry point.
+* **`enigma-machine`**: Low-level machine components such as rotors, reflector, and internal wiring logic.
+* **`enigma-loader`**: XML loading and validation layer using XSD and JAXB.
+* **`enigma-engine`**: Core application logic responsible for machine orchestration, configuration management, encryption flow, and history tracking.
+* **`enigma-console`**: Console-based user interface and application entry point.
 
-🔨 Build
+---
+
+## 🔨 Build
+
 From the repository root, run:
 
-Bash
-
+```bash
 mvn clean install
-This builds all modules in the correct dependency order.
+```
+*This builds all modules in the correct dependency order.*
 
-🚀 Run (Windows)
+---
+
+## 🚀 Run (Windows)
+
 You can run the project end-to-end using the following methods:
 
-Manual Steps
-Bash
+### Manual Steps
 
+```bash
 # Clone the repository
 git clone [https://github.com/GuyFirst/Enigma-Machine](https://github.com/GuyFirst/Enigma-Machine) ./enigma
 cd enigma
@@ -51,38 +60,44 @@ call mvn clean install
 # Run the executable
 cd target
 java -jar enigma-machine-ex2.jar
-Automation: run.bat
-Create a file named run.bat in the project root with the following content:
+```
 
-Code snippet
+### Automation: `run.bat`
+Create a file named `run.bat` in the project root with the following content:
 
-@echo off
+```batch
+@off
 git clone [https://github.com/GuyFirst/Enigma-Machine](https://github.com/GuyFirst/Enigma-Machine) ./enigma
 cd enigma
 call mvn clean install
 cd target
 java -jar enigma-machine-ex2.jar
 pause
-Double-click run.bat to build and run the application automatically.
+```
+*Double-click `run.bat` to build and run the application automatically.*
 
-📦 Executable JAR
-Location: target/enigma-machine-ex2.jar
+---
 
-Main Class: patmal.course.enigma.main.Main
+## 📦 Executable JAR
 
-⚙️ XML Configuration
-XSD Schema Location: enigma-loader/src/main/resources/Enigma-Ex2.xsd
+* **Location:** `target/enigma-machine-ex2.jar`
+* **Main Class:** `patmal.course.enigma.main.Main`
 
-All XML machine definitions are validated against this schema before runtime initialization. Invalid configurations are rejected before execution to ensure system stability.
+---
 
-🏗 Design Notes
-Decoupling: Strict separation between UI, engine logic, and machine mechanics.
+## ⚙️ XML Configuration
 
-UI-Agnostic: Core logic is independent of the display layer.
+* **XSD Schema Location:** `enigma-loader/src/main/resources/Enigma-Ex2.xsd`
 
-Isolation: XML loading is completely isolated from business logic.
+All XML machine definitions are validated against this schema before runtime initialization. **Invalid configurations are rejected** before execution to ensure system stability.
 
-Scalability: The architecture allows replacing the console UI with a GUI or Web UI without modifying the engine.
+---
 
-👤 Author
-Guy First B.Sc. Computer Science Java Backend & Architecture-Oriented Developer
+## 🏗 Design Notes
+
+* **Decoupling**: Strict separation between UI, engine logic, and machine mechanics.
+* **UI-Agnostic**: Core logic is independent of the display layer.
+* **Isolation**: XML loading is completely isolated from business logic.
+* **Scalability**: The architecture allows replacing the console UI with a GUI or Web UI without modifying the engine.
+
+---
