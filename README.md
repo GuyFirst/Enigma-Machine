@@ -7,51 +7,51 @@ Machine definitions are loaded from **XML files validated by XSD**, and the encr
 
 ---
 
-## Requirements
+## 🛠 Requirements
 
-- Java 21
-- Maven 3.8+
+* **Java:** 21
+* **Maven:** 3.8+
 
-Verify your environment:
-
+**Verify your environment:**
 ```bash
 java -version
 mvn -version
-Project Structure
+📂 Project Structure
 This repository is a Maven aggregator project (packaging: pom) composed of the following modules:
 
-enigma-machine
-Low-level machine components such as rotors, reflector, and internal wiring logic.
+enigma-machine Low-level machine components such as rotors, reflector, and internal wiring logic.
 
-enigma-loader
-XML loading and validation layer using XSD and JAXB.
+enigma-loader XML loading and validation layer using XSD and JAXB.
 
-enigma-engine
-Core application logic responsible for machine orchestration, configuration management, encryption flow, and history tracking.
+enigma-engine Core application logic responsible for machine orchestration, configuration management, encryption flow, and history tracking.
 
-enigma-console
-Console-based user interface and application entry point.
+enigma-console Console-based user interface and application entry point.
 
-Build
-From the repository root:
+🔨 Build
+From the repository root, run:
 
 Bash
 
 mvn clean install
 This builds all modules in the correct dependency order.
 
-Run (Windows – run.bat style)
-You can run the project end-to-end using the following commands.
+🚀 Run (Windows)
+You can run the project end-to-end using the following methods:
 
-Manual steps
+Manual Steps
 Bash
 
+# Clone the repository
 git clone [https://github.com/GuyFirst/Enigma-Machine](https://github.com/GuyFirst/Enigma-Machine) ./enigma
 cd enigma
+
+# Build the project
 call mvn clean install
+
+# Run the executable
 cd target
 java -jar enigma-machine-ex2.jar
-Optional: run.bat
+Automation: run.bat
 Create a file named run.bat in the project root with the following content:
 
 Code snippet
@@ -63,30 +63,26 @@ call mvn clean install
 cd target
 java -jar enigma-machine-ex2.jar
 pause
-Double-click run.bat to build and run the application.
+Double-click run.bat to build and run the application automatically.
 
-Executable JAR
-The runnable JAR is generated at: target/enigma-machine-ex2.jar
+📦 Executable JAR
+Location: target/enigma-machine-ex2.jar
 
-Main class: patmal.course.enigma.main.Main
+Main Class: patmal.course.enigma.main.Main
 
-XML Configuration
-XSD schema location: enigma-loader/src/main/resources/Enigma-Ex2.xsd
+⚙️ XML Configuration
+XSD Schema Location: enigma-loader/src/main/resources/Enigma-Ex2.xsd
 
-All XML machine definitions are validated against this schema before runtime initialization.
+All XML machine definitions are validated against this schema before runtime initialization. Invalid configurations are rejected before execution to ensure system stability.
 
-Invalid configurations are rejected before execution.
+🏗 Design Notes
+Decoupling: Strict separation between UI, engine logic, and machine mechanics.
 
-Design Notes
-Strict separation between UI, engine logic, and machine mechanics.
+UI-Agnostic: Core logic is independent of the display layer.
 
-Core logic is UI-agnostic.
+Isolation: XML loading is completely isolated from business logic.
 
-XML loading is isolated from business logic.
+Scalability: The architecture allows replacing the console UI with a GUI or Web UI without modifying the engine.
 
-Architecture allows replacing the console UI without modifying the engine.
-
-Author
-Guy First B.Sc. Computer Science
-
-Java backend & architecture-oriented developer
+👤 Author
+Guy First B.Sc. Computer Science Java Backend & Architecture-Oriented Developer
