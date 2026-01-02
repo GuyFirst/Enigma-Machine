@@ -85,9 +85,8 @@ public class EngineImpl implements Engine {
 
         if(plugBoardConfigNotValid(plugBoardConfig, repository.getKeyboard())) {
             throw new IllegalArgumentException("Invalid plugBoard configuration.");
-            //TODO: more specific exception
         }
-        RotorManager rotorManager = new RotorManager(currentRotors, positionIndices);
+        RotorManager rotorManager = new RotorManager(currentRotors, positionIndices, rotorIds);
         this.plugBoardConfig = plugBoardConfig;
         this.machine = new MachineImpl(reflector, rotorManager, repository.getKeyboard(), new PlugboardImpl(plugBoardConfig));
         this.initialConfig = this.currentConfig = addConfigToHistory(currentRotors, rotorIds, positions, reflectorId, plugBoardConfig);
@@ -100,18 +99,15 @@ public class EngineImpl implements Engine {
         for (Map.Entry<Character, Character> entry : plugBoardConfig.entrySet()) {
             char charA = entry.getKey();
             char charB = entry.getValue();
-
             // Since the map contains A->B and B->A, we skip the entry where the key is alphabetically larger.
             if (charA > charB) {
                 continue;
             }
 
-
             if (!keyboard.isValidChar(charA) || !keyboard.isValidChar(charB)) {
                 // If either character is outside the machine's alphabet
                 return true;
             }
-
             // 2. Check for self-mapping (A -> A)
             if (charA == charB) {
                 // This case should ideally be caught in the UI layer, but checked here for safety.
@@ -172,7 +168,7 @@ public class EngineImpl implements Engine {
         int maxNumOfPairs = availableChars.size() / 2;
         int randomNumOfPairs = random.nextInt(maxNumOfPairs + 1); // +1 to include the maximum
 
-        // Debugging print (optional, but useful for verification)
+        // TODO CHANGE TO LOG
         System.out.println("Generating Plugboard with " + randomNumOfPairs + " pairs.");
 
         // 4. Loop N times to create the pairs
