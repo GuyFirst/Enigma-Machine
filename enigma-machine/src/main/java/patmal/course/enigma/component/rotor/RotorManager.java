@@ -23,6 +23,7 @@ public class RotorManager implements Serializable {
         }
         logger.debug("RotorManager initialized with {} rotors.", currentRotors.size());
         logger.debug("order of rotors (from left to right): {}", rotorIds);
+        setRotorsPositions(positionIndices);
     }
 
     public int encryptLetterThroughRotorsLTR(int input, Map<Integer, Character> keyboardMapping) {

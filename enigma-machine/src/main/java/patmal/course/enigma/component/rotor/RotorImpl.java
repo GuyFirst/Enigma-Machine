@@ -85,7 +85,7 @@ public class RotorImpl implements Rotor, Serializable {
 
     @Override
     public void rotate() {
-        logger.debug("Rotating rotor [ID: {}].... Current top: {}", id, rightColumn.getFirst());
+        logger.debug("Rotating rotor [ID: {}].... Current top index: {}", id, rightColumn.getFirst());
 
         int topLetterFroRightColumn = rightColumn.removeFirst();
         int topLetterFromLeftColumn = leftColumn.removeFirst();
@@ -100,7 +100,7 @@ public class RotorImpl implements Rotor, Serializable {
             logger.debug("Rotor [ID: {}] notch has reached the zero position.", id);
         }
 
-        logger.debug("Rotor[ID: {}] rotated. New top: {}", id, rightColumn.getFirst());
+        logger.debug("Rotor[ID: {}] rotated. New top index: {}", id, rightColumn.getFirst());
     }
 
     @Override
