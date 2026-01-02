@@ -80,34 +80,6 @@ java -jar enigma-machine-ex2.jar
 
 ```
 
-# Run the executable
-cd target
-java -jar enigma-machine-ex2.jar
-```
-
-### Automation: `run.bat`
-Create a file named `run.bat` in the project root with the following content:
-
-```batch
-@off
-git clone [https://github.com/GuyFirst/Enigma-Machine](https://github.com/GuyFirst/Enigma-Machine) ./enigma
-cd enigma
-call mvn clean install
-cd target
-java -jar enigma-machine-ex2.jar
-pause
-```
-*Double-click `run.bat` to build and run the application automatically.*
-
----
-
-## 📦 Executable JAR
-
-* **Location:** `target/enigma-machine-ex2.jar`
-* **Main Class:** `patmal.course.enigma.main.Main`
-
----
-
 ## ⚙️ XML Configuration
 
 * **XSD Schema Location:** `enigma-loader/src/main/resources/Enigma-Ex2.xsd`
