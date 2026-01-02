@@ -7,4 +7,8 @@ public interface Rotor {
     int getNotchPosition();
     void rotate();
     int getTopLetter();
+
+
+    void setId(int id);
+    int getId();
 }

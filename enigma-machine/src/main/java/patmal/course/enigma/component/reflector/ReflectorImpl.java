@@ -1,5 +1,8 @@
 package patmal.course.enigma.component.reflector;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,11 +13,13 @@ public class ReflectorImpl implements Reflector, Serializable {
 
     private final String id;
     private final Map<Integer, Integer> wiring;
+    private static final Logger logger = LogManager.getLogger(ReflectorImpl.class);
 
     public ReflectorImpl(String id, List<ReflectedPositionsPair> rawPairs) {
         this.id = id;
         Map<Integer, Integer> finalWiring = new HashMap<>();
 
+        logger.debug("setting the wiring for reflector id: {}...", id);
         for (ReflectedPositionsPair pair : rawPairs) {
             int input = pair.getInput();
             int output = pair.getOutput();
@@ -24,6 +29,7 @@ public class ReflectorImpl implements Reflector, Serializable {
 
             // Adds the reciprocal mapping: Output -> Input
             finalWiring.put(output, input);
+            logger.trace("mapped positions: {} <-> {}", input, output);
         }
 
         this.wiring = Collections.unmodifiableMap(finalWiring);
