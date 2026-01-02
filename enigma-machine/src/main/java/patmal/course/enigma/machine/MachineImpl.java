@@ -1,5 +1,7 @@
 package patmal.course.enigma.machine;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import patmal.course.enigma.component.keyboard.Keyboard;
 import patmal.course.enigma.component.plugboard.Plugboard;
 import patmal.course.enigma.component.reflector.Reflector;
@@ -12,6 +14,7 @@ public class MachineImpl implements Machine, Serializable {
     private final RotorManager rotorManager;
     private final Keyboard keyboard;
     private final Plugboard plugboard;
+    public static final Logger logger = LogManager.getLogger(MachineImpl.class);
 
     public MachineImpl(Reflector reflector, RotorManager rotorManager, Keyboard keyboard, Plugboard plugboard) {
         this.reflector = reflector;
@@ -22,6 +25,7 @@ public class MachineImpl implements Machine, Serializable {
 
     @Override
     public char encryptChar(char inputChar) {
+        logger.debug("encrypting char {}", inputChar);
         // Pass through plug board
         inputChar = plugboard.substitute(inputChar);
         // Convert character to index
@@ -31,9 +35,13 @@ public class MachineImpl implements Machine, Serializable {
         rotorManager.moveRotorsBeforeEncodingLetter();
 
         // Pass through rotors and reflector
-        int inputToReflector = rotorManager.encryptLetterThroughRotorsRTL(charIndex);
+        int inputToReflector = rotorManager.encryptLetterThroughRotorsRTL(charIndex, keyboard.getMapFromIntToChar());
+
+        logger.debug("Input to reflector: {}", inputToReflector);
         int outputFromReflector = reflector.reflect(inputToReflector);
-        int finalOutputIndex = rotorManager.encryptLetterThroughRotorsLTR(outputFromReflector);
+        logger.debug("Output from reflector: {}", outputFromReflector);
+
+        int finalOutputIndex = rotorManager.encryptLetterThroughRotorsLTR(outputFromReflector, keyboard.getMapFromIntToChar());
 
         // pass through plug board again
         char outputChar = keyboard.indexToChar(finalOutputIndex);

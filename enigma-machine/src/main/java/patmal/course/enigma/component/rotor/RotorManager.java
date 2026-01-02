@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class RotorManager implements Serializable {
@@ -24,19 +25,23 @@ public class RotorManager implements Serializable {
         logger.debug("order of rotors (from left to right): {}", rotorIds);
     }
 
-    public int encryptLetterThroughRotorsLTR(int input) {
+    public int encryptLetterThroughRotorsLTR(int input, Map<Integer, Character> keyboardMapping) {
         int signal = input;
         for (Rotor rotor : currentRotors) {
+            logger.trace("index {} (letter {}) entering rotor [ID: {}] from the left", signal, keyboardMapping.get(signal), rotor.getId());
             signal = rotor.encodeBackward(signal);
+            logger.trace("index {} (letter {}) exiting rotor [ID: {}] from the right", signal, keyboardMapping.get(signal), rotor.getId());
         }
         return signal;
     }
 
-    public int encryptLetterThroughRotorsRTL(int input) {
+    public int encryptLetterThroughRotorsRTL(int input, Map<Integer, Character> keyboardMapping) {
         int signal = input;
         for (int i = currentRotors.size() - 1; i >= 0; i--) {
+            logger.trace("index {} (letter {}) entering rotor [ID: {}] from the right", signal, keyboardMapping.get(signal), currentRotors.get(i).getId());
             Rotor rotor = currentRotors.get(i);
             signal = rotor.encodeForward(signal);
+            logger.trace("index {} (letter {}) exiting rotor [ID: {}] from the left", signal, keyboardMapping.get(signal), currentRotors.get(i).getId());
         }
         return signal;
     }

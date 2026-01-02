@@ -24,6 +24,16 @@ public class KeyboardImpl implements Keyboard, Serializable {
     }
 
     @Override
+    public Map<Integer, Character> getMapFromIntToChar() {
+        return mapFromIntToChar;
+    }
+
+    @Override
+    public Map<Character, Integer> getMapFromCharToInt() {
+        return mapFromCharToInt;
+    }
+
+    @Override
     public int charToIndex(char c) {
         return mapFromCharToInt.get(c);
     }

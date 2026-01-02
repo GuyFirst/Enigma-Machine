@@ -4,6 +4,8 @@ package patmal.course.enigma.engine.logic.loadManager;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import patmal.course.enigma.component.keyboard.Keyboard;
 import patmal.course.enigma.component.keyboard.KeyboardImpl;
 import patmal.course.enigma.component.reflector.ReflectedPositionsPair;
@@ -24,6 +26,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class LoadManager implements Serializable {
+    public static final Logger logger = LogManager.getLogger(LoadManager.class);
     private final static String JAXB_XML_GAME_PACKAGE_NAME = "patmal.course.enigma.loader.schema";
 
     private static BTEEnigma deserializeFrom(InputStream in) throws JAXBException {
@@ -33,28 +36,41 @@ public class LoadManager implements Serializable {
     }
 
     public Repository loadMachineSettingsFromXML(String filePath) throws JAXBException, FileNotFoundException {
-        InputStream inputStream = new FileInputStream(filePath); // I deleted the new file because IntelliJ said its redundant maybe bug
+        InputStream inputStream = new FileInputStream(filePath);
         try {
+            logger.debug("Serializing XML file to BTEEnigma object...");
             BTEEnigma bteEnigma = deserializeFrom(inputStream);
+            logger.debug("BTEEnigma object created successfully.");
+
             EngineImpl.NUM_OF_USED_ROTORS_IN_MACHINE = bteEnigma.getRotorsCount().intValue();
+            logger.debug("Number of rotors to be used in the machine set to: {}", EngineImpl.NUM_OF_USED_ROTORS_IN_MACHINE);
+
             String abcForKeyboard = bteEnigma.getABC().trim().toUpperCase();
             Set<Character> characterSet = abcForKeyboard.chars()
                     .mapToObj(c -> (char)c)
                     .collect(Collectors.toSet());
             if (characterSet.size() < abcForKeyboard.length()) {
+                logger.error("Repeated character found in XML file");
                 throw new IllegalArgumentException("Repeated character found in XML file");
             }
             if (abcForKeyboard.length() % 2 == 1) {
+                logger.error("The ABC length must be even, but got: {} chars.", abcForKeyboard.length());
                 throw new IllegalArgumentException("The ABC length must be even, but got: " + abcForKeyboard.length() + " chars.");
             }
             Keyboard keyboard = createKeyboard(abcForKeyboard);
+            logger.debug("Keyboard created successfully. the ABC is: {}", abcForKeyboard);
 
+            logger.debug("Creating reflectors from XML...");
             BTEReflectors bteReflectors = bteEnigma.getBTEReflectors();
             Map<String, Reflector> allReflectors = createReflectorsMap(bteReflectors);
+            logger.debug("Reflectors successfully created from XML.");
 
+            logger.debug("Creating rotors from XML...");
             BTERotors bteRotors = bteEnigma.getBTERotors();
             Map<Integer, Rotor> allRotors = createRotorsMap(bteRotors, keyboard);
+            logger.debug("Rotors successfully created from XML.");
 
+            logger.debug("initializing Repository with created components...");
             return new Repository(allRotors, allReflectors, keyboard);
         } catch (JAXBException e) {
             throw new JAXBException("Something went wrong. Please check if your XML is valid because it looks like its not, check for invalid characters (like &) or wrong structure.");
