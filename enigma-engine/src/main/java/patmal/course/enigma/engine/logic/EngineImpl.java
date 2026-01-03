@@ -4,7 +4,9 @@ import jakarta.xml.bind.JAXBException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import patmal.course.enigma.component.keyboard.Keyboard;
 import patmal.course.enigma.component.plugboard.PlugboardImpl;
 import patmal.course.enigma.component.reflector.Reflector;
@@ -351,7 +353,13 @@ public class EngineImpl implements Engine {
             logger.error("Invalid log level provided: {}", level);
             throw new IllegalArgumentException("Invalid log level: " + level);
         }
-        Configurator.setRootLevel(newLevel);
+        
+        LoggerContext ctx = (LoggerContext) LogManager.getContext(EngineImpl.class.getClassLoader(), false);
+        Configuration config = ctx.getConfiguration();
+        LoggerConfig loggerConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
+        loggerConfig.setLevel(newLevel);
+        ctx.updateLoggers();
+        
         logger.info("Log level changed to: {}", newLevel);
     }
 
