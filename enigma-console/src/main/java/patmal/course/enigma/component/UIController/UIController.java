@@ -7,6 +7,7 @@ import patmal.course.enigma.component.menu.Menu;
 import patmal.course.enigma.component.menu.command.concrete.exit.ExitSystemCommand;
 import patmal.course.enigma.component.menu.command.concrete.load.system.LoadSystemState;
 import patmal.course.enigma.component.menu.command.concrete.loadXML.LoadXMLConfigurationCommand;
+import patmal.course.enigma.component.menu.command.concrete.logLevel.ChangeLogLevelCommand;
 import patmal.course.enigma.component.menu.command.concrete.process.ProcessInputCommand;
 import patmal.course.enigma.component.menu.command.concrete.reset.ResetCodeCommand;
 import patmal.course.enigma.component.menu.command.concrete.save.system.SaveCurrentSystemState;
@@ -64,6 +65,9 @@ public class UIController implements Runnable {
         // 10. Load System State from File
         commands.add(new LoadSystemState());
 
+        // 11. Change Log Level
+        commands.add(new ChangeLogLevelCommand());
+
 
         return new Menu(commands);
     }
@@ -92,4 +96,3 @@ public class UIController implements Runnable {
         }
     }
 }
-
