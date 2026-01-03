@@ -37,9 +37,9 @@ public class MachineImpl implements Machine, Serializable {
         // Pass through rotors and reflector
         int inputToReflector = rotorManager.encryptLetterThroughRotorsRTL(charIndex, keyboard.getMapFromIntToChar());
 
-        logger.debug("Input to reflector: {}", inputToReflector);
+        logger.debug("Input to reflector: {} ({}).", inputToReflector, keyboard.indexToChar(inputToReflector));
         int outputFromReflector = reflector.reflect(inputToReflector);
-        logger.debug("Output from reflector: {}", outputFromReflector);
+        logger.debug("Output from reflector: {} ({})", outputFromReflector, keyboard.indexToChar(outputFromReflector));
 
         int finalOutputIndex = rotorManager.encryptLetterThroughRotorsLTR(outputFromReflector, keyboard.getMapFromIntToChar());
 

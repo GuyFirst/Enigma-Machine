@@ -77,4 +77,6 @@ public interface Engine {
     void saveCurrentSystemStateToFile(String fileName);
 
     void loadSystemStateFromFile(String fileName) throws IOException;
+
+    void setLogLevel(String level);
 }

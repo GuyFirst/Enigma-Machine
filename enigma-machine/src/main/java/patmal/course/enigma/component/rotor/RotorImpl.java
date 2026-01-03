@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import patmal.course.enigma.component.keyboard.Keyboard;
 
 public class RotorImpl implements Rotor, Serializable {
     private final List<Integer> rightColumn;
@@ -11,6 +12,7 @@ public class RotorImpl implements Rotor, Serializable {
     private int notchPosition;
     private final int alphabetLength;
     private int id = -1;
+    private Keyboard keyboard;
     private static final Logger logger = LogManager.getLogger(RotorImpl.class);
 
     public RotorImpl(List<Integer> rightColumn, List<Integer> leftColumn, int notchPosition, int alphabetLength) {
@@ -33,13 +35,18 @@ public class RotorImpl implements Rotor, Serializable {
     }
 
     @Override
+    public void setKeyboard(Keyboard keyboard) {
+        this.keyboard = keyboard;
+    }
+
+    @Override
     public void setPosition(int position) {
         // INFO: Logging a major state change request
-        logger.debug("Rotor [ID: {}] - Setting top index to: {}...", id, position);
+        logger.debug("Rotor [ID: {}] - Setting top index to: {} ({})...", id, position, keyboard.indexToChar(position));
         while (rightColumn.getFirst() != position) {
             rotate();
         }
-        logger.debug("Rotor [ID: {}] - top index have been set to: {}.", id, position);
+        logger.debug("Rotor [ID: {}] - top index have been set to: {} ({}).", id, position, keyboard.indexToChar(position));
     }
     @Override
     public int encodeForward(int entryLocation) {
@@ -49,10 +56,8 @@ public class RotorImpl implements Rotor, Serializable {
         // Step 2: Search for that value's position in the left column
         int outputIndex = leftColumn.indexOf(mappedValue);
 
-        // The best log format for this process:
-        // It captures the exact 'Search' logic you described.
-        logger.trace("Rotor [ID: {}] | FORWARD | In-Index: {} -> Value: {} -> Out-Index (Found in Left): {}",
-                id, entryLocation, mappedValue, outputIndex);
+        logger.trace("Rotor [ID: {}] | FORWARD | In-Index: {} ({}) -> Value: {} ({}) -> Out-Index (Found in Left): {} ({})",
+                id, entryLocation, keyboard.indexToChar(entryLocation), mappedValue, keyboard.indexToChar(mappedValue), outputIndex, keyboard.indexToChar(outputIndex));
 
         return outputIndex;
     }
@@ -63,8 +68,8 @@ public class RotorImpl implements Rotor, Serializable {
         int mappedValue = leftColumn.get(entryLocation);
         int outputIndex = rightColumn.indexOf(mappedValue);
 
-        logger.trace("Rotor [ID: {}] | BACKWARD | In-Index: {} -> Value: {} -> Out-Index (Found in Right): {}",
-                id, entryLocation, mappedValue, outputIndex);
+        logger.trace("Rotor [ID: {}] | BACKWARD | In-Index: {} ({}) -> Value: {} ({}) -> Out-Index (Found in Right): {} ({})",
+                id, entryLocation, keyboard.indexToChar(entryLocation), mappedValue, keyboard.indexToChar(mappedValue), outputIndex, keyboard.indexToChar(outputIndex));
 
         return outputIndex;
     }
@@ -85,7 +90,7 @@ public class RotorImpl implements Rotor, Serializable {
 
     @Override
     public void rotate() {
-        logger.debug("Rotating rotor [ID: {}].... Current top index: {}", id, rightColumn.getFirst());
+        logger.debug("Rotating rotor [ID: {}].... Current top index: {} ({})", id, rightColumn.getFirst(), keyboard.indexToChar(rightColumn.getFirst()));
 
         int topLetterFroRightColumn = rightColumn.removeFirst();
         int topLetterFromLeftColumn = leftColumn.removeFirst();
@@ -97,10 +102,10 @@ public class RotorImpl implements Rotor, Serializable {
 
         // DEBUG: Logged if the notch reaches the active position (example condition)
         if (notchPosition == 0) {
-            logger.debug("Rotor [ID: {}] notch has reached the zero position.", id);
+            logger.debug("Rotor [ID: {}] notch has reached the zero position ({}).", id, keyboard.indexToChar(0));
         }
 
-        logger.debug("Rotor[ID: {}] rotated. New top index: {}", id, rightColumn.getFirst());
+        logger.debug("Rotor[ID: {}] rotated. New top index: {} ({})", id, rightColumn.getFirst(), keyboard.indexToChar(rightColumn.getFirst()));
     }
 
     @Override
