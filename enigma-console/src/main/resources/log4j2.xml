@@ -22,7 +22,7 @@
     </Appenders>
 
     <Loggers>
-        <Root level="fatal">
+        <Root level="info">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="FileAppender"/>
         </Root>
