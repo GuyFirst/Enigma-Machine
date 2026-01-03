@@ -62,7 +62,7 @@ public class LoadManager implements Serializable {
 
             logger.debug("Creating reflectors from XML...");
             BTEReflectors bteReflectors = bteEnigma.getBTEReflectors();
-            Map<String, Reflector> allReflectors = createReflectorsMap(bteReflectors);
+            Map<String, Reflector> allReflectors = createReflectorsMap(bteReflectors, keyboard);
             logger.debug("Reflectors successfully created from XML.");
 
             logger.debug("Creating rotors from XML...");
@@ -154,6 +154,7 @@ public class LoadManager implements Serializable {
 
             int alphabet_length = keyboard.getAlphabetLength();
             Rotor rotor = new RotorImpl(rightColumn, leftColumn, notch, alphabet_length);
+            rotor.setKeyboard(keyboard);
             rotorMap.put(id, rotor);
         }
 
@@ -167,7 +168,7 @@ public class LoadManager implements Serializable {
         return rotorMap;
     }
 
-    private Map<String, Reflector> createReflectorsMap(BTEReflectors bteReflectors) {
+    private Map<String, Reflector> createReflectorsMap(BTEReflectors bteReflectors, Keyboard keyboard) {
 
         Map<String, Reflector> reflectorMap = new HashMap<>();
         List<BTEReflector> listOfBTEReflectors = bteReflectors.getBTEReflector();
@@ -195,6 +196,7 @@ public class LoadManager implements Serializable {
                 listOfReflectedPositionsPairs.add(new ReflectedPositionsPair(--input, --output)); // convert to zero-based index
             }
             Reflector reflector = new ReflectorImpl(id, listOfReflectedPositionsPairs);
+            reflector.setKeyboard(keyboard);
             reflectorMap.put(id, reflector);
         }
 

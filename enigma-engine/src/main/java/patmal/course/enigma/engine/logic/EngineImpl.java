@@ -1,8 +1,10 @@
 package patmal.course.enigma.engine.logic;
 
 import jakarta.xml.bind.JAXBException;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 import patmal.course.enigma.component.keyboard.Keyboard;
 import patmal.course.enigma.component.plugboard.PlugboardImpl;
 import patmal.course.enigma.component.reflector.Reflector;
@@ -67,7 +69,7 @@ public class EngineImpl implements Engine {
     public void setMachineCode(List<Integer> rotorIds, List<Character> positions, String reflectorId, Map<Character, Character> plugBoardConfig) {
         
         logger.info("Setting machine code with reflector ID: {}, rotor IDs: {}, positions of rotors: {}, plugboard config: {}",
-                reflectorId, rotorIds, positions, plugBoardConfig);
+                reflectorId, rotorIds, positions, formatPlugBoardConfig(plugBoardConfig));
         
         if (!repository.getAllReflectors().containsKey(reflectorId)) {
             throw new IllegalArgumentException("Invalid reflector ID: " + reflectorId);
@@ -114,7 +116,6 @@ public class EngineImpl implements Engine {
             char charB = entry.getValue();
             // Since the map contains A->B and B->A, we skip the entry where the key is alphabetically larger.
             if (charA > charB) {
-                logger.trace("Skipping plugboard entry {}->{} to avoid duplicate checks.", charA, charB);
                 continue;
             }
 
@@ -182,7 +183,7 @@ public class EngineImpl implements Engine {
         String randomReflectorId = repository.getRandomReflectorId();
         logger.debug("Randomly selected reflector ID: {}", randomReflectorId);
         Map<Character, Character> plugBoardConfig = createRandomPlugBoardConfig();
-        logger.debug("Randomly generated plugboard configuration: {}", plugBoardConfig);
+        logger.debug("Randomly generated plugboard configuration: {}", formatPlugBoardConfig(plugBoardConfig));
         setMachineCode(randomRotorIds, randomRotorStartPositions, randomReflectorId, plugBoardConfig);
     }
 
@@ -341,5 +342,46 @@ public class EngineImpl implements Engine {
     @Override
     public void exit() {
         System.exit(404);
+    }
+
+    @Override
+    public void setLogLevel(String level) {
+        Level newLevel = Level.toLevel(level.toUpperCase(), null);
+        if (newLevel == null) {
+            logger.error("Invalid log level provided: {}", level);
+            throw new IllegalArgumentException("Invalid log level: " + level);
+        }
+        Configurator.setRootLevel(newLevel);
+        logger.info("Log level changed to: {}", newLevel);
+    }
+
+    private String formatPlugBoardConfig(Map<Character, Character> plugBoardConfig) {
+        if (plugBoardConfig == null || plugBoardConfig.isEmpty()) {
+            return "{}";
+        }
+        StringBuilder sb = new StringBuilder("{");
+        Set<Character> processed = new HashSet<>();
+        List<Character> keys = new ArrayList<>(plugBoardConfig.keySet());
+        Collections.sort(keys);
+
+        boolean first = true;
+        for (Character key : keys) {
+            if (processed.contains(key)) {
+                continue;
+            }
+            Character value = plugBoardConfig.get(key);
+            processed.add(key);
+            if (value != null) {
+                processed.add(value);
+            }
+
+            if (!first) {
+                sb.append(", ");
+            }
+            sb.append(key).append("=").append(value);
+            first = false;
+        }
+        sb.append("}");
+        return sb.toString();
     }
 }

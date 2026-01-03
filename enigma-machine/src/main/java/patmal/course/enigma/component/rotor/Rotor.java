@@ -1,5 +1,7 @@
 package patmal.course.enigma.component.rotor;
 
+import patmal.course.enigma.component.keyboard.Keyboard;
+
 public interface Rotor {
     void setPosition(int position);
     int encodeForward(int entryLocation);
@@ -11,4 +13,5 @@ public interface Rotor {
 
     void setId(int id);
     int getId();
+    void setKeyboard(Keyboard keyboard);
 }

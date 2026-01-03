@@ -2,6 +2,7 @@ package patmal.course.enigma.component.reflector;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import patmal.course.enigma.component.keyboard.Keyboard;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -13,6 +14,7 @@ public class ReflectorImpl implements Reflector, Serializable {
 
     private final String id;
     private final Map<Integer, Integer> wiring;
+    private Keyboard keyboard;
     private static final Logger logger = LogManager.getLogger(ReflectorImpl.class);
 
     public ReflectorImpl(String id, List<ReflectedPositionsPair> rawPairs) {
@@ -46,6 +48,19 @@ public class ReflectorImpl implements Reflector, Serializable {
             // but handles cases where the reflector is incomplete.
             throw new IllegalArgumentException("Reflector mapping not found for index: " + inputIndex);
         }
-        return wiring.get(inputIndex);
+        int outputIndex = wiring.get(inputIndex);
+        if (keyboard != null) {
+            logger.trace("Reflector [ID: {}] | REFLECT | In-Index: {} ({}) -> Out-Index: {} ({})",
+                    id, inputIndex, keyboard.indexToChar(inputIndex), outputIndex, keyboard.indexToChar(outputIndex));
+        } else {
+            logger.trace("Reflector [ID: {}] | REFLECT | In-Index: {} -> Out-Index: {}",
+                    id, inputIndex, outputIndex);
+        }
+        return outputIndex;
+    }
+
+    @Override
+    public void setKeyboard(Keyboard keyboard) {
+        this.keyboard = keyboard;
     }
 }

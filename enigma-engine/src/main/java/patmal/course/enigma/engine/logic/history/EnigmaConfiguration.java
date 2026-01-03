@@ -66,14 +66,20 @@ public class EnigmaConfiguration implements Serializable {
         Collections.sort(keys);
 
         List<String> pairStrings = new ArrayList<>();
+        Set<Character> processed = new HashSet<>();
 
         for (char key : keys) {
-            char value = this.plugBoardMapping.get(key);
-
-            if (key < value) {
-                // Append the pair in the A|B format
-                pairStrings.add(key + "|" + value);
+            if (processed.contains(key)) {
+                continue;
             }
+            char value = this.plugBoardMapping.get(key);
+            
+            // Add both to processed so we don't print the reverse pair
+            processed.add(key);
+            processed.add(value);
+
+            // Append the pair in the A|B format
+            pairStrings.add(key + "|" + value);
         }
 
         String joinedPairs = String.join(",", pairStrings);
