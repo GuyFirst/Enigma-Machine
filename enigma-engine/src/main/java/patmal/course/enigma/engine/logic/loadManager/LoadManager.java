@@ -42,8 +42,8 @@ public class LoadManager implements Serializable {
             BTEEnigma bteEnigma = deserializeFrom(inputStream);
             logger.debug("BTEEnigma object created successfully.");
 
-            EngineImpl.NUM_OF_USED_ROTORS_IN_MACHINE = bteEnigma.getRotorsCount().intValue();
-            logger.debug("Number of rotors to be used in the machine set to: {}", EngineImpl.NUM_OF_USED_ROTORS_IN_MACHINE);
+            EngineImpl.numOfUsedRotorsInMachine = bteEnigma.getRotorsCount().intValue();
+            logger.debug("Number of rotors to be used in the machine set to: {}", EngineImpl.numOfUsedRotorsInMachine);
 
             String abcForKeyboard = bteEnigma.getABC().trim().toUpperCase();
             Set<Character> characterSet = abcForKeyboard.chars()
@@ -127,8 +127,8 @@ public class LoadManager implements Serializable {
 
     private Map<Integer, Rotor> createRotorsMap(BTERotors bteRotors, Keyboard keyboard) {
         List<BTERotor> listOfBTERotors = bteRotors.getBTERotor();
-        if(listOfBTERotors.size() < EngineImpl.NUM_OF_USED_ROTORS_IN_MACHINE){
-            throw new IllegalArgumentException("The machine must have at least " + EngineImpl.NUM_OF_USED_ROTORS_IN_MACHINE + " rotors (as written in rotors count attribute), but got only " + listOfBTERotors.size() + " rotors in your XML.");
+        if(listOfBTERotors.size() < EngineImpl.numOfUsedRotorsInMachine){
+            throw new IllegalArgumentException("The machine must have at least " + EngineImpl.numOfUsedRotorsInMachine + " rotors (as written in rotors count attribute), but got only " + listOfBTERotors.size() + " rotors in your XML.");
         }
         Map<Integer, Rotor> rotorMap = new HashMap<>();
 

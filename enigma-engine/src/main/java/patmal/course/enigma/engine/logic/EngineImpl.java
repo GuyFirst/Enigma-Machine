@@ -36,7 +36,7 @@ public class EngineImpl implements Engine {
     private HistoryManager historyManager;
     private EnigmaConfiguration initialConfig;
     private EnigmaConfiguration currentConfig;
-    public static int NUM_OF_USED_ROTORS_IN_MACHINE;
+    public static int numOfUsedRotorsInMachine;
     private Map<Character , Character> plugBoardConfig;
     public static final Logger logger = LogManager.getLogger(EngineImpl.class);
 

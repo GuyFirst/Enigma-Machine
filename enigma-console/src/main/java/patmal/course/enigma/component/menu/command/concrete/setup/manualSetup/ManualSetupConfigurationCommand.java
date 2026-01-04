@@ -91,8 +91,8 @@ public class ManualSetupConfigurationCommand implements MenuCommandExecutable {
                 continue;
             }
 
-            if (rotorsPositionsFromUser.length() != EngineImpl.NUM_OF_USED_ROTORS_IN_MACHINE) {
-                System.out.println("You must enter exactly " + EngineImpl.NUM_OF_USED_ROTORS_IN_MACHINE + " rotor positions.");
+            if (rotorsPositionsFromUser.length() != EngineImpl.numOfUsedRotorsInMachine) {
+                System.out.println("You must enter exactly " + EngineImpl.numOfUsedRotorsInMachine + " rotor positions.");
                 System.out.println("Press 0 to return to menu");
                 System.out.println("Press any other key to try again");
                 String userDecision = scanner.nextLine();
@@ -163,7 +163,7 @@ public class ManualSetupConfigurationCommand implements MenuCommandExecutable {
         }
 
         do {
-            Optional<List<Integer>> optionalRotorIds = rotorIdSetupHandler(EngineImpl.NUM_OF_USED_ROTORS_IN_MACHINE);
+            Optional<List<Integer>> optionalRotorIds = rotorIdSetupHandler(EngineImpl.numOfUsedRotorsInMachine);
             if (optionalRotorIds.isEmpty()) {
                 return; // Exit command if user chose '0'
             }
