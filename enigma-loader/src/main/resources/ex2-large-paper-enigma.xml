@@ -9,7 +9,7 @@
   <BTE-Rotors>
 
 
-    <BTE-Rotor id="1" notch="13">
+    <BTE-Rotor id="1" notch="14">
       <BTE-Positioning right=" " left="A"/>
       <BTE-Positioning right="P" left="B"/>
       <BTE-Positioning right="^" left="C"/>
