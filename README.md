@@ -125,7 +125,7 @@ mvn clean install -DskipTests
 Backend (`http://localhost:8080`):
 
 ```bash
-java -jar enigma-app/target/enigma-machine-server-ex3.jar
+java -jar enigma-app/target/enigma-chat.jar
 ```
 
 Frontend (`http://localhost:5173`):

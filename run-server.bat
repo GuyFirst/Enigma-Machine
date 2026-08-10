@@ -12,4 +12,4 @@ REM but Spring will refuse to start at all if AI_API_KEY is not set, since it's 
 if "%AI_API_KEY%"=="" set AI_API_KEY=placeholder-not-a-real-key
 
 echo Starting Enigma server on http://localhost:8080 ...
-java -jar "%~dp0enigma-app\target\enigma-machine-server-ex3.jar"
+java -jar "%~dp0enigma-app\target\enigma-chat.jar"

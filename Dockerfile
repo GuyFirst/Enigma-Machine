@@ -12,7 +12,7 @@ RUN mvn -q clean package -DskipTests
 # ---- run stage ----
 FROM eclipse-temurin:21-jre
 WORKDIR /app
-COPY --from=build /app/enigma-app/target/enigma-machine-server-ex3.jar app.jar
+COPY --from=build /app/enigma-app/target/enigma-chat.jar app.jar
 ENV SPRING_PROFILES_ACTIVE=prod
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
