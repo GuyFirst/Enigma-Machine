@@ -1,7 +1,7 @@
 @echo off
 REM Starts the Enigma Spring Boot server.
-REM Requires: PostgreSQL running locally (service "postgresql-x64-17"),
-REM database "enigma" reachable with user postgres / password enigma (see enigma-app\src\main\resources\application.yml)
+REM Uses an embedded H2 in-memory database - no external DB service needed,
+REM and no setup step required before running this.
 
 set JAVA_HOME=C:\Program Files\Eclipse Adoptium\jdk-21.0.12.8-hotspot
 set PATH=%JAVA_HOME%\bin;%PATH%

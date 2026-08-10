@@ -1,12 +1,15 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/enigma
-    username: postgres
-    password: enigma
-    driver-class-name: org.postgresql.Driver
+    # Embedded H2 in-memory database - no external DB service needed.
+    # DB_CLOSE_DELAY=-1 keeps the in-memory DB alive for the lifetime of the JVM
+    # instead of dropping it after the first connection closes.
+    url: jdbc:h2:mem:enigma;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
 
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
     show-sql: true
