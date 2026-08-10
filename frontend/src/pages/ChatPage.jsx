@@ -92,13 +92,21 @@ export default function ChatPage({ me }) {
     [conversation],
   )
 
-  const dialRotor = (index, delta) => {
-    const base = anim.positions ?? dialPositions
-    const next = [...base]
-    const at = alphabet.indexOf(next[index])
-    next[index] = alphabet[(at + delta + alphabet.length) % alphabet.length]
+  /**
+   * Parks the rotors at `next`. Clearing the animation matters: while it holds
+   * a run, its positions are what the machine displays and what a run uses, so
+   * they would otherwise override the setting.
+   */
+  const setPositions = (next) => {
     anim.reset()
     setDialPositions(next)
+  }
+
+  const dialRotor = (index, delta) => {
+    const next = [...(anim.positions ?? dialPositions)]
+    const at = alphabet.indexOf(next[index])
+    next[index] = alphabet[(at + delta + alphabet.length) % alphabet.length]
+    setPositions(next)
   }
 
   /** Type -> watch it go through the machine -> then decide to send. */
@@ -159,6 +167,10 @@ export default function ChatPage({ me }) {
     () => Object.keys(conversation?.plugs ?? {}).length / 2,
     [conversation],
   )
+  const rotorsMatchKey =
+    loaded && displayPositions
+      ? loaded.startPositions.join('') === displayPositions.join('')
+      : false
 
   if (!conversation || !wiring || !displayPositions) {
     return <div className="center-screen">{error || 'Warming up the machine…'}</div>
@@ -196,26 +208,25 @@ export default function ChatPage({ me }) {
           {messages.map((m) => {
             const mine = m.senderId === me.userId
             const plain = decrypted[m.seq]
+            const inMachine = loaded?.seq === m.seq
             return (
               <div key={m.seq} className={`intercept ${mine ? 'mine' : 'theirs'}`}>
                 <div className="intercept-meta">
                   <span className="sender">{m.senderUsername}</span>
-                  <span className="muted small">
-                    #{m.seq} · key {m.startPositions.join('')}
+                  <span className="muted small">#{m.seq}</span>
+                  <span className="key-chip" title="Rotor start positions for this message">
+                    key {m.startPositions.join(' ')}
                   </span>
                 </div>
                 <div className="cipher-text">{m.ciphertext}</div>
-                {plain ? (
-                  <div className="plain-text">{plain}</div>
-                ) : (
-                  <button
-                    className="feed-btn"
-                    onClick={() => feedIntoMachine(m)}
-                    disabled={anim.isRunning}
-                  >
-                    ↓ feed into machine
-                  </button>
-                )}
+                {plain && <div className="plain-text">{plain}</div>}
+                <button
+                  className="feed-btn"
+                  onClick={() => feedIntoMachine(m)}
+                  disabled={anim.isRunning}
+                >
+                  {inMachine ? '↓ in the machine' : plain ? '↻ run again' : '↓ feed into machine'}
+                </button>
               </div>
             )
           })}
@@ -233,6 +244,11 @@ export default function ChatPage({ me }) {
             />
             operator mode (dial rotors yourself)
           </label>
+          <span className="muted small hint">
+            {manualMode
+              ? 'each message carries its own rotor key — dial it in to read the message'
+              : 'the machine settings are shared by this conversation; each message brings its own rotor key'}
+          </span>
           {anim.isRunning && (
             <button className="link-btn" onClick={anim.skip}>
               skip animation
@@ -253,12 +269,30 @@ export default function ChatPage({ me }) {
           outputTape={anim.output}
         />
 
-        {loaded && (
+        {loaded && manualMode && (
           <div className="loaded-strip">
-            <span className="muted small">
-              in the machine: message #{loaded.seq} · key {loaded.startPositions.join('')}
-            </span>
-            {manualMode && (
+            <div className="dial-guide">
+              <span className="muted small">
+                message #{loaded.seq} loaded — set the rotors to its key, then run:
+              </span>
+              <div className="dial-compare">
+                <span className="dial-target">
+                  key <strong>{loaded.startPositions.join(' ')}</strong>
+                </span>
+                <span className={`dial-current ${rotorsMatchKey ? 'match' : ''}`}>
+                  rotors <strong>{displayPositions.join(' ')}</strong>
+                  {rotorsMatchKey && ' ✓'}
+                </span>
+              </div>
+            </div>
+            <div className="row">
+              <button
+                className="link-btn"
+                onClick={() => setPositions([...loaded.startPositions])}
+                disabled={anim.isRunning || rotorsMatchKey}
+              >
+                set for me
+              </button>
               <button
                 className="btn"
                 onClick={() => runDecrypt(loaded, displayPositions)}
@@ -266,7 +300,7 @@ export default function ChatPage({ me }) {
               >
                 run
               </button>
-            )}
+            </div>
           </div>
         )}
 
