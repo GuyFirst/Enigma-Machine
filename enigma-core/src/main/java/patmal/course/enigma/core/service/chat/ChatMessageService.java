@@ -90,16 +90,17 @@ public class ChatMessageService {
             throw new IllegalArgumentException("Message too long (max " + MAX_MESSAGE_LENGTH + " chars)");
         }
 
-        // The sender encrypted from the position they believed the machine was
-        // at. If it has moved since, that ciphertext cannot be decrypted by the
-        // other side - reject it rather than corrupt the conversation.
+        // Guard only against the real race: the other participant transmitting
+        // between this sender encrypting and sending, which would leave the
+        // machine somewhere their ciphertext no longer accounts for.
+        //
+        // The start position itself is deliberately NOT required to match the
+        // stored one: an operator may turn the dials before typing, and on a
+        // shared machine that simply means the machine is now there. The
+        // message records where it started, so it stays decryptable either way.
         if (request.expectedSeq() != null && request.expectedSeq() != conversation.getLastSeq()) {
             throw new StaleMachineStateException(
                     "The machine has moved on - someone else transmitted first. Encrypt again.");
-        }
-        if (!ChatCodec.joinChars(request.startPositions()).equals(conversation.getCurrentPositions())) {
-            throw new StaleMachineStateException(
-                    "This was encrypted from a different rotor position than the machine is at. Encrypt again.");
         }
 
         Repository catalog = conversationService.catalogOf(conversation);

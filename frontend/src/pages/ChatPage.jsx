@@ -162,12 +162,15 @@ export default function ChatPage({ me }) {
       anim.reset()
       setError('')
     } catch (e) {
-      setError(e.message)
       // 409: the other side transmitted first, so this was encrypted from a
-      // position the machine has already left. Re-sync and let them redo it.
+      // position the machine has already left. Re-sync and let them redo it -
+      // the draft is kept so it only takes one click to encrypt again.
       if (e.status === 409) {
         setPending(null)
-        await poll()
+        await poll() // resyncs, and clears the error banner...
+        setError(e.message) // ...so say why the message vanished afterwards
+      } else {
+        setError(e.message)
       }
     }
   }
