@@ -11,20 +11,27 @@ animated machine letter by letter, and only then transmit the result. The recipi
 gibberish until they run it back through their own machine. The plaintext never reaches
 the server - encryption and decryption both happen in the browser.
 
-### How the keys work
+### One machine per conversation
 
-Two layers, mirroring the historical protocol:
+Starting a conversation means setting a machine up: the rotor order, the reflector, the
+plug cables and the ground position the rotors start at. That setup is the conversation's
+code book page, and the invite code is what hands it to the other person.
 
-- **The conversation is a code book page.** Creating one fixes the machine settings -
-  which rotors, in which order, which reflector, which plugs - for its lifetime. The
-  invite code is what hands those settings to the other person.
-- **Every message carries its own key.** The sender's rotor start positions are random
-  per message and travel with it in the clear (the historical "indicator"). Anyone can
-  read the indicator; only someone holding the conversation's settings can use it. This
-  also means messages are fully independent - no shared state, no ordering problems.
+From then on there is **one machine and it keeps turning**. Encrypting a message advances
+the rotors, and the next message - from either participant - carries on from exactly
+where the previous one stopped. Send `J` from `AAA` and the rotors sit at `AAB`; the next
+message starts there. The server owns that shared position, so both operators always see
+the same machine.
+
+Two people can't type on one machine at once, and the server enforces that: a message
+encrypted from a position the machine has already left is rejected (HTTP 409) so it can
+be re-encrypted rather than silently corrupting the conversation.
+
+Each message also records the position it was encrypted at, which is what lets you reread
+an old message, decrypt them out of order, or come back after a refresh.
 
 Decryption is automatic by default. Flip on **operator mode** and the rotors stay where
-they are: you dial in the indicator yourself, and a wrong setting gives you gibberish.
+they are: you dial them in yourself, and a wrong setting gives you gibberish.
 
 **Other features:** user accounts (Supabase in prod, dev-identity mode locally), preset
 machines (a full 26-letter "Enigma I" with historical rotor wirings + a small demo

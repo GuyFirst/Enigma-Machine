@@ -50,10 +50,19 @@ public class ConversationEntity {
     @Column(name = "plugs", nullable = false)
     private String plugs;
 
-    // CSV of the rotor letters the machine rests at when a participant opens
-    // the conversation - the agreed ground setting, e.g. "P,O,B"
+    // CSV of the rotor letters the machine was set to when the conversation
+    // was created - the ground setting, e.g. "P,O,B"
     @Column(name = "initial_positions", nullable = false)
     private String initialPositions;
+
+    /**
+     * Where the shared machine's rotors stand right now. There is one machine
+     * per conversation and it keeps turning: each message is encrypted from
+     * this position and leaves the rotors further along, so the next message -
+     * from either participant - carries on from there.
+     */
+    @Column(name = "current_positions", nullable = false)
+    private String currentPositions;
 
     // Monotonic per-conversation message sequence; also what clients poll against
     @Column(name = "last_seq", nullable = false)

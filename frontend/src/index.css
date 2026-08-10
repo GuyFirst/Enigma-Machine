@@ -742,6 +742,18 @@ input:focus, select:focus {
   font-style: italic;
 }
 
+.machine-at {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--accent);
+  background: rgba(224, 165, 44, 0.1);
+  border: 1px solid var(--accent-dim);
+  border-radius: 10px;
+  padding: 1px 8px;
+  white-space: nowrap;
+}
+
 .dial-guide {
   display: flex;
   flex-direction: column;

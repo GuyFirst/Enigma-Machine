@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api } from '../api'
 import EnigmaMachine from '../components/EnigmaMachine'
-import { randomPositions, runMachine } from '../enigma/machine'
+import { runMachine } from '../enigma/machine'
 import { useMachineAnimation } from '../enigma/useMachineAnimation'
 
 const POLL_INTERVAL_MS = 3000
@@ -23,6 +23,8 @@ export default function ChatPage({ me }) {
   const [dialPositions, setDialPositions] = useState(null)
   const [showSettings, setShowSettings] = useState(false)
   const [copied, setCopied] = useState(false)
+  // The conversation's shared machine position, kept in step by polling
+  const [currentPositions, setCurrentPositions] = useState(null)
 
   const anim = useMachineAnimation()
   const afterSeqRef = useRef(0)
@@ -47,6 +49,8 @@ export default function ChatPage({ me }) {
       const res = await api.getMessages(conversationId, afterSeqRef.current)
       mergeMessages(res.messages)
       if (res.lastSeq > afterSeqRef.current) afterSeqRef.current = res.lastSeq
+      // Where the shared machine now stands - the next message starts here
+      setCurrentPositions(res.currentPositions)
       if ((conversationRef.current?.participants?.length ?? 0) < 2) {
         const fresh = await api.getConversation(conversationId)
         conversationRef.current = fresh
@@ -66,9 +70,10 @@ export default function ChatPage({ me }) {
         conversationRef.current = conv
         setConversation(conv)
         setWiring(await api.getMachineWiring(conv.machineName))
-        // The machine rests at the ground position agreed when the
-        // conversation was set up, so both sides start from the same place.
-        setDialPositions([...conv.initialPositions])
+        // One machine per conversation: it stands wherever the last message
+        // left it, not back at the ground setting.
+        setCurrentPositions([...conv.currentPositions])
+        setDialPositions([...conv.currentPositions])
         await poll()
         timer = setInterval(poll, POLL_INTERVAL_MS)
       } catch (e) {
@@ -81,6 +86,16 @@ export default function ChatPage({ me }) {
   useEffect(() => {
     logEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
+  // Keep the idle machine showing the shared position, so it visibly turns
+  // when the other participant transmits. Operator mode is left alone - there
+  // the rotors are yours to set.
+  useEffect(() => {
+    if (!currentPositions || manualMode || anim.status !== 'idle') return
+    setDialPositions((prev) =>
+      prev && prev.join('') === currentPositions.join('') ? prev : [...currentPositions],
+    )
+  }, [currentPositions, manualMode, anim.status])
 
   const machineConfig = useCallback(
     (positions) => ({
@@ -114,29 +129,46 @@ export default function ChatPage({ me }) {
     e.preventDefault()
     if (!draft.trim() || anim.isRunning) return
 
-    // In operator mode the machine runs from wherever the rotors are actually
-    // set, like a real one - so typing a ciphertext back in with the rotors on
-    // its key decrypts it. Otherwise a fresh random message key is generated.
-    const startPositions = manualMode
-      ? [...displayPositions]
-      : randomPositions(alphabet, conversation.rotorIds.length)
+    // The machine runs from wherever its rotors stand: in operator mode that is
+    // whatever you dialled, otherwise the conversation's shared position, which
+    // is where the previous message left the rotors.
+    const startPositions = manualMode ? [...displayPositions] : [...currentPositions]
 
-    const { output, steps } = runMachine(wiring, machineConfig(startPositions), draft)
+    const { output, steps, endPositions } = runMachine(
+      wiring,
+      machineConfig(startPositions),
+      draft,
+    )
     setLoaded(null)
-    setPending({ ciphertext: output, startPositions })
+    setPending({
+      ciphertext: output,
+      startPositions,
+      endPositions,
+      expectedSeq: afterSeqRef.current,
+    })
     anim.play({ steps, startPositions })
   }
 
   const send = async () => {
     try {
-      const sent = await api.sendMessage(conversationId, pending.ciphertext, pending.startPositions)
+      const sent = await api.sendMessage(conversationId, pending)
       mergeMessages([sent])
       if (sent.seq > afterSeqRef.current) afterSeqRef.current = sent.seq
+      // The machine stays where this message left it, ready for the next one
+      setCurrentPositions([...pending.endPositions])
+      setDialPositions([...pending.endPositions])
       setPending(null)
       setDraft('')
       anim.reset()
+      setError('')
     } catch (e) {
       setError(e.message)
+      // 409: the other side transmitted first, so this was encrypted from a
+      // position the machine has already left. Re-sync and let them redo it.
+      if (e.status === 409) {
+        setPending(null)
+        await poll()
+      }
     }
   }
 
@@ -199,7 +231,7 @@ export default function ChatPage({ me }) {
     }
   }
 
-  if (!conversation || !wiring || !displayPositions) {
+  if (!conversation || !wiring || !displayPositions || !currentPositions) {
     return <div className="center-screen">{error || 'Warming up the machine…'}</div>
   }
 
@@ -289,10 +321,13 @@ export default function ChatPage({ me }) {
             />
             operator mode (dial rotors yourself)
           </label>
+          <span className="machine-at" title="The conversation's shared machine position">
+            machine at <strong>{currentPositions.join(' ')}</strong>
+          </span>
           <span className="muted small hint">
             {manualMode
-              ? 'each message carries its own rotor key — dial it in to read the message'
-              : 'the machine settings are shared by this conversation; each message brings its own rotor key'}
+              ? 'dial the rotors yourself — a message decrypts at the position it was sent from'
+              : 'one machine per conversation: it keeps turning, so each message carries on from the last'}
           </span>
           {anim.isRunning && (
             <button className="link-btn" onClick={anim.skip}>
@@ -374,7 +409,7 @@ export default function ChatPage({ me }) {
               placeholder={
                 manualMode
                   ? `Type text to run through the machine at ${displayPositions.join('')}…`
-                  : 'Type your message, then run it through the machine…'
+                  : `Type your message — the machine will run it from ${currentPositions.join('')}…`
               }
               maxLength={400}
               disabled={anim.isRunning}

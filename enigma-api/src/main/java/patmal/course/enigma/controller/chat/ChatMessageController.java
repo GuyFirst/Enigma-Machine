@@ -26,8 +26,7 @@ public class ChatMessageController {
     @PostMapping
     public ChatMessageDTO send(@PathVariable("conversationId") UUID conversationId,
                                @RequestBody SendMessageRequest request) {
-        return chatMessageService.send(CurrentUser.id(), conversationId,
-                request.ciphertext(), request.startPositions());
+        return chatMessageService.send(CurrentUser.id(), conversationId, request);
     }
 
     // Polling endpoint: clients pass the last seq they have; 0 returns everything

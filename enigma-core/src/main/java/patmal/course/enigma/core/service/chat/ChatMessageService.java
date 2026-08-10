@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import patmal.course.enigma.core.dto.chat.ChatMessageDTO;
 import patmal.course.enigma.core.dto.chat.MessagesResponseDTO;
+import patmal.course.enigma.core.dto.chat.SendMessageRequest;
 import patmal.course.enigma.dal.db.jpa.JpaChatMessageRepository;
 import patmal.course.enigma.dal.db.jpa.JpaConversationRepository;
 import patmal.course.enigma.dal.dto.ChatMessageEntity;
@@ -11,12 +12,16 @@ import patmal.course.enigma.dal.dto.ConversationEntity;
 import patmal.course.enigma.engine.logic.repository.Repository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 /**
- * Message transport. Encryption and decryption happen in the browser, so this
- * service only validates and stores ciphertext - it never sees plaintext and
- * has no way to recover it.
+ * Message transport for a conversation's single, continuously running machine.
+ *
+ * Encryption and decryption happen in the browser, so this service never sees
+ * plaintext. What it owns is the shared rotor state: every accepted message
+ * moves the machine forward, and the next message - from either participant -
+ * starts where the last one stopped.
  */
 @Service
 public class ChatMessageService {
@@ -38,21 +43,26 @@ public class ChatMessageService {
     }
 
     @Transactional
-    public ChatMessageDTO send(UUID userId, UUID conversationId, String ciphertext,
-                               List<Character> startPositions) {
-        ConversationEntity conversation = conversationService.requireParticipant(userId, conversationId);
-        validate(conversation, ciphertext, startPositions);
+    public ChatMessageDTO send(UUID userId, UUID conversationId, SendMessageRequest request) {
+        conversationService.requireParticipant(userId, conversationId);
+        // Lock the row so two simultaneous sends cannot both advance the machine
+        ConversationEntity conversation = conversationRepository.lockById(conversationId)
+                .orElseThrow(() -> new NoSuchElementException("Conversation not found"));
+
+        validate(conversation, request);
 
         long seq = conversation.getLastSeq() + 1;
         ChatMessageEntity message = ChatMessageEntity.builder()
                 .conversation(conversation)
                 .senderId(userId)
                 .seq(seq)
-                .ciphertext(ciphertext)
-                .startPositions(ChatCodec.joinChars(startPositions))
+                .ciphertext(request.ciphertext())
+                .startPositions(ChatCodec.joinChars(request.startPositions()))
                 .build();
         messageRepository.save(message);
 
+        // The machine keeps its new position for whoever sends next
+        conversation.setCurrentPositions(ChatCodec.joinChars(request.endPositions()));
         conversation.setLastSeq(seq);
         conversationRepository.save(conversation);
 
@@ -67,16 +77,12 @@ public class ChatMessageService {
                 .stream()
                 .map(this::toDTO)
                 .toList();
-        return new MessagesResponseDTO(messages, conversation.getLastSeq());
+        return new MessagesResponseDTO(messages, conversation.getLastSeq(),
+                ChatCodec.parseChars(conversation.getCurrentPositions()));
     }
 
-    /**
-     * Sanity-checks the client's submission against the conversation's machine:
-     * right number of start positions, all letters in the alphabet, and a
-     * plausible message length.
-     */
-    private void validate(ConversationEntity conversation, String ciphertext,
-                          List<Character> startPositions) {
+    private void validate(ConversationEntity conversation, SendMessageRequest request) {
+        String ciphertext = request.ciphertext();
         if (ciphertext == null || ciphertext.isBlank()) {
             throw new IllegalArgumentException("Ciphertext is required");
         }
@@ -84,17 +90,34 @@ public class ChatMessageService {
             throw new IllegalArgumentException("Message too long (max " + MAX_MESSAGE_LENGTH + " chars)");
         }
 
-        int expectedRotors = ChatCodec.parseInts(conversation.getRotorIds()).size();
-        if (startPositions == null || startPositions.size() != expectedRotors) {
-            throw new IllegalArgumentException(
-                    "Expected " + expectedRotors + " start positions, got "
-                            + (startPositions == null ? 0 : startPositions.size()));
+        // The sender encrypted from the position they believed the machine was
+        // at. If it has moved since, that ciphertext cannot be decrypted by the
+        // other side - reject it rather than corrupt the conversation.
+        if (request.expectedSeq() != null && request.expectedSeq() != conversation.getLastSeq()) {
+            throw new StaleMachineStateException(
+                    "The machine has moved on - someone else transmitted first. Encrypt again.");
+        }
+        if (!ChatCodec.joinChars(request.startPositions()).equals(conversation.getCurrentPositions())) {
+            throw new StaleMachineStateException(
+                    "This was encrypted from a different rotor position than the machine is at. Encrypt again.");
         }
 
         Repository catalog = conversationService.catalogOf(conversation);
-        for (Character position : startPositions) {
+        int expectedRotors = ChatCodec.parseInts(conversation.getRotorIds()).size();
+        requirePositions(request.startPositions(), expectedRotors, catalog);
+        requirePositions(request.endPositions(), expectedRotors, catalog);
+    }
+
+    private void requirePositions(List<Character> positions, int expectedRotors, Repository catalog) {
+        if (positions == null || positions.size() != expectedRotors) {
+            throw new IllegalArgumentException(
+                    "Expected " + expectedRotors + " rotor positions, got "
+                            + (positions == null ? 0 : positions.size()));
+        }
+        for (Character position : positions) {
             if (position == null || !catalog.getKeyboard().isValidChar(position)) {
-                throw new IllegalArgumentException("Start position not in this machine's alphabet: " + position);
+                throw new IllegalArgumentException(
+                        "Rotor position not in this machine's alphabet: " + position);
             }
         }
     }

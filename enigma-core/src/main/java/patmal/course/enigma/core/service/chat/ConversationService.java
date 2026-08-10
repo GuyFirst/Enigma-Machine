@@ -130,6 +130,8 @@ public class ConversationService {
                 .reflectorId(reflectorId)
                 .plugs(ChatCodec.joinPlugs(plugs))
                 .initialPositions(ChatCodec.joinChars(initialPositions))
+                // The machine starts at the ground setting and turns from there
+                .currentPositions(ChatCodec.joinChars(initialPositions))
                 .lastSeq(0L)
                 .build();
         conversation = conversationRepository.save(conversation);
@@ -224,6 +226,7 @@ public class ConversationService {
                 c.getReflectorId(),
                 plugs,
                 ChatCodec.parseChars(c.getInitialPositions()),
+                ChatCodec.parseChars(c.getCurrentPositions()),
                 c.getLastSeq(),
                 c.getCreatedAt());
     }

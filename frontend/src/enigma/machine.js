@@ -216,7 +216,7 @@ export function runMachine(wiring, config, text) {
   return new EnigmaMachine(wiring, config).process(text)
 }
 
-/** Random start positions for a new message key. */
+/** Random rotor positions, e.g. for a machine's ground setting. */
 export function randomPositions(alphabet, count) {
   return Array.from(
     { length: count },

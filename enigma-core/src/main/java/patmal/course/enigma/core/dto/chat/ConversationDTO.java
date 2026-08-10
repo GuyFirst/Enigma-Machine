@@ -21,6 +21,7 @@ public record ConversationDTO(
         String reflectorId,
         Map<String, String> plugs,
         List<Character> initialPositions,
+        List<Character> currentPositions,
         long lastSeq,
         Instant createdAt) {
 }

@@ -47,11 +47,15 @@ export const api = {
   joinConversation: (inviteCode) => request('POST', '/api/conversations/join', { inviteCode }),
   getMessages: (conversationId, afterSeq = 0) =>
     request('GET', `/api/conversations/${conversationId}/messages?afterSeq=${afterSeq}`),
-  // The browser encrypts; only ciphertext and its message key leave the client
-  sendMessage: (conversationId, ciphertext, startPositions) =>
+  // The browser encrypts; only ciphertext and the rotor positions leave the
+  // client. expectedSeq lets the server reject a message encrypted from a
+  // rotor position the shared machine has already moved past.
+  sendMessage: (conversationId, { ciphertext, startPositions, endPositions, expectedSeq }) =>
     request('POST', `/api/conversations/${conversationId}/messages`, {
       ciphertext,
       startPositions,
+      endPositions,
+      expectedSeq,
     }),
 }
 
