@@ -211,19 +211,24 @@ input:focus, select:focus {
 .desk {
   flex: 1;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
+  /* The log keeps a floor so it can never be squeezed to nothing by the
+     machine below it; if the viewport is too short for both, the desk
+     scrolls rather than letting panes overlap. */
+  grid-template-rows: minmax(150px, 1fr) auto;
   max-width: 860px;
   width: 100%;
   margin: 0 auto;
   padding: 0 14px 14px;
   gap: 12px;
   min-height: 0;
+  overflow-y: auto;
 }
 
 .log-pane {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  overflow: hidden;
 }
 
 .log-header {
@@ -627,5 +632,45 @@ input:focus, select:focus {
   .lamp-row,
   .key-row {
     gap: 3px;
+  }
+}
+
+/* Short windows: shrink the machine so the log above it stays usable */
+@media (max-height: 700px) {
+  .lamp,
+  .key {
+    width: 20px;
+    height: 20px;
+    font-size: 10.5px;
+  }
+  .lamp-row,
+  .key-row {
+    gap: 3px;
+  }
+  .lampboard {
+    padding: 4px 0;
+  }
+  .rotor-window {
+    width: 30px;
+    height: 30px;
+  }
+  .rotor-letter {
+    font-size: 17px;
+  }
+  .machine {
+    gap: 6px;
+    padding: 8px 12px 9px;
+  }
+  .tapes {
+    flex-direction: row;
+  }
+  .tape {
+    flex: 1;
+    min-width: 0;
+  }
+  .tape-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
