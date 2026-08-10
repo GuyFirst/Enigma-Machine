@@ -50,6 +50,11 @@ public class ConversationEntity {
     @Column(name = "plugs", nullable = false)
     private String plugs;
 
+    // CSV of the rotor letters the machine rests at when a participant opens
+    // the conversation - the agreed ground setting, e.g. "P,O,B"
+    @Column(name = "initial_positions", nullable = false)
+    private String initialPositions;
+
     // Monotonic per-conversation message sequence; also what clients poll against
     @Column(name = "last_seq", nullable = false)
     private long lastSeq;

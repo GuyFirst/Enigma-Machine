@@ -4,37 +4,13 @@ import { api } from '../api'
 
 export default function ConversationsPage() {
   const [conversations, setConversations] = useState([])
-  const [machines, setMachines] = useState([])
-  const [selectedMachine, setSelectedMachine] = useState('')
   const [inviteCode, setInviteCode] = useState('')
   const [error, setError] = useState('')
   const navigate = useNavigate()
 
-  const load = async () => {
-    try {
-      const [convs, machs] = await Promise.all([api.listConversations(), api.listMachines()])
-      setConversations(convs)
-      setMachines(machs)
-      if (machs.length > 0 && !selectedMachine) setSelectedMachine(machs[0].name)
-    } catch (e) {
-      setError(e.message)
-    }
-  }
-
   useEffect(() => {
-    load()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    api.listConversations().then(setConversations).catch((e) => setError(e.message))
   }, [])
-
-  const create = async () => {
-    setError('')
-    try {
-      const conv = await api.createConversation(selectedMachine)
-      navigate(`/chat/${conv.id}`)
-    } catch (e) {
-      setError(e.message)
-    }
-  }
 
   const join = async (e) => {
     e.preventDefault()
@@ -52,16 +28,12 @@ export default function ConversationsPage() {
       <section className="card">
         <h2>Start a conversation</h2>
         <div className="row">
-          <select value={selectedMachine} onChange={(e) => setSelectedMachine(e.target.value)}>
-            {machines.map((m) => (
-              <option key={m.name} value={m.name}>
-                {m.name} ({m.abc.length} letters, {m.rotorsInUse} rotors)
-              </option>
-            ))}
-          </select>
-          <button className="btn" onClick={create} disabled={!selectedMachine}>
-            create + get invite code
+          <button className="btn" onClick={() => navigate('/new')}>
+            set up a machine
           </button>
+          <span className="muted small">
+            choose the rotors, reflector, plugboard and ground position
+          </span>
         </div>
         <form className="row" onSubmit={join}>
           <input

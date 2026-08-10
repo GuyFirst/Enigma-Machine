@@ -25,7 +25,7 @@ public class ConversationController {
 
     @PostMapping
     public ConversationDTO create(@RequestBody CreateConversationRequest request) {
-        return conversationService.create(CurrentUser.id(), request.machineName());
+        return conversationService.create(CurrentUser.id(), request);
     }
 
     @PostMapping("/join")

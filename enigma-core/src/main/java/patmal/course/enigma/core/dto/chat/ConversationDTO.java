@@ -20,6 +20,7 @@ public record ConversationDTO(
         List<Integer> rotorIds,
         String reflectorId,
         Map<String, String> plugs,
+        List<Character> initialPositions,
         long lastSeq,
         Instant createdAt) {
 }

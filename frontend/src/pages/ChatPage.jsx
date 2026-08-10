@@ -21,10 +21,8 @@ export default function ChatPage({ me }) {
   const [loaded, setLoaded] = useState(null) // message sitting in the machine (manual mode)
   const [manualMode, setManualMode] = useState(false)
   const [dialPositions, setDialPositions] = useState(null)
-
-  // Decrypted text lives only here, in memory: refresh the page and the
-  // conversation is ciphertext again, exactly like a real intercept log.
-  const [decrypted, setDecrypted] = useState({})
+  const [showSettings, setShowSettings] = useState(false)
+  const [copied, setCopied] = useState(false)
 
   const anim = useMachineAnimation()
   const afterSeqRef = useRef(0)
@@ -68,7 +66,9 @@ export default function ChatPage({ me }) {
         conversationRef.current = conv
         setConversation(conv)
         setWiring(await api.getMachineWiring(conv.machineName))
-        setDialPositions(Array(conv.rotorIds.length).fill(conv.alphabet[0]))
+        // The machine rests at the ground position agreed when the
+        // conversation was set up, so both sides start from the same place.
+        setDialPositions([...conv.initialPositions])
         await poll()
         timer = setInterval(poll, POLL_INTERVAL_MS)
       } catch (e) {
@@ -123,7 +123,7 @@ export default function ChatPage({ me }) {
 
     const { output, steps } = runMachine(wiring, machineConfig(startPositions), draft)
     setLoaded(null)
-    setPending({ ciphertext: output, startPositions, plaintext: draft.toUpperCase() })
+    setPending({ ciphertext: output, startPositions })
     anim.play({ steps, startPositions })
   }
 
@@ -132,7 +132,6 @@ export default function ChatPage({ me }) {
       const sent = await api.sendMessage(conversationId, pending.ciphertext, pending.startPositions)
       mergeMessages([sent])
       if (sent.seq > afterSeqRef.current) afterSeqRef.current = sent.seq
-      setDecrypted((prev) => ({ ...prev, [sent.seq]: pending.plaintext }))
       setPending(null)
       setDraft('')
       anim.reset()
@@ -160,12 +159,8 @@ export default function ChatPage({ me }) {
   }
 
   const runDecrypt = (message, positions) => {
-    const { output, steps } = runMachine(wiring, machineConfig(positions), message.ciphertext)
-    anim.play({
-      steps,
-      startPositions: positions,
-      onDone: () => setDecrypted((prev) => ({ ...prev, [message.seq]: output })),
-    })
+    const { steps } = runMachine(wiring, machineConfig(positions), message.ciphertext)
+    anim.play({ steps, startPositions: positions })
   }
 
   const waitingForPartner = conversation && conversation.participants.length < 2
@@ -177,6 +172,32 @@ export default function ChatPage({ me }) {
     loaded && displayPositions
       ? loaded.startPositions.join('') === displayPositions.join('')
       : false
+
+  // The conversation's settings in a form you can read out or paste elsewhere
+  const settingsText = useMemo(() => {
+    if (!conversation) return ''
+    const pairs = Object.entries(conversation.plugs)
+      .filter(([from, to]) => from < to)
+      .map(([from, to]) => `${from}${to}`)
+    return [
+      `machine:    ${conversation.machineName}`,
+      `rotors:     ${conversation.rotorIds.join(' ')}   (left to right)`,
+      `reflector:  ${conversation.reflectorId}`,
+      `ground:     ${conversation.initialPositions.join(' ')}`,
+      `plugboard:  ${pairs.length ? pairs.join(' ') : '(none)'}`,
+      `invite:     ${conversation.inviteCode}`,
+    ].join('\n')
+  }, [conversation])
+
+  const copySettings = async () => {
+    try {
+      await navigator.clipboard.writeText(settingsText)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    } catch {
+      setError('Could not copy — select the text manually')
+    }
+  }
 
   if (!conversation || !wiring || !displayPositions) {
     return <div className="center-screen">{error || 'Warming up the machine…'}</div>
@@ -192,11 +213,29 @@ export default function ChatPage({ me }) {
           <span className="conv-title">
             {conversation.participants.map((p) => p.username).join(' ⇄ ')}
           </span>
+          <button className="link-btn" onClick={() => setShowSettings((s) => !s)}>
+            {showSettings ? 'hide settings' : 'machine settings'}
+          </button>
           <span className="muted small">
             {conversation.machineName} · rotors {conversation.rotorIds.join('-')} · reflector{' '}
             {conversation.reflectorId} · {plugPairCount} plugs
           </span>
         </div>
+
+        {showSettings && (
+          <div className="settings-card">
+            <div className="settings-row">
+              <span className="muted small">code book page for this conversation</span>
+              <button className="link-btn" onClick={copySettings}>
+                {copied ? 'copied ✓' : 'copy'}
+              </button>
+            </div>
+            <pre className="settings-text">{settingsText}</pre>
+            <span className="muted small">
+              Anyone joining with the invite code receives these settings automatically.
+            </span>
+          </div>
+        )}
 
         {waitingForPartner && (
           <div className="invite-banner">
@@ -211,9 +250,10 @@ export default function ChatPage({ me }) {
               No traffic yet. Type below, run it through the machine, then transmit.
             </p>
           )}
+          {/* Ciphertext only - the readable text exists nowhere but the
+              machine's output tape, and only while you are running it. */}
           {messages.map((m) => {
             const mine = m.senderId === me.userId
-            const plain = decrypted[m.seq]
             const inMachine = loaded?.seq === m.seq
             return (
               <div key={m.seq} className={`intercept ${mine ? 'mine' : 'theirs'}`}>
@@ -225,13 +265,12 @@ export default function ChatPage({ me }) {
                   </span>
                 </div>
                 <div className="cipher-text">{m.ciphertext}</div>
-                {plain && <div className="plain-text">{plain}</div>}
                 <button
                   className="feed-btn"
                   onClick={() => feedIntoMachine(m)}
                   disabled={anim.isRunning}
                 >
-                  {inMachine ? '↓ in the machine' : plain ? '↻ run again' : '↓ feed into machine'}
+                  {inMachine ? '↓ in the machine' : '↓ feed into machine'}
                 </button>
               </div>
             )

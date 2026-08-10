@@ -4,6 +4,7 @@ import { api, ApiError } from './api'
 import { currentAuth, isDevAuth, signOut, supabase } from './auth'
 import LoginPage from './pages/LoginPage'
 import ConversationsPage from './pages/ConversationsPage'
+import NewConversationPage from './pages/NewConversationPage'
 import ChatPage from './pages/ChatPage'
 import UsernameSetup from './pages/UsernameSetup'
 
@@ -66,6 +67,7 @@ export default function App() {
       </header>
       <Routes>
         <Route path="/" element={<ConversationsPage />} />
+        <Route path="/new" element={<NewConversationPage />} />
         <Route path="/chat/:conversationId" element={<ChatPage me={profile} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

@@ -42,7 +42,8 @@ export const api = {
   getMachineWiring: (name) => request('GET', `/api/machines/${encodeURIComponent(name)}/wiring`),
   listConversations: () => request('GET', '/api/conversations'),
   getConversation: (id) => request('GET', `/api/conversations/${id}`),
-  createConversation: (machineName) => request('POST', '/api/conversations', { machineName }),
+  // setup: {machineName, rotorIds, reflectorId, plugPairs, initialPositions}
+  createConversation: (setup) => request('POST', '/api/conversations', setup),
   joinConversation: (inviteCode) => request('POST', '/api/conversations/join', { inviteCode }),
   getMessages: (conversationId, afterSeq = 0) =>
     request('GET', `/api/conversations/${conversationId}/messages?afterSeq=${afterSeq}`),
