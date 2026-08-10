@@ -655,13 +655,20 @@ input:focus, select:focus {
   border-color: var(--accent-dim);
 }
 
+.pending-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
 .pending-cipher {
   font-family: var(--mono);
   font-size: 13px;
   letter-spacing: 1.5px;
   color: var(--accent);
   word-break: break-all;
-  flex: 1;
 }
 
 .composer {

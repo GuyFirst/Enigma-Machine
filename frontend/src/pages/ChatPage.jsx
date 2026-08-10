@@ -110,11 +110,17 @@ export default function ChatPage({ me }) {
   }
 
   /** Type -> watch it go through the machine -> then decide to send. */
-  const encrypt = (e) => {
+  const runComposer = (e) => {
     e.preventDefault()
     if (!draft.trim() || anim.isRunning) return
 
-    const startPositions = randomPositions(alphabet, conversation.rotorIds.length)
+    // In operator mode the machine runs from wherever the rotors are actually
+    // set, like a real one - so typing a ciphertext back in with the rotors on
+    // its key decrypts it. Otherwise a fresh random message key is generated.
+    const startPositions = manualMode
+      ? [...displayPositions]
+      : randomPositions(alphabet, conversation.rotorIds.length)
+
     const { output, steps } = runMachine(wiring, machineConfig(startPositions), draft)
     setLoaded(null)
     setPending({ ciphertext: output, startPositions, plaintext: draft.toUpperCase() })
@@ -306,7 +312,12 @@ export default function ChatPage({ me }) {
 
         {pending ? (
           <div className="pending-strip">
-            <div className="pending-cipher">{pending.ciphertext}</div>
+            <div className="pending-info">
+              <span className="muted small">
+                machine output · key {pending.startPositions.join(' ')}
+              </span>
+              <div className="pending-cipher">{pending.ciphertext}</div>
+            </div>
             <div className="row">
               <button className="btn" onClick={send} disabled={anim.isRunning}>
                 transmit
@@ -317,16 +328,20 @@ export default function ChatPage({ me }) {
             </div>
           </div>
         ) : (
-          <form className="composer" onSubmit={encrypt}>
+          <form className="composer" onSubmit={runComposer}>
             <input
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
-              placeholder="Type your message, then run it through the machine…"
+              placeholder={
+                manualMode
+                  ? `Type text to run through the machine at ${displayPositions.join('')}…`
+                  : 'Type your message, then run it through the machine…'
+              }
               maxLength={400}
               disabled={anim.isRunning}
             />
             <button className="btn" type="submit" disabled={!draft.trim() || anim.isRunning}>
-              encrypt
+              {manualMode ? 'run' : 'encrypt'}
             </button>
           </form>
         )}
