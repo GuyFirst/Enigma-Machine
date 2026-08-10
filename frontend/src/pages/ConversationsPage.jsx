@@ -88,7 +88,8 @@ export default function ConversationsPage() {
                 {c.participants.map((p) => p.username).join(' ⇄ ') || c.machineName}
               </span>
               <span className="muted small">
-                {c.machineName} · {c.lastSeq} messages · rotors {c.currentPositionsCompact}
+                {c.machineName} · {c.lastSeq} messages · rotors {c.rotorIds.join('-')} · reflector{' '}
+                {c.reflectorId}
               </span>
             </li>
           ))}

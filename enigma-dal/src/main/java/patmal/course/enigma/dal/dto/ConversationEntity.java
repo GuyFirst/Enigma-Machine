@@ -10,10 +10,13 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * A chat conversation between users sharing one Enigma machine and one rotor state.
- * The machine "code" (rotors/reflector/plugs/original positions) is fixed at creation;
- * currentPositions advances as messages are sent - exactly like a physical machine
- * whose rotors keep turning between messages.
+ * A chat conversation: the shared "code book page". It fixes the machine
+ * composition (which rotors, reflector and plugs) for its lifetime; the
+ * invite code is what hands that composition to the second participant.
+ *
+ * Rotor start positions are deliberately NOT here - each message carries its
+ * own random message key, so messages are independent and there is no shared
+ * mutable state to serialize between concurrent senders.
  */
 @Entity
 @Table(name = "conversations")
@@ -46,14 +49,6 @@ public class ConversationEntity {
     // CSV of plug pairs, each stored once, e.g. "A|C,B|E" (may be empty)
     @Column(name = "plugs", nullable = false)
     private String plugs;
-
-    // CSV of starting positions, e.g. "E,B" - immutable after creation (used for display)
-    @Column(name = "original_positions", nullable = false)
-    private String originalPositions;
-
-    // CSV of the shared current rotor positions - advances with every encrypted char
-    @Column(name = "current_positions", nullable = false)
-    private String currentPositions;
 
     // Monotonic per-conversation message sequence; also what clients poll against
     @Column(name = "last_seq", nullable = false)

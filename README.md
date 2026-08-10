@@ -6,10 +6,45 @@ decrypted on read, and the database only ever stores ciphertext. Built on a Java
 Spring Boot backend (originally the "ex3" stage of a multi-stage course project) with a
 React frontend.
 
-**Chat features:** user accounts (Supabase in prod, dev-identity mode locally), preset
+**The chat only ever carries ciphertext.** You type a message, watch it go through an
+animated machine letter by letter, and only then transmit the result. The recipient sees
+gibberish until they run it back through their own machine. The plaintext never reaches
+the server - encryption and decryption both happen in the browser.
+
+### How the keys work
+
+Two layers, mirroring the historical protocol:
+
+- **The conversation is a code book page.** Creating one fixes the machine settings -
+  which rotors, in which order, which reflector, which plugs - for its lifetime. The
+  invite code is what hands those settings to the other person.
+- **Every message carries its own key.** The sender's rotor start positions are random
+  per message and travel with it in the clear (the historical "indicator"). Anyone can
+  read the indicator; only someone holding the conversation's settings can use it. This
+  also means messages are fully independent - no shared state, no ordering problems.
+
+Decryption is automatic by default. Flip on **operator mode** and the rotors stay where
+they are: you dial in the indicator yourself, and a wrong setting gives you gibberish.
+
+**Other features:** user accounts (Supabase in prod, dev-identity mode locally), preset
 machines (a full 26-letter "Enigma I" with historical rotor wirings + a small demo
-machine), invite-code pairing, shared rotor state that advances per message, polling
-for near-real-time delivery, and a ciphertext/plaintext toggle in the UI.
+machine), polling for near-real-time delivery. Decrypted text is held in memory only, so
+a page refresh returns the conversation to ciphertext.
+
+### Where the cipher runs
+
+The machine exists twice on purpose. Java (`enigma-logic/`) is the reference implementation
+and still powers the original course API. The browser port (`frontend/src/enigma/machine.js`)
+exists because the animation *is* the computation - it needs the per-character rotor
+positions, signal path and lamp state that a "return the final string" API cannot give -
+and because it keeps plaintext on the client.
+
+They are kept in agreement by generated test vectors:
+
+```bash
+powershell -ExecutionPolicy Bypass -File scripts/generate-vectors.ps1   # Java -> vectors.json
+cd frontend && npm test                                                 # asserts the port matches
+```
 
 - Chat API: `/api/*` (see `enigma-api/.../controller/chat/`), React app in `frontend/`
 - Deploying to the cloud (Supabase + Render + Vercel, all free): see [DEPLOYMENT.md](DEPLOYMENT.md)

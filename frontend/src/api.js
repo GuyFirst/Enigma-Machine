@@ -39,14 +39,19 @@ export const api = {
   getProfile: () => request('GET', '/api/profile'),
   setUsername: (username) => request('PUT', '/api/profile', { username }),
   listMachines: () => request('GET', '/api/machines'),
+  getMachineWiring: (name) => request('GET', `/api/machines/${encodeURIComponent(name)}/wiring`),
   listConversations: () => request('GET', '/api/conversations'),
   getConversation: (id) => request('GET', `/api/conversations/${id}`),
   createConversation: (machineName) => request('POST', '/api/conversations', { machineName }),
   joinConversation: (inviteCode) => request('POST', '/api/conversations/join', { inviteCode }),
   getMessages: (conversationId, afterSeq = 0) =>
     request('GET', `/api/conversations/${conversationId}/messages?afterSeq=${afterSeq}`),
-  sendMessage: (conversationId, text) =>
-    request('POST', `/api/conversations/${conversationId}/messages`, { text }),
+  // The browser encrypts; only ciphertext and its message key leave the client
+  sendMessage: (conversationId, ciphertext, startPositions) =>
+    request('POST', `/api/conversations/${conversationId}/messages`, {
+      ciphertext,
+      startPositions,
+    }),
 }
 
 export { ApiError }

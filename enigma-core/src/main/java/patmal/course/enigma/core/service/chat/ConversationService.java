@@ -2,10 +2,12 @@ package patmal.course.enigma.core.service.chat;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import patmal.course.enigma.component.reflector.Reflector;
+import patmal.course.enigma.component.rotor.Rotor;
 import patmal.course.enigma.core.dto.chat.ConversationDTO;
 import patmal.course.enigma.core.dto.chat.MachineSummaryDTO;
+import patmal.course.enigma.core.dto.chat.MachineWiringDTO;
 import patmal.course.enigma.core.dto.chat.ProfileDTO;
-import patmal.course.enigma.core.formatter.EnigmaFormatter;
 import patmal.course.enigma.dal.api.MachineRepository;
 import patmal.course.enigma.dal.db.jpa.JpaChatProfileRepository;
 import patmal.course.enigma.dal.db.jpa.JpaConversationParticipantRepository;
@@ -20,7 +22,9 @@ import patmal.course.enigma.dal.dto.RotorPersistenceEntity;
 import patmal.course.enigma.engine.logic.repository.Repository;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -38,20 +42,17 @@ public class ConversationService {
     private final JpaChatProfileRepository profileRepository;
     private final JpaMachineRepository jpaMachineRepository;
     private final MachineRepository machineRepository;
-    private final EnigmaFormatter formatter;
 
     public ConversationService(JpaConversationRepository conversationRepository,
                                JpaConversationParticipantRepository participantRepository,
                                JpaChatProfileRepository profileRepository,
                                JpaMachineRepository jpaMachineRepository,
-                               MachineRepository machineRepository,
-                               EnigmaFormatter formatter) {
+                               MachineRepository machineRepository) {
         this.conversationRepository = conversationRepository;
         this.participantRepository = participantRepository;
         this.profileRepository = profileRepository;
         this.jpaMachineRepository = jpaMachineRepository;
         this.machineRepository = machineRepository;
-        this.formatter = formatter;
     }
 
     public List<MachineSummaryDTO> listMachines() {
@@ -65,16 +66,45 @@ public class ConversationService {
                 .toList();
     }
 
+    /** Full wiring so the browser can run the machine itself. */
+    public MachineWiringDTO getWiring(String machineName) {
+        Repository catalog = requireCatalog(machineName);
+        String alphabet = catalog.getKeyboard().toString();
+
+        List<MachineWiringDTO.RotorWiring> rotors = catalog.getAllRotors().values().stream()
+                .sorted(Comparator.comparingInt(Rotor::getId))
+                .map(r -> new MachineWiringDTO.RotorWiring(
+                        r.getId(),
+                        List.copyOf(r.getRightColumn()),
+                        List.copyOf(r.getLeftColumn()),
+                        r.getNotchPosition()))
+                .toList();
+
+        List<MachineWiringDTO.ReflectorWiring> reflectors = catalog.getAllReflectors().entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(entry -> {
+                    List<Integer> mapping = new ArrayList<>(alphabet.length());
+                    for (int i = 0; i < alphabet.length(); i++) {
+                        mapping.add(entry.getValue().reflect(i));
+                    }
+                    return new MachineWiringDTO.ReflectorWiring(entry.getKey(), mapping);
+                })
+                .toList();
+
+        return new MachineWiringDTO(catalog.getMachineName(), alphabet,
+                catalog.getNumOfUsedRotorsInMachine(), rotors, reflectors);
+    }
+
     @Transactional
     public ConversationDTO create(UUID userId, String machineName) {
         requireProfile(userId);
         MachinePersistenceEntity machineEntity = jpaMachineRepository.findByName(machineName)
                 .orElseThrow(() -> new NoSuchElementException("Machine not found: " + machineName));
 
-        // Generate a random valid "daily code" using the catalog's own helpers
+        // Pick this conversation's machine settings - its "code book page".
+        // Start positions are per message, so they are not decided here.
         Repository catalog = machineRepository.getMachineByName(machineName);
         List<Integer> rotorIds = catalog.getRandomRotorIds();
-        List<Character> positions = catalog.getRandomPositionsForRotors(rotorIds.size());
         String reflectorId = catalog.getRandomReflectorId();
         Map<Character, Character> plugs = catalog.getRandomPlugboardPairs();
 
@@ -85,8 +115,6 @@ public class ConversationService {
                 .rotorIds(ChatCodec.joinInts(rotorIds))
                 .reflectorId(reflectorId)
                 .plugs(ChatCodec.joinPlugs(plugs))
-                .originalPositions(ChatCodec.joinChars(positions))
-                .currentPositions(ChatCodec.joinChars(positions))
                 .lastSeq(0L)
                 .build();
         conversation = conversationRepository.save(conversation);
@@ -96,7 +124,7 @@ public class ConversationService {
                 .userId(userId)
                 .build());
 
-        return toDTO(conversation, catalog);
+        return toDTO(conversation);
     }
 
     @Transactional
@@ -111,7 +139,7 @@ public class ConversationService {
 
         if (participantRepository.existsByConversationIdAndUserId(conversation.getId(), userId)) {
             // Already a member - joining again is a no-op, just return it
-            return toDTO(conversation, catalogOf(conversation));
+            return toDTO(conversation);
         }
         if (participantRepository.countByConversationId(conversation.getId()) >= MAX_PARTICIPANTS) {
             throw new IllegalArgumentException("This conversation is already full");
@@ -121,20 +149,19 @@ public class ConversationService {
                 .conversation(conversation)
                 .userId(userId)
                 .build());
-        return toDTO(conversation, catalogOf(conversation));
+        return toDTO(conversation);
     }
 
     public List<ConversationDTO> listForUser(UUID userId) {
         return participantRepository.findByUserIdOrderByJoinedAtDesc(userId).stream()
                 .map(ConversationParticipantEntity::getConversation)
                 .sorted(Comparator.comparing(ConversationEntity::getCreatedAt).reversed())
-                .map(c -> toDTO(c, catalogOf(c)))
+                .map(this::toDTO)
                 .toList();
     }
 
     public ConversationDTO getForUser(UUID userId, UUID conversationId) {
-        ConversationEntity conversation = requireParticipant(userId, conversationId);
-        return toDTO(conversation, catalogOf(conversation));
+        return toDTO(requireParticipant(userId, conversationId));
     }
 
     /** Shared guard: returns the conversation if the user participates in it. */
@@ -148,32 +175,39 @@ public class ConversationService {
     }
 
     Repository catalogOf(ConversationEntity conversation) {
-        return machineRepository.getMachineByName(conversation.getMachine().getName());
+        return requireCatalog(conversation.getMachine().getName());
     }
 
-    ConversationDTO toDTO(ConversationEntity c, Repository catalog) {
+    private Repository requireCatalog(String machineName) {
+        Repository catalog = machineRepository.getMachineByName(machineName);
+        if (catalog == null) {
+            throw new NoSuchElementException("Machine not found: " + machineName);
+        }
+        return catalog;
+    }
+
+    private ConversationDTO toDTO(ConversationEntity c) {
         List<ProfileDTO> participants = participantRepository.findByConversationId(c.getId()).stream()
                 .map(p -> new ProfileDTO(p.getUserId(),
                         profileRepository.findById(p.getUserId())
                                 .map(ChatProfileEntity::getUsername).orElse("unknown")))
                 .toList();
 
-        List<Integer> rotorIds = ChatCodec.parseInts(c.getRotorIds());
-        List<Character> currentPositions = ChatCodec.parseChars(c.getCurrentPositions());
+        // Plugs go out as a both-directions map, ready for the browser machine
+        Map<String, String> plugs = new LinkedHashMap<>();
+        ChatCodec.parsePlugs(c.getPlugs())
+                .forEach((from, to) -> plugs.put(String.valueOf(from), String.valueOf(to)));
 
         return new ConversationDTO(
                 c.getId(),
                 c.getMachine().getName(),
-                catalog.getKeyboard().toString(),
+                c.getMachine().getAbc(),
                 c.getInviteCode(),
                 c.getCreatedBy(),
                 participants,
-                rotorIds,
+                ChatCodec.parseInts(c.getRotorIds()),
                 c.getReflectorId(),
-                ChatCodec.plugsAsPairList(c.getPlugs()),
-                ChatCodec.parseChars(c.getOriginalPositions()),
-                currentPositions,
-                formatter.formatPositions(rotorIds, currentPositions, catalog),
+                plugs,
                 c.getLastSeq(),
                 c.getCreatedAt());
     }

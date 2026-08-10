@@ -10,9 +10,10 @@ import java.time.Instant;
 import java.util.UUID;
 
 /**
- * One chat message. Only the CIPHERTEXT is persisted - the plaintext never touches
- * the database. Decryption happens on read: rebuilding the machine from the
- * conversation's fixed code + this message's positionsAtEncryption.
+ * One message. The server receives, stores and serves ONLY ciphertext - the
+ * plaintext never reaches it. `startPositions` is the message key indicator,
+ * sent in the clear so a recipient who has the conversation's machine settings
+ * can set their rotors and decrypt locally.
  */
 @Entity
 @Table(name = "chat_messages",
@@ -39,14 +40,9 @@ public class ChatMessageEntity {
     @Column(name = "ciphertext", nullable = false, length = 600)
     private String ciphertext;
 
-    // CSV of rotor positions at the moment of encryption, e.g. "F,C" -
-    // everything else needed to decrypt is constant on the conversation.
-    @Column(name = "positions_at_encryption", nullable = false)
-    private String positionsAtEncryption;
-
-    // Human-readable code snapshot like <2,3><E(3),B(1)><II><A|C> - display only
-    @Column(name = "code_compact", nullable = false)
-    private String codeCompact;
+    // CSV of the rotor letters the sender started from, e.g. "F,C"
+    @Column(name = "start_positions", nullable = false)
+    private String startPositions;
 
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
