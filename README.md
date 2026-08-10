@@ -1,3 +1,7 @@
+
+<img width="855" height="799" alt="image" src="https://github.com/user-attachments/assets/6b6e37ea-adeb-4deb-b70c-d3bdd0dcd745" />
+
+
 # Enigma Chat
 
 A messaging app where the only way to read a message is to work the machine yourself.
