@@ -1,14 +1,10 @@
 package patmal.course.enigma.engine.logic;
 
 import org.springframework.stereotype.Service;
-import patmal.course.enigma.component.plugboard.PlugboardImpl;
-import patmal.course.enigma.component.rotor.Rotor;
-import patmal.course.enigma.component.rotor.RotorManager;
 import patmal.course.enigma.engine.logic.dto.EnigmaResult;
 import patmal.course.enigma.engine.logic.dto.MachineConfiguration;
 import patmal.course.enigma.engine.logic.repository.Repository;
 import patmal.course.enigma.machine.Machine;
-import patmal.course.enigma.machine.MachineImpl;
 
 import java.util.List;
 
@@ -36,28 +32,7 @@ public class EngineImpl implements Engine {
     }
 
     private Machine buildMachine(Repository repository, MachineConfiguration config) {
-//        List<Rotor> rotors = config.getRotorIds().stream()
-//                .map(id -> repository.getAllRotors().get(id))
-//                .toList();
-        List<Rotor> rotors = config.getRotorIds().stream()
-                .map(id -> {
-                    Rotor blueprint = repository.getAllRotors().get(id);
-                    // Assuming your RotorImpl has a copy constructor or clone method
-                    return blueprint.cloneRotor();
-                })
-                .toList();
-
-        List<Integer> positionIndices = config.getStartingPositions().stream()
-                .map(c -> repository.getKeyboard().charToIndex(c))
-                .toList();
-
-        RotorManager rotorManager = new RotorManager(rotors, positionIndices, config.getRotorIds());
-
-        return new MachineImpl(
-                repository.getAllReflectors().get(config.getReflectorId()),
-                rotorManager,
-                repository.getKeyboard(),
-                new PlugboardImpl(config.getPlugs())
-        );
+        // Extracted to MachineFactory so other flows (e.g. chat) can build machines too
+        return MachineFactory.build(repository, config);
     }
 }

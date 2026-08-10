@@ -41,20 +41,27 @@ public class EnigmaFormatter {
     }
 
     public String formatFullOriginalCode(EnigmaSession session, Repository catalog) {
+        return formatCode(session.getCurrentRotorIds(), session.getOriginalPositions(),
+                session.getCurrentReflectorId(), session.getCurrentPlugs(), catalog);
+    }
+
+    // Raw-values variant of the code snapshot string, usable outside the session flow (e.g. chat)
+    public String formatCode(List<Integer> rotorIds, List<Character> positions,
+                             String reflectorId, java.util.Map<Character, Character> plugsMap,
+                             Repository catalog) {
         // 1. Format Rotor IDs: <1,2,3>
-        String ids = session.getCurrentRotorIds().stream()
+        String ids = rotorIds.stream()
                 .map(String::valueOf)
                 .collect(Collectors.joining(",", "<", ">"));
 
         // 2. Format Initial Positions: <A(0),B(1)>
-        String pos = formatPositions(session.getCurrentRotorIds(), session.getOriginalPositions(), catalog);
-        pos = "<" + pos + ">";
+        String pos = "<" + formatPositions(rotorIds, positions, catalog) + ">";
 
         // 3. Format Reflector: <III>
-        String reflector = "<" + session.getCurrentReflectorId() + ">";
+        String reflector = "<" + reflectorId + ">";
 
         // 4. Format Plugs (if any): <A|Z,B|Y>
-        String plugs = session.getCurrentPlugs().entrySet().stream()
+        String plugs = plugsMap.entrySet().stream()
                 .filter(e -> e.getKey() < e.getValue()) // Avoid duplicates like A|Z and Z|A
                 .map(e -> e.getKey() + "|" + e.getValue())
                 .collect(Collectors.joining(",", "<", ">"));

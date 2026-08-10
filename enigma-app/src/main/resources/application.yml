@@ -1,8 +1,9 @@
+# Default profile: local development.
+# Embedded H2 in-memory database - no external DB service needed. DB_CLOSE_DELAY=-1
+# keeps the in-memory DB alive for the lifetime of the JVM.
+# /api/** auth in this profile comes from the X-Dev-User header (see DevUserAuthFilter).
 spring:
   datasource:
-    # Embedded H2 in-memory database - no external DB service needed.
-    # DB_CLOSE_DELAY=-1 keeps the in-memory DB alive for the lifetime of the JVM
-    # instead of dropping it after the first connection closes.
     url: jdbc:h2:mem:enigma;DB_CLOSE_DELAY=-1
     username: sa
     password:
@@ -21,6 +22,39 @@ spring.servlet.multipart:
   max-file-size: 10MB
   max-request-size: 10MB
 
+app:
+  cors:
+    allowed-origins: ${ALLOWED_ORIGINS:http://localhost:5173,http://localhost:3000}
+
 enigma:
   ai:
-    api-key: ${AI_API_KEY}
+    # Optional: without a real key the server still runs; only /enigma/ai answers are disabled
+    api-key: ${AI_API_KEY:placeholder-set-AI_API_KEY-to-enable}
+
+---
+# Production profile (Render + Supabase). Activate with SPRING_PROFILES_ACTIVE=prod.
+# Required env vars:
+#   SPRING_DATASOURCE_URL       jdbc:postgresql://<supabase-host>:5432/postgres
+#   SPRING_DATASOURCE_USERNAME  from Supabase connection settings
+#   SPRING_DATASOURCE_PASSWORD  from Supabase connection settings
+#   SUPABASE_JWKS_URI  (or SUPABASE_JWT_SECRET for legacy projects)
+#   ALLOWED_ORIGINS             deployed frontend origin(s), e.g. https://<app>.vercel.app
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      # Persistent DB: evolve the schema, never drop it
+      ddl-auto: update
+    show-sql: false
+
+app:
+  auth:
+    jwks-uri: ${SUPABASE_JWKS_URI:}
+    jwt-secret: ${SUPABASE_JWT_SECRET:}

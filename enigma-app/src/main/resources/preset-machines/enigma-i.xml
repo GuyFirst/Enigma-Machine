@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Full 26-letter preset machine. Rotor wirings and notch letters follow the
+     historical Enigma I rotors I-V; reflector pairings follow UKW-B ("I") and
+     UKW-C ("II"). (The engine's row-stepping model is the course's simplified
+     one, so outputs are not historically identical - the wirings are simply
+     good, well-known permutations.) -->
+<BTE-Enigma name="Enigma I" rotors-count="3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Enigma-Ex3.xsd">
+    <ABC>
+        ABCDEFGHIJKLMNOPQRSTUVWXYZ
+    </ABC>
+    <BTE-Rotors>
+        <BTE-Rotor id="1" notch="17">
+            <BTE-Positioning right="A" left="E"/>
+            <BTE-Positioning right="B" left="K"/>
+            <BTE-Positioning right="C" left="M"/>
+            <BTE-Positioning right="D" left="F"/>
+            <BTE-Positioning right="E" left="L"/>
+            <BTE-Positioning right="F" left="G"/>
+            <BTE-Positioning right="G" left="D"/>
+            <BTE-Positioning right="H" left="Q"/>
+            <BTE-Positioning right="I" left="V"/>
+            <BTE-Positioning right="J" left="Z"/>
+            <BTE-Positioning right="K" left="N"/>
+            <BTE-Positioning right="L" left="T"/>
+            <BTE-Positioning right="M" left="O"/>
+            <BTE-Positioning right="N" left="W"/>
+            <BTE-Positioning right="O" left="Y"/>
+            <BTE-Positioning right="P" left="H"/>
+            <BTE-Positioning right="Q" left="X"/>
+            <BTE-Positioning right="R" left="U"/>
+            <BTE-Positioning right="S" left="S"/>
+            <BTE-Positioning right="T" left="P"/>
+            <BTE-Positioning right="U" left="A"/>
+            <BTE-Positioning right="V" left="I"/>
+            <BTE-Positioning right="W" left="B"/>
+            <BTE-Positioning right="X" left="R"/>
+            <BTE-Positioning right="Y" left="C"/>
+            <BTE-Positioning right="Z" left="J"/>
+        </BTE-Rotor>
+        <BTE-Rotor id="2" notch="5">
+            <BTE-Positioning right="A" left="A"/>
+            <BTE-Positioning right="B" left="J"/>
+            <BTE-Positioning right="C" left="D"/>
+            <BTE-Positioning right="D" left="K"/>
+            <BTE-Positioning right="E" left="S"/>
+            <BTE-Positioning right="F" left="I"/>
+            <BTE-Positioning right="G" left="R"/>
+            <BTE-Positioning right="H" left="U"/>
+            <BTE-Positioning right="I" left="X"/>
+            <BTE-Positioning right="J" left="B"/>
+            <BTE-Positioning right="K" left="L"/>
+            <BTE-Positioning right="L" left="H"/>
+            <BTE-Positioning right="M" left="W"/>
+            <BTE-Positioning right="N" left="T"/>
+            <BTE-Positioning right="O" left="M"/>
+            <BTE-Positioning right="P" left="C"/>
+            <BTE-Positioning right="Q" left="Q"/>
+            <BTE-Positioning right="R" left="G"/>
+            <BTE-Positioning right="S" left="Z"/>
+            <BTE-Positioning right="T" left="N"/>
+            <BTE-Positioning right="U" left="P"/>
+            <BTE-Positioning right="V" left="Y"/>
+            <BTE-Positioning right="W" left="F"/>
+            <BTE-Positioning right="X" left="V"/>
+            <BTE-Positioning right="Y" left="O"/>
+            <BTE-Positioning right="Z" left="E"/>
+        </BTE-Rotor>
+        <BTE-Rotor id="3" notch="22">
+            <BTE-Positioning right="A" left="B"/>
+            <BTE-Positioning right="B" left="D"/>
+            <BTE-Positioning right="C" left="F"/>
+            <BTE-Positioning right="D" left="H"/>
+            <BTE-Positioning right="E" left="J"/>
+            <BTE-Positioning right="F" left="L"/>
+            <BTE-Positioning right="G" left="C"/>
+            <BTE-Positioning right="H" left="P"/>
+            <BTE-Positioning right="I" left="R"/>
+            <BTE-Positioning right="J" left="T"/>
+            <BTE-Positioning right="K" left="X"/>
+            <BTE-Positioning right="L" left="V"/>
+            <BTE-Positioning right="M" left="Z"/>
+            <BTE-Positioning right="N" left="N"/>
+            <BTE-Positioning right="O" left="Y"/>
+            <BTE-Positioning right="P" left="E"/>
+            <BTE-Positioning right="Q" left="I"/>
+            <BTE-Positioning right="R" left="W"/>
+            <BTE-Positioning right="S" left="G"/>
+            <BTE-Positioning right="T" left="A"/>
+            <BTE-Positioning right="U" left="K"/>
+            <BTE-Positioning right="V" left="M"/>
+            <BTE-Positioning right="W" left="U"/>
+            <BTE-Positioning right="X" left="S"/>
+            <BTE-Positioning right="Y" left="Q"/>
+            <BTE-Positioning right="Z" left="O"/>
+        </BTE-Rotor>
+        <BTE-Rotor id="4" notch="10">
+            <BTE-Positioning right="A" left="E"/>
+            <BTE-Positioning right="B" left="S"/>
+            <BTE-Positioning right="C" left="O"/>
+            <BTE-Positioning right="D" left="V"/>
+            <BTE-Positioning right="E" left="P"/>
+            <BTE-Positioning right="F" left="Z"/>
+            <BTE-Positioning right="G" left="J"/>
+            <BTE-Positioning right="H" left="A"/>
+            <BTE-Positioning right="I" left="Y"/>
+            <BTE-Positioning right="J" left="Q"/>
+            <BTE-Positioning right="K" left="U"/>
+            <BTE-Positioning right="L" left="I"/>
+            <BTE-Positioning right="M" left="R"/>
+            <BTE-Positioning right="N" left="H"/>
+            <BTE-Positioning right="O" left="X"/>
+            <BTE-Positioning right="P" left="L"/>
+            <BTE-Positioning right="Q" left="N"/>
+            <BTE-Positioning right="R" left="F"/>
+            <BTE-Positioning right="S" left="T"/>
+            <BTE-Positioning right="T" left="G"/>
+            <BTE-Positioning right="U" left="K"/>
+            <BTE-Positioning right="V" left="D"/>
+            <BTE-Positioning right="W" left="C"/>
+            <BTE-Positioning right="X" left="M"/>
+            <BTE-Positioning right="Y" left="W"/>
+            <BTE-Positioning right="Z" left="B"/>
+        </BTE-Rotor>
+        <BTE-Rotor id="5" notch="26">
+            <BTE-Positioning right="A" left="V"/>
+            <BTE-Positioning right="B" left="Z"/>
+            <BTE-Positioning right="C" left="B"/>
+            <BTE-Positioning right="D" left="R"/>
+            <BTE-Positioning right="E" left="G"/>
+            <BTE-Positioning right="F" left="I"/>
+            <BTE-Positioning right="G" left="T"/>
+            <BTE-Positioning right="H" left="Y"/>
+            <BTE-Positioning right="I" left="U"/>
+            <BTE-Positioning right="J" left="P"/>
+            <BTE-Positioning right="K" left="S"/>
+            <BTE-Positioning right="L" left="D"/>
+            <BTE-Positioning right="M" left="N"/>
+            <BTE-Positioning right="N" left="H"/>
+            <BTE-Positioning right="O" left="L"/>
+            <BTE-Positioning right="P" left="X"/>
+            <BTE-Positioning right="Q" left="A"/>
+            <BTE-Positioning right="R" left="W"/>
+            <BTE-Positioning right="S" left="M"/>
+            <BTE-Positioning right="T" left="J"/>
+            <BTE-Positioning right="U" left="Q"/>
+            <BTE-Positioning right="V" left="O"/>
+            <BTE-Positioning right="W" left="F"/>
+            <BTE-Positioning right="X" left="E"/>
+            <BTE-Positioning right="Y" left="C"/>
+            <BTE-Positioning right="Z" left="K"/>
+        </BTE-Rotor>
+    </BTE-Rotors>
+    <BTE-Reflectors>
+        <BTE-Reflector id="I">
+            <BTE-Reflect input="1" output="25"/>
+            <BTE-Reflect input="2" output="18"/>
+            <BTE-Reflect input="3" output="21"/>
+            <BTE-Reflect input="4" output="8"/>
+            <BTE-Reflect input="5" output="17"/>
+            <BTE-Reflect input="6" output="19"/>
+            <BTE-Reflect input="7" output="12"/>
+            <BTE-Reflect input="9" output="16"/>
+            <BTE-Reflect input="10" output="24"/>
+            <BTE-Reflect input="11" output="14"/>
+            <BTE-Reflect input="13" output="15"/>
+            <BTE-Reflect input="20" output="26"/>
+            <BTE-Reflect input="22" output="23"/>
+        </BTE-Reflector>
+        <BTE-Reflector id="II">
+            <BTE-Reflect input="1" output="6"/>
+            <BTE-Reflect input="2" output="22"/>
+            <BTE-Reflect input="3" output="16"/>
+            <BTE-Reflect input="4" output="10"/>
+            <BTE-Reflect input="5" output="9"/>
+            <BTE-Reflect input="7" output="15"/>
+            <BTE-Reflect input="8" output="25"/>
+            <BTE-Reflect input="11" output="18"/>
+            <BTE-Reflect input="12" output="26"/>
+            <BTE-Reflect input="13" output="24"/>
+            <BTE-Reflect input="14" output="23"/>
+            <BTE-Reflect input="17" output="20"/>
+            <BTE-Reflect input="19" output="21"/>
+        </BTE-Reflector>
+    </BTE-Reflectors>
+</BTE-Enigma>
