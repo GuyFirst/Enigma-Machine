@@ -1,9 +1,23 @@
-# Enigma Machine Server (ex3)
+# Enigma Chat
 
-A Java 21 / Spring Boot recreation of the WWII Enigma cipher machine, exposed as a REST API,
-backed by a database, with an AI chat assistant for querying the processing history in
-plain English. This is the "ex3" (server) stage of a multi-stage course project — earlier
-stages were a plain console app and a modular Maven library.
+A web app where two users correspond through a simulated WWII Enigma machine: each
+conversation shares one machine and one rotor state, messages are encrypted on send and
+decrypted on read, and the database only ever stores ciphertext. Built on a Java 21 /
+Spring Boot backend (originally the "ex3" stage of a multi-stage course project) with a
+React frontend.
+
+**Chat features:** user accounts (Supabase in prod, dev-identity mode locally), preset
+machines (a full 26-letter "Enigma I" with historical rotor wirings + a small demo
+machine), invite-code pairing, shared rotor state that advances per message, polling
+for near-real-time delivery, and a ciphertext/plaintext toggle in the UI.
+
+- Chat API: `/api/*` (see `enigma-api/.../controller/chat/`), React app in `frontend/`
+- Deploying to the cloud (Supabase + Render + Vercel, all free): see [DEPLOYMENT.md](DEPLOYMENT.md)
+- Local dev: `run-server.bat` + `cd frontend && npm run dev` - no cloud accounts needed
+
+Everything below documents the underlying Enigma server the chat is built on.
+
+---
 
 ## How it works, in short
 

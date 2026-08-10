@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "enigma-backend",
+      "runtimeExecutable": "C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.12.8-hotspot\\bin\\java.exe",
+      "runtimeArgs": ["-jar", "enigma-app/target/enigma-machine-server-ex3.jar"],
+      "port": 8080
+    },
+    {
+      "name": "enigma-frontend",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "frontend", "run", "dev"],
+      "port": 5173
+    }
+  ]
+}

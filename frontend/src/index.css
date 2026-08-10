@@ -1,0 +1,330 @@
+:root {
+  --bg: #14161a;
+  --panel: #1d2026;
+  --panel-2: #23262e;
+  --border: #32363f;
+  --text: #d8dade;
+  --muted: #8a8f99;
+  --accent: #e0a52c; /* lampboard amber */
+  --accent-dim: #8a6a25;
+  --mine: #2a3646;
+  --theirs: #262a32;
+  --error: #e06c5c;
+  --mono: 'Consolas', 'Menlo', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: 15px;
+}
+
+#root {
+  height: 100vh;
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.center-screen {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 18px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.topbar-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.brand {
+  font-family: var(--mono);
+  letter-spacing: 2px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.brand.big {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.username {
+  font-family: var(--mono);
+  color: var(--muted);
+}
+
+.page {
+  max-width: 640px;
+  margin: 24px auto;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.login-card {
+  width: 360px;
+  max-width: 92vw;
+}
+
+h1, h2 {
+  font-weight: 600;
+  font-size: 17px;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+input, select {
+  flex: 1;
+  background: var(--panel-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 9px 12px;
+  font-size: 14px;
+  outline: none;
+}
+
+input:focus, select:focus {
+  border-color: var(--accent-dim);
+}
+
+.btn {
+  background: var(--accent);
+  color: #17130a;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  padding: 9px 14px;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.btn:hover {
+  filter: brightness(1.1);
+}
+
+.btn:disabled {
+  background: var(--accent-dim);
+  cursor: default;
+  opacity: 0.6;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.link-btn:hover {
+  color: var(--text);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.small {
+  font-size: 12.5px;
+}
+
+.error {
+  color: var(--error);
+  font-size: 13.5px;
+}
+
+.conv-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0;
+}
+
+.conv-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.conv-list li:hover {
+  border-color: var(--accent-dim);
+}
+
+.conv-title {
+  font-weight: 600;
+}
+
+/* ---- chat ---- */
+
+.chat-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 760px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 14px 14px;
+  min-height: 0;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 2px;
+  flex-wrap: wrap;
+}
+
+.machine-state {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--accent);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.toggle {
+  margin-left: auto;
+  font-size: 12.5px;
+  color: var(--muted);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  cursor: pointer;
+}
+
+.invite-banner {
+  background: var(--panel);
+  border: 1px dashed var(--accent-dim);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.invite-code {
+  font-family: var(--mono);
+  color: var(--accent);
+  font-size: 16px;
+  letter-spacing: 3px;
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 8px 2px;
+  min-height: 0;
+}
+
+.bubble {
+  max-width: 78%;
+  border-radius: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+}
+
+.bubble.mine {
+  align-self: flex-end;
+  background: var(--mine);
+}
+
+.bubble.theirs {
+  align-self: flex-start;
+  background: var(--theirs);
+}
+
+.bubble-meta {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin-bottom: 3px;
+}
+
+.sender {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.cipher {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  border-bottom: 1px dashed var(--border);
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+  word-break: break-all;
+}
+
+.plain {
+  font-size: 14.5px;
+  word-break: break-word;
+}
+
+.chat-error {
+  padding: 4px 2px;
+}
+
+.composer {
+  display: flex;
+  gap: 8px;
+  padding-top: 10px;
+}

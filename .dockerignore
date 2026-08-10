@@ -1,0 +1,7 @@
+**/target/
+frontend/
+web for enigma/
+.git/
+.idea/
+*.bat
+*.ps1

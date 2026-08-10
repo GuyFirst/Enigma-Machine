@@ -47,6 +47,10 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
 
+server:
+  # Render injects the port to bind via the PORT env var
+  port: ${PORT:8080}
+
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
